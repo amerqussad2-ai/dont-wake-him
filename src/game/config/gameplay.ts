@@ -38,7 +38,7 @@ export const FeelTuning = {
   deceleration: 18,
   /** Pixels travelled between footstep effects. */
   stepDistance: 46,
-  cameraZoom: 1.04,
+  cameraZoom: 1.1,
   cameraLerp: 0.08,
   /** Noise levels where the sleeper starts to stir / toss and turn. */
   stirNoise: 35,

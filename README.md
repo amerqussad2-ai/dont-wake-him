@@ -18,6 +18,7 @@ src/
   app/            Next.js App Router (layout, page, global styles)
   components/     React components; Phaser is mounted client-only here
   game/
+    art/          Code-generated textures (room, furniture, characters, FX, UI)
     audio/        AudioManager, level audio director, sound bank, placeholder synth
     config/       Phaser config, constants, theme, gameplay tuning
     levels/       Level data (layout, objects, noise values)
@@ -38,6 +39,7 @@ Move: WASD / arrow keys · Sneak: hold Shift · Interact: E / Space ·
 Restart after a win or loss: R / Enter / click ·
 Sound: M mute, - / + master volume (sound starts after the first key press or click)
 
+All art is drawn in code at startup (`src/game/art/`); there are no image files.
 All current sounds are generated placeholders (`src/game/audio/placeholderSounds.ts`);
 swap recipes in `soundBank.ts` for real assets.
 

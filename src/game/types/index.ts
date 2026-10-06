@@ -40,6 +40,9 @@ export interface InteractableDefinition {
   lockedHint?: string;
 }
 
+/** Which generated artwork a piece of furniture uses. */
+export type FurnitureArt = "nightstand" | "armchair" | "toyChest";
+
 export interface LevelDefinition {
   name: string;
   /** Walkable floor area; the player is kept inside it. */
@@ -47,7 +50,7 @@ export interface LevelDefinition {
   playerStart: { x: number; y: number };
   bed: Rect;
   /** Solid furniture the player collides with (the bed is included automatically). */
-  furniture: (Rect & { color: number; label?: string })[];
+  furniture: (Rect & { art: FurnitureArt })[];
   interactables: InteractableDefinition[];
   /** Seconds until the alarm clock rings on its own. */
   alarmSeconds: number;
@@ -83,6 +86,8 @@ export interface LevelTick {
   noise: number;
   sleepDepth: number;
   alarmSeconds: number | null;
+  /** Player position on screen, so HUD cards can get out of the way. */
+  playerScreen: { x: number; y: number };
 }
 
 export interface ObjectiveSnapshot {

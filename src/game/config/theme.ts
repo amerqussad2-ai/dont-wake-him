@@ -35,4 +35,6 @@ export const Palette = {
 
 export const Fonts = {
   primary: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
+  /** Rounded, heavier face for titles and in-world text (falls back to system UI). */
+  display: "ui-rounded, 'SF Pro Rounded', 'Segoe UI', system-ui, sans-serif",
 } as const;

@@ -1,7 +1,7 @@
 import * as Phaser from "phaser";
 
 import { getAudio } from "@/game/audio";
-import { Colors, Palette } from "@/game/config/theme";
+import { Palette } from "@/game/config/theme";
 import { SceneKeys, type GameOverData, type Level1StartData } from "@/game/types";
 import { showEndScreen } from "@/game/ui/EndScreen";
 
@@ -22,10 +22,11 @@ export class GameOverScene extends Phaser.Scene {
     audio.play("jingleLose");
     showEndScreen(this, {
       title: "HE WOKE UP",
-      titleColor: Colors.danger,
+      titleColor: "#ff6b7a",
       tint: Palette.noiseHigh,
+      icon: "alert",
       impact: true,
-      lines: [REASONS[data.reason]],
+      subtitle: REASONS[data.reason],
       actionLabel: "Try again",
       onConfirm: () => audio.play("uiConfirm"),
       onAction: () => this.scene.start(SceneKeys.Level1, restart),

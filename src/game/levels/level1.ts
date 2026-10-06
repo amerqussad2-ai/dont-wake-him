@@ -7,9 +7,9 @@ export const level1: LevelDefinition = {
   playerStart: { x: 1150, y: 600 },
   bed: { x: 120, y: 250, width: 230, height: 320 },
   furniture: [
-    { x: 370, y: 140, width: 90, height: 80, color: 0x5a4532 },
-    { x: 640, y: 420, width: 170, height: 90, color: 0x3d3350, label: "armchair" },
-    { x: 120, y: 600, width: 160, height: 70, color: 0x4d3b5c, label: "toy box" },
+    { x: 370, y: 140, width: 90, height: 80, art: "nightstand" },
+    { x: 640, y: 420, width: 170, height: 90, art: "armchair" },
+    { x: 120, y: 600, width: 160, height: 70, art: "toyChest" },
   ],
   interactables: [
     {

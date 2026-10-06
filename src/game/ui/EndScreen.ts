@@ -1,14 +1,20 @@
 import * as Phaser from "phaser";
 
+import { FxTextures, panelTexture, UiTextures } from "@/game/art/fxArt";
 import { GAME_HEIGHT, GAME_WIDTH } from "@/game/config/constants";
 import { Colors, Fonts, Palette } from "@/game/config/theme";
 
 export interface EndScreenOptions {
   title: string;
   titleColor: string;
-  /** Overlay tint: red for a loss, dark for a win. */
+  /** Overlay tint and accent: red for a loss, green for a win. */
   tint: number;
-  lines: string[];
+  /** "moon" for a win, "alert" for a loss. */
+  icon: "moon" | "alert";
+  /** First line under the title. */
+  subtitle: string;
+  /** Small stat chips, e.g. ["Time 21.7s", "Peak noise 28"]. */
+  stats?: string[];
   actionLabel: string;
   /** Shake the title as it lands (used for Game Over). */
   impact?: boolean;
@@ -20,83 +26,115 @@ export interface EndScreenOptions {
 
 /** Ignore input briefly so a held key does not skip the screen instantly. */
 const INPUT_DELAY_MS = 700;
+const CARD = { width: 520, height: 300 };
 
-/** Animated overlay with a title, a few lines and a restart action. */
+/** Animated end-of-level card over a dimmed, tinted backdrop. */
 export function showEndScreen(scene: Phaser.Scene, options: EndScreenOptions): {
-  lines: Phaser.GameObjects.Text[];
+  stats: Phaser.GameObjects.Text[];
 } {
   const cx = GAME_WIDTH / 2;
   const cy = GAME_HEIGHT / 2;
   const tweens = scene.tweens;
+  const accent = Phaser.Display.Color.IntegerToColor(options.tint);
+  const accentCss = `rgba(${accent.red}, ${accent.green}, ${accent.blue}, 0.45)`;
 
-  const overlay = scene.add
-    .rectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, Palette.overlay, 0.78)
-    .setOrigin(0)
-    .setAlpha(0);
-  const tint = scene.add
-    .rectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, options.tint, 0.18)
-    .setOrigin(0)
-    .setAlpha(0);
-  tweens.add({ targets: [overlay, tint], alpha: 1, duration: 450, ease: "Quad.easeOut" });
+  // Backdrop: dim, tint and vignette.
+  const dim = scene.add.rectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, Palette.overlay, 0.72).setOrigin(0).setAlpha(0);
+  const tint = scene.add.rectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, options.tint, 0.12).setOrigin(0).setAlpha(0);
+  const vignette = scene.add.image(0, 0, FxTextures.vignette).setOrigin(0).setAlpha(0);
+  tweens.add({ targets: [dim, tint, vignette], alpha: 1, duration: 450, ease: "Quad.easeOut" });
+
+  // Card.
+  const panel = scene.add.image(0, 0, panelTexture(scene, CARD.width, CARD.height, accentCss));
+  const halo = scene.add
+    .image(0, -CARD.height / 2 + 6, FxTextures.glow)
+    .setTint(options.tint)
+    .setScale(1.6)
+    .setAlpha(0.55)
+    .setBlendMode(Phaser.BlendModes.ADD);
+  const badge = createBadge(scene, options.icon, options.tint);
+  badge.setPosition(0, -CARD.height / 2 + 6);
 
   const title = scene.add
-    .text(cx, cy - 90, options.title, {
-      fontFamily: Fonts.primary,
-      fontSize: "60px",
-      fontStyle: "bold",
+    .text(0, -54, options.title, {
+      fontFamily: Fonts.display,
+      fontSize: "46px",
+      fontStyle: "800",
       color: options.titleColor,
-      stroke: "#000000",
-      strokeThickness: 6,
     })
     .setOrigin(0.5)
-    .setAlpha(0)
-    .setScale(options.impact ? 1.8 : 0.6);
+    .setLetterSpacing(4);
+  title.setShadow(0, 4, "rgba(0,0,0,0.6)", 14, false, true);
+  const subtitle = scene.add
+    .text(0, -6, options.subtitle, { fontFamily: Fonts.primary, fontSize: "18px", color: Colors.text })
+    .setOrigin(0.5);
+
+  const chips: Phaser.GameObjects.GameObject[] = [];
+  const statTexts = (options.stats ?? []).map((stat, i, all) => {
+    const x = (i - (all.length - 1) / 2) * 170;
+    const bg = scene.add.graphics();
+    bg.fillStyle(0xffffff, 0.06);
+    bg.fillRoundedRect(x - 75, 22, 150, 36, 18);
+    bg.lineStyle(1, 0xffffff, 0.1);
+    bg.strokeRoundedRect(x - 75, 22, 150, 36, 18);
+    const text = scene.add
+      .text(x, 40, stat, { fontFamily: Fonts.display, fontSize: "15px", fontStyle: "700", color: Colors.text })
+      .setOrigin(0.5);
+    chips.push(bg, text);
+    return text;
+  });
+
+  const keyR = keyChip(scene, "R");
+  const keyEnter = keyChip(scene, "Enter");
+  const hintText = scene.add
+    .text(0, 0, `${options.actionLabel}`, { fontFamily: Fonts.primary, fontSize: "15px", fontStyle: "600", color: Colors.text })
+    .setOrigin(0, 0.5);
+  const orText = scene.add
+    .text(0, 0, "or click", { fontFamily: Fonts.primary, fontSize: "13px", color: Colors.mutedText })
+    .setOrigin(0, 0.5);
+  // Lay out: "<label>   [R]  [Enter]  or click" centred.
+  const parts = [hintText, keyR, keyEnter, orText];
+  const gaps = [16, 8, 10];
+  const widths = parts.map((p) => ("width" in p ? (p as { width: number }).width : 0));
+  const total = widths.reduce((a, b) => a + b, 0) + gaps.reduce((a, b) => a + b, 0);
+  let x = -total / 2;
+  parts.forEach((part, i) => {
+    const w = widths[i];
+    if (part instanceof Phaser.GameObjects.Container) part.setPosition(x + w / 2, 104);
+    else (part as Phaser.GameObjects.Text).setPosition(x, 104);
+    x += w + (gaps[i] ?? 0);
+  });
+  const hint = scene.add.container(0, 0, parts).setAlpha(0);
+
+  const card = scene.add.container(cx, cy + 10, [panel, halo, badge, title, subtitle, ...chips, hint]);
+  card.setAlpha(0).setScale(0.92);
+  tweens.add({ targets: card, alpha: 1, scale: 1, y: cy, delay: 150, duration: 420, ease: "Back.easeOut" });
+
+  title.setScale(options.impact ? 1.6 : 0.7).setAlpha(0);
   tweens.add({
     targets: title,
     alpha: 1,
     scale: 1,
-    delay: 200,
+    delay: 300,
     duration: options.impact ? 260 : 520,
     ease: options.impact ? "Quad.easeIn" : "Back.easeOut",
     onComplete: () => {
       if (options.impact) scene.cameras.main.shake(220, 0.008);
     },
   });
-
-  const lines = options.lines.map((line, i) => {
-    const text = scene.add
-      .text(cx, cy - 4 + i * 32, line, {
-        fontFamily: Fonts.primary,
-        fontSize: "20px",
-        color: Colors.text,
-        align: "center",
-      })
-      .setOrigin(0.5)
-      .setAlpha(0);
-    tweens.add({
-      targets: text,
-      alpha: 1,
-      y: text.y - 8,
-      delay: 500 + i * 140,
-      duration: 350,
-      ease: "Quad.easeOut",
-    });
-    return text;
-  });
-
-  const hint = scene.add
-    .text(cx, cy + 110, `${options.actionLabel}  —  press R / Enter or click`, {
-      fontFamily: Fonts.primary,
-      fontSize: "18px",
-      color: Colors.mutedText,
-    })
-    .setOrigin(0.5)
-    .setAlpha(0);
+  badge.setScale(0);
+  tweens.add({ targets: badge, scale: 1, delay: 380, duration: 420, ease: "Back.easeOut" });
+  tweens.add({ targets: halo, alpha: 0.3, duration: 1400, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
+  for (const [i, item] of [subtitle, ...chips].entries()) {
+    const target = item as Phaser.GameObjects.Components.Alpha & Phaser.GameObjects.GameObject;
+    target.setAlpha(0);
+    tweens.add({ targets: target, alpha: 1, delay: 520 + Math.floor(i / 2) * 120, duration: 320 });
+  }
   tweens.chain({
     targets: hint,
     tweens: [
       { alpha: 1, delay: INPUT_DELAY_MS + 100, duration: 300 },
-      { alpha: 0.45, duration: 900, yoyo: true, repeat: -1, ease: "Sine.easeInOut" },
+      { alpha: 0.55, duration: 900, yoyo: true, repeat: -1, ease: "Sine.easeInOut" },
     ],
   });
 
@@ -114,5 +152,37 @@ export function showEndScreen(scene: Phaser.Scene, options: EndScreenOptions): {
     scene.input.once("pointerdown", act);
   });
 
-  return { lines };
+  return { stats: statTexts };
+}
+
+/** Round badge with a moon (win) or an exclamation mark (loss). */
+function createBadge(scene: Phaser.Scene, icon: "moon" | "alert", tint: number): Phaser.GameObjects.Container {
+  const ring = scene.add.graphics();
+  ring.fillStyle(0x120e22, 1);
+  ring.fillCircle(0, 0, 34);
+  ring.lineStyle(2, tint, 0.9);
+  ring.strokeCircle(0, 0, 34);
+  const glyph =
+    icon === "moon"
+      ? scene.add.image(0, 0, UiTextures.iconMoon).setScale(1.9).setTint(0xe8ecff)
+      : scene.add
+          .text(0, 2, "!", { fontFamily: Fonts.display, fontSize: "44px", fontStyle: "900", color: "#ff6b7a" })
+          .setOrigin(0.5);
+  return scene.add.container(0, 0, [ring, glyph]);
+}
+
+/** A small keyboard-key chip, e.g. [R]. */
+function keyChip(scene: Phaser.Scene, label: string): Phaser.GameObjects.Container {
+  const text = scene.add
+    .text(0, 0, label, { fontFamily: Fonts.primary, fontSize: "12px", fontStyle: "700", color: "#1c1630" })
+    .setOrigin(0.5);
+  const width = Math.max(28, text.width + 16);
+  const bg = scene.add.graphics();
+  bg.fillStyle(0xa9a2c2, 1);
+  bg.fillRoundedRect(-width / 2, -12, width, 26, 6);
+  bg.fillStyle(0xf4f1ff, 1);
+  bg.fillRoundedRect(-width / 2, -13, width, 24, 6);
+  const chip = scene.add.container(0, 0, [bg, text]);
+  chip.setSize(width, 26);
+  return chip;
 }

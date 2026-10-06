@@ -1,11 +1,14 @@
 import * as Phaser from "phaser";
 
+import { ensureLevelArt } from "@/game/art";
+import { RoomFeatures } from "@/game/art/roomArt";
 import { getAudio } from "@/game/audio";
 import { LevelAudio } from "@/game/audio/LevelAudio";
 import { GAME_HEIGHT, GAME_WIDTH } from "@/game/config/constants";
 import { FeelTuning, NoiseTuning, PlayerTuning } from "@/game/config/gameplay";
-import { Colors, Fonts, Palette } from "@/game/config/theme";
+import { Colors, Palette } from "@/game/config/theme";
 import { InteractiveObject } from "@/game/entities/InteractiveObject";
+import { Room } from "@/game/entities/Room";
 import { Player } from "@/game/entities/Player";
 import { Sleeper } from "@/game/entities/Sleeper";
 import { level1 } from "@/game/levels/level1";
@@ -24,7 +27,7 @@ import {
   type LoseReason,
   type Rect,
 } from "@/game/types";
-import { burst, floatText, noiseRing } from "@/game/ui/effects";
+import { burst, dustPuff, floatText, noiseRing } from "@/game/ui/effects";
 
 /** Level 1 — The Bedroom. Wires the level data, entities, systems and HUD together. */
 export class Level1Scene extends Phaser.Scene {
@@ -73,7 +76,8 @@ export class Level1Scene extends Phaser.Scene {
     this.levelAudio = sound;
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => sound.dispose());
 
-    this.drawRoom();
+    ensureLevelArt(this, this.level);
+    new Room(this, this.level);
     const solids = this.physics.add.staticGroup();
     const bedX = this.level.bed.x + this.level.bed.width / 2;
     this.sleeper = new Sleeper(this, this.level.bed, {
@@ -83,10 +87,7 @@ export class Level1Scene extends Phaser.Scene {
       wakeBeat: (beat) => sound.wakeBeat(beat, bedX),
     });
     this.addSolid(solids, this.level.bed);
-    for (const piece of this.level.furniture) {
-      this.drawFurniture(piece, piece.color, piece.label);
-      this.addSolid(solids, piece);
-    }
+    for (const piece of this.level.furniture) this.addSolid(solids, piece);
 
     this.objects = this.level.interactables.map((def) => {
       if (def.solid) this.addSolid(solids, def.area);
@@ -160,16 +161,25 @@ export class Level1Scene extends Phaser.Scene {
       return;
     }
 
+    // Three beats: the moonlit window, the sleeper, then the player.
+    const { window: win } = RoomFeatures;
     const head = this.sleeper.headPosition;
-    cam.setZoom(1.6);
-    cam.centerOn(head.x + 60, head.y + 60);
+    cam.setZoom(1.5);
+    cam.centerOn(win.x + win.width / 2, win.y + 150);
     cam.fadeIn(900);
+    const toSleeper = this.time.delayedCall(700, () => {
+      cam.pan(head.x + 60, head.y + 80, 900, "Sine.easeInOut");
+      cam.zoomTo(1.7, 900, "Sine.easeInOut");
+    });
     const panStart = this.time.delayedCall(1700, () => {
       cam.pan(this.player.x, this.player.y, 1100, "Sine.easeInOut");
       cam.zoomTo(FeelTuning.cameraZoom, 1100, "Sine.easeInOut");
     });
     this.introTimer = this.time.delayedCall(1700 + 1100, () => this.finishIntro());
-    this.events.once(LevelEvents.IntroDone, () => panStart.remove());
+    this.events.once(LevelEvents.IntroDone, () => {
+      toSleeper.remove();
+      panStart.remove();
+    });
     this.input.keyboard?.once("keydown", () => this.finishIntro());
   }
 
@@ -217,8 +227,12 @@ export class Level1Scene extends Phaser.Scene {
 
   private showFootstep(sneaking: boolean): void {
     const y = this.player.y + PlayerTuning.size / 2;
-    if (sneaking) noiseRing(this, this.player.x, y, 12, Palette.sleep, 400, 0.25);
-    else noiseRing(this, this.player.x, y, 28, Palette.noiseMid, 450, 0.45);
+    if (sneaking) {
+      noiseRing(this, this.player.x, y, 12, Palette.sleep, 400, 0.22);
+    } else {
+      noiseRing(this, this.player.x, y, 26, Palette.noiseMid, 450, 0.35);
+      dustPuff(this, this.player.x, y);
+    }
   }
 
   private onBump(): void {
@@ -249,13 +263,14 @@ export class Level1Scene extends Phaser.Scene {
   private ringAlarm(): void {
     const clock = this.alarmObject();
     if (!clock) return;
-    const { x, y } = clock.shape;
+    const { x, y } = clock.position;
     this.levelAudio.alarmRing(x);
     for (let i = 0; i < 4; i++) {
       this.time.delayedCall(i * 160, () => noiseRing(this, x, y, 140, Palette.noiseHigh, 700));
     }
     floatText(this, x, y - 30, "RIIING!", Colors.danger, 26);
-    this.tweens.add({ targets: clock.shape, angle: 12, duration: 40, yoyo: true, repeat: 10 });
+    this.tweens.killTweensOf(clock.sprite);
+    this.tweens.add({ targets: clock.sprite, x: clock.sprite.x + 3, duration: 35, yoyo: true, repeat: 12 });
   }
 
   private alarmObject(): InteractiveObject | undefined {
@@ -307,8 +322,9 @@ export class Level1Scene extends Phaser.Scene {
   private interact(obj: InteractiveObject): void {
     const def = obj.definition;
     const amount = this.makeNoise(def.noise);
-    this.noiseFeedback(obj.shape.x, obj.shape.y, amount);
-    this.levelAudio.interact(def.effect, obj.shape.x);
+    const { x, y } = obj.position;
+    this.noiseFeedback(x, y, amount);
+    this.levelAudio.interact(def.effect, x);
 
     obj.markUsed(this.player);
     this.objectives.complete(def.id);
@@ -387,10 +403,15 @@ export class Level1Scene extends Phaser.Scene {
   // --- Helpers ------------------------------------------------------------
 
   private emitTick(): void {
+    const cam = this.cameras.main;
     const tick: LevelTick = {
       noise: this.noise.level,
       sleepDepth: this.sleep.depth,
       alarmSeconds: this.alarmRemaining,
+      playerScreen: {
+        x: (this.player.x - cam.worldView.x) * cam.zoom,
+        y: (this.player.y - cam.worldView.y) * cam.zoom,
+      },
     };
     this.events.emit(LevelEvents.Tick, tick);
   }
@@ -410,47 +431,5 @@ export class Level1Scene extends Phaser.Scene {
         rect.height,
       ),
     );
-  }
-
-  private drawRoom(): void {
-    const { room } = this.level;
-    const right = room.x + room.width;
-    // Fill the whole canvas so camera movement never reveals empty space.
-    this.add.rectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, Palette.wall).setOrigin(0);
-    this.add
-      .rectangle(room.x, room.y, room.width, room.height, Palette.floor)
-      .setOrigin(0)
-      .setStrokeStyle(12, Palette.wall);
-    this.add.rectangle(760, 560, 300, 180, Palette.rug);
-    this.add.rectangle(640, room.y, 180, 10, Palette.window);
-    this.add.rectangle(right, 600, 10, 90, Palette.door);
-    this.add
-      .text(right - 16, 545, "door", {
-        fontFamily: Fonts.primary,
-        fontSize: "12px",
-        color: Colors.mutedText,
-      })
-      .setOrigin(1, 0.5);
-  }
-
-  private drawFurniture(rect: Rect, color: number, label?: string): void {
-    this.add
-      .rectangle(
-        rect.x + rect.width / 2,
-        rect.y + rect.height / 2,
-        rect.width,
-        rect.height,
-        color,
-      )
-      .setStrokeStyle(2, 0x000000, 0.3);
-    if (label) {
-      this.add
-        .text(rect.x + rect.width / 2, rect.y + rect.height - 4, label, {
-          fontFamily: Fonts.primary,
-          fontSize: "11px",
-          color: Colors.mutedText,
-        })
-        .setOrigin(0.5, 1);
-    }
   }
 }

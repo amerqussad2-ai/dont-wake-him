@@ -15,32 +15,38 @@ export class LevelCompleteScene extends Phaser.Scene {
     const restart: Level1StartData = { quickStart: true };
     const audio = getAudio(this);
     audio.play("jingleWin");
-    const { lines } = showEndScreen(this, {
+    const { stats } = showEndScreen(this, {
       title: "LEVEL COMPLETE",
       titleColor: Colors.success,
       tint: Palette.noiseLow,
-      lines: ["He never noticed a thing.", formatStats(0, 0)],
+      icon: "moon",
+      subtitle: "He never noticed a thing.",
+      stats: [formatTime(0), formatPeak(0)],
       actionLabel: "Play again",
       onConfirm: () => audio.play("uiConfirm"),
       onAction: () => this.scene.start(SceneKeys.Level1, restart),
     });
 
-    // Count the stats up once the line has appeared.
-    const stats = lines[1];
+    // Count the stats up once the chips have appeared.
     this.tweens.addCounter({
       from: 0,
       to: 1,
-      delay: 650,
-      duration: 700,
+      delay: 750,
+      duration: 800,
       ease: "Cubic.easeOut",
       onUpdate: (tween) => {
         const t = tween.getValue() ?? 0;
-        stats.setText(formatStats(data.timeSeconds * t, data.peakNoise * t));
+        stats[0]?.setText(formatTime(data.timeSeconds * t));
+        stats[1]?.setText(formatPeak(data.peakNoise * t));
       },
     });
   }
 }
 
-function formatStats(time: number, peak: number): string {
-  return `Time: ${time.toFixed(1)}s   ·   Peak noise: ${Math.round(peak)}`;
+function formatTime(time: number): string {
+  return `Time  ${time.toFixed(1)}s`;
+}
+
+function formatPeak(peak: number): string {
+  return `Peak noise  ${Math.round(peak)}`;
 }
