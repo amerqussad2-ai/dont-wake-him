@@ -2,7 +2,9 @@ import * as Phaser from "phaser";
 
 import { GAME_HEIGHT, GAME_WIDTH } from "@/game/config/constants";
 import { Colors } from "@/game/config/theme";
-import { MainScene } from "@/game/scenes/MainScene";
+import { GameOverScene } from "@/game/scenes/GameOverScene";
+import { Level1Scene } from "@/game/scenes/Level1Scene";
+import { LevelCompleteScene } from "@/game/scenes/LevelCompleteScene";
 
 export function createGameConfig(
   parent: HTMLElement,
@@ -18,6 +20,10 @@ export function createGameConfig(
       mode: Phaser.Scale.FIT,
       autoCenter: Phaser.Scale.CENTER_BOTH,
     },
-    scene: [MainScene],
+    physics: {
+      default: "arcade",
+      arcade: { debug: false },
+    },
+    scene: [Level1Scene, GameOverScene, LevelCompleteScene],
   };
 }

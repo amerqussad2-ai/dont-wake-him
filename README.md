@@ -18,7 +18,8 @@ src/
   app/            Next.js App Router (layout, page, global styles)
   components/     React components; Phaser is mounted client-only here
   game/
-    config/       Phaser config, constants, theme
+    config/       Phaser config, constants, theme, gameplay tuning
+    levels/       Level data (layout, objects, noise values)
     scenes/       Phaser scenes
     systems/      Game systems (noise, sleep depth, objectives, ...)
     entities/     Game objects (sleeper, interactive items, ...)
@@ -29,6 +30,11 @@ public/assets/
   images/         Sprites and textures
   audio/          Sound effects and music
 ```
+
+## Controls (Level 1)
+
+Move: WASD / arrow keys · Sneak: hold Shift · Interact: E / Space ·
+Restart after a win or loss: R / Enter / click
 
 Phaser is only ever imported from `src/components/PhaserGame.tsx`, which is
 loaded through `next/dynamic` with `ssr: false` in `GameClient.tsx`.
