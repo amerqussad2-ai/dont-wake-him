@@ -20,6 +20,7 @@ export const level1: LevelDefinition = {
       area: { x: 1010, y: 300, width: 26, height: 14 },
       color: 0xf2c94c,
       noise: 10,
+      effect: "pickup",
     },
     {
       id: "drawer",
@@ -29,6 +30,7 @@ export const level1: LevelDefinition = {
       area: { x: 860, y: 130, width: 170, height: 70 },
       color: 0x7a5a3c,
       noise: 32,
+      effect: "open",
       requires: "key",
       solid: true,
       lockedHint: "Locked. Find the key first.",
@@ -41,6 +43,7 @@ export const level1: LevelDefinition = {
       area: { x: 395, y: 158, width: 40, height: 28 },
       color: 0xd64545,
       noise: 18,
+      effect: "switch",
     },
   ],
   alarmSeconds: 80,

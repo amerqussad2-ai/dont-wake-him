@@ -1,10 +1,10 @@
-import type { InteractableDefinition, ObjectiveId } from "@/game/types";
+import type {
+  InteractableDefinition,
+  ObjectiveId,
+  ObjectiveSnapshot,
+} from "@/game/types";
 
-export interface Objective {
-  id: ObjectiveId;
-  text: string;
-  done: boolean;
-}
+export type Objective = ObjectiveSnapshot;
 
 /** Tracks which level objectives are complete. */
 export class ObjectiveSystem {
@@ -20,6 +20,10 @@ export class ObjectiveSystem {
 
   get list(): readonly Objective[] {
     return this.objectives;
+  }
+
+  get completedCount(): number {
+    return this.objectives.filter((o) => o.done).length;
   }
 
   get allComplete(): boolean {

@@ -30,3 +30,21 @@ export const SleepTuning = {
   lightSleepNoiseMultiplier: 1.5,
   deepSleepNoiseMultiplier: 0.5,
 } as const;
+
+/** Presentation-only values: they change how the game feels, not its rules. */
+export const FeelTuning = {
+  /** How quickly the player reaches / loses top speed (higher = snappier). */
+  acceleration: 14,
+  deceleration: 18,
+  /** Pixels travelled between footstep effects. */
+  stepDistance: 46,
+  cameraZoom: 1.04,
+  cameraLerp: 0.08,
+  /** Noise levels where the sleeper starts to stir / toss and turn. */
+  stirNoise: 35,
+  restlessNoise: 70,
+  /** Noise level where the HUD starts warning. */
+  dangerNoise: 75,
+  /** Alarm seconds left when the clock starts to look urgent. */
+  alarmUrgentSeconds: 15,
+} as const;
