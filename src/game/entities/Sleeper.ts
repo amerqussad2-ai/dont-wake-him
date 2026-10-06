@@ -4,13 +4,26 @@ import { FeelTuning } from "@/game/config/gameplay";
 import { Colors, Fonts, Palette } from "@/game/config/theme";
 import type { Rect } from "@/game/types";
 
-type Stage = "calm" | "stirring" | "restless";
+export type SleeperStage = "calm" | "stirring" | "restless";
+type Stage = SleeperStage;
+
+/** Moments in the wake-up animation, in order. */
+export type WakeBeat = "gasp" | "eyes" | "sitUp" | "alert";
+
+/** Optional callbacks, fired in sync with the sleeper's animations (used for audio). */
+export interface SleeperHooks {
+  breath?(phase: "in" | "out", stage: SleeperStage, snoring: boolean, durationMs: number): void;
+  stirred?(stage: SleeperStage): void;
+  fidget?(stage: SleeperStage): void;
+  wakeBeat?(beat: WakeBeat): void;
+}
 
 const BREATH_MS: Record<Stage, number> = { calm: 1700, stirring: 950, restless: 480 };
 
 /** The sleeping character on the bed. Purely visual; reacts to noise and wakes. */
 export class Sleeper {
   private readonly scene: Phaser.Scene;
+  private readonly hooks: SleeperHooks;
   private readonly head: Phaser.GameObjects.Container;
   private readonly eyes: Phaser.GameObjects.Rectangle[];
   private readonly blanket: Phaser.GameObjects.Rectangle;
@@ -21,9 +34,11 @@ export class Sleeper {
   private stage: Stage = "calm";
   private fidgetTimer = 0;
   private awake = false;
+  private snoring = false;
 
-  constructor(scene: Phaser.Scene, bed: Rect) {
+  constructor(scene: Phaser.Scene, bed: Rect, hooks: SleeperHooks = {}) {
     this.scene = scene;
+    this.hooks = hooks;
     const cx = bed.x + bed.width / 2;
     this.headX = cx;
     this.headY = bed.y + 50;
@@ -65,12 +80,14 @@ export class Sleeper {
     const next = this.stageFor(noise);
     if (next !== this.stage) this.setStage(next);
 
-    this.snore.setVisible(this.stage === "calm" && sleepDepth > 35);
+    this.snoring = this.stage === "calm" && sleepDepth > 35;
+    this.snore.setVisible(this.snoring);
 
     // Occasional head turn while stirring.
     this.fidgetTimer -= deltaSeconds;
     if (this.stage !== "calm" && this.fidgetTimer <= 0) {
       this.fidgetTimer = this.stage === "restless" ? 1.1 : 2.6;
+      this.hooks.fidget?.(this.stage);
       this.scene.tweens.add({
         targets: this.head,
         x: this.headX + Phaser.Math.Between(-8, 8),
@@ -88,6 +105,7 @@ export class Sleeper {
     this.breathe.stop();
     this.snore.setVisible(false);
     this.scene.tweens.killTweensOf(this.head);
+    this.hooks.wakeBeat?.("gasp");
 
     // Eyes snap open.
     this.scene.tweens.add({
@@ -97,6 +115,7 @@ export class Sleeper {
       duration: 120,
       delay: 250,
       ease: "Back.easeOut",
+      onStart: () => this.hooks.wakeBeat?.("eyes"),
     });
     // Sits up and throws the blanket off.
     this.scene.tweens.add({
@@ -106,6 +125,7 @@ export class Sleeper {
       duration: 450,
       delay: 450,
       ease: "Back.easeOut",
+      onStart: () => this.hooks.wakeBeat?.("sitUp"),
     });
     this.scene.tweens.add({
       targets: this.blanket,
@@ -135,6 +155,7 @@ export class Sleeper {
       duration: 380,
       delay: 500,
       ease: "Back.easeOut",
+      onStart: () => this.hooks.wakeBeat?.("alert"),
     });
 
     return 1300;
@@ -160,6 +181,7 @@ export class Sleeper {
     this.fidgetTimer = 0.3;
 
     if (escalating) {
+      this.hooks.stirred?.(stage);
       this.say(stage === "restless" ? "hm?!" : "mm…", stage === "restless" ? Colors.danger : Colors.warning);
       this.scene.tweens.add({
         targets: this.blanket,
@@ -171,14 +193,22 @@ export class Sleeper {
     }
   }
 
+  /** Blanket rise and fall; also reports each inhale / exhale. */
   private startBreathing(): Phaser.Tweens.Tween {
+    const duration = BREATH_MS[this.stage];
+    const breath = (phase: "in" | "out") => {
+      if (!this.awake) this.hooks.breath?.(phase, this.stage, this.snoring, duration);
+    };
     return this.scene.tweens.add({
       targets: this.blanket,
       scaleY: this.stage === "restless" ? 1.05 : 1.03,
-      duration: BREATH_MS[this.stage],
+      duration,
       yoyo: true,
       repeat: -1,
       ease: "Sine.easeInOut",
+      onStart: () => breath("in"),
+      onRepeat: () => breath("in"),
+      onYoyo: () => breath("out"),
     });
   }
 

@@ -1,5 +1,7 @@
 import * as Phaser from "phaser";
 
+import { getAudio } from "@/game/audio";
+import { AudioSettings } from "@/game/config/audio";
 import { GAME_HEIGHT, GAME_WIDTH } from "@/game/config/constants";
 import { Colors, Fonts, Palette } from "@/game/config/theme";
 import {
@@ -45,9 +47,38 @@ export class HudScene extends Phaser.Scene {
       [LevelEvents.Ended, (outcome: LoseReason | "win") => this.onEnded(outcome)],
     ];
     for (const [event, handler] of handlers) source.on(event, handler);
+    const stopAudioControls = this.setupAudioControls();
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       for (const [event, handler] of handlers) source.off(event, handler);
+      stopAudioControls();
     });
+  }
+
+  /** M toggles mute, - / + change master volume. Returns a cleanup function. */
+  private setupAudioControls(): () => void {
+    const audio = getAudio(this);
+    const show = (highlight: boolean) => {
+      const s = audio.snapshot;
+      this.hud.setAudioStatus(s.master, s.muted, s.unlocked, highlight);
+    };
+    const changeVolume = (direction: number) => {
+      audio.setMuted(false);
+      audio.setVolume("master", audio.snapshot.master + direction * AudioSettings.volumeStep);
+      audio.play("uiToggle", { pitch: 0.8 + audio.snapshot.master * 0.5 });
+      show(true);
+    };
+    const keyboard = this.input.keyboard;
+    keyboard?.on("keydown-M", () => {
+      audio.toggleMute();
+      if (!audio.snapshot.muted) audio.play("uiToggle");
+      show(true);
+    });
+    for (const key of ["keydown-MINUS", "keydown-NUMPAD_SUBTRACT"]) keyboard?.on(key, () => changeVolume(-1));
+    for (const key of ["keydown-PLUS", "keydown-NUMPAD_ADD"]) keyboard?.on(key, () => changeVolume(1));
+
+    show(false);
+    // Picks up the moment audio unlocks after the first key press.
+    return audio.onChange(() => show(false));
   }
 
   update(_time: number, delta: number): void {

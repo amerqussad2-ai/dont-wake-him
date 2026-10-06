@@ -12,6 +12,9 @@ export interface EndScreenOptions {
   actionLabel: string;
   /** Shake the title as it lands (used for Game Over). */
   impact?: boolean;
+  /** Called the moment the player confirms (e.g. a click sound). */
+  onConfirm?: () => void;
+  /** Called once the fade-out finishes. */
   onAction: () => void;
 }
 
@@ -101,6 +104,7 @@ export function showEndScreen(scene: Phaser.Scene, options: EndScreenOptions): {
   const act = () => {
     if (done) return;
     done = true;
+    options.onConfirm?.();
     scene.cameras.main.fadeOut(250, 0, 0, 0);
     scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, options.onAction);
   };

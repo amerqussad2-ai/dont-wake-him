@@ -49,6 +49,11 @@ export class Player {
     return this.body.y;
   }
 
+  /** Current speed as a fraction of walking speed (0..1). */
+  get speedRatio(): number {
+    return Math.min(1, this.body.body.velocity.length() / PlayerTuning.walkSpeed);
+  }
+
   /** The drawn square, for camera follow and celebratory tweens. */
   get sprite(): Phaser.GameObjects.Rectangle {
     return this.visual;
@@ -94,7 +99,7 @@ export class Player {
 
   /** Keeps the visual on the physics body, with a bob, squash and sneak crouch. */
   private animate(movement: Movement, deltaSeconds: number): void {
-    const speedRatio = Math.min(1, this.body.body.velocity.length() / PlayerTuning.walkSpeed);
+    const speedRatio = this.speedRatio;
     this.sneakBlend += ((movement === "sneaking" ? 1 : 0) - this.sneakBlend) * smoothing(10, deltaSeconds);
     this.bobTime += deltaSeconds * (movement === "walking" ? 16 : 9);
 

@@ -1,5 +1,7 @@
 import * as Phaser from "phaser";
 
+import { getAudio } from "@/game/audio";
+import { LevelAudio } from "@/game/audio/LevelAudio";
 import { GAME_HEIGHT, GAME_WIDTH } from "@/game/config/constants";
 import { FeelTuning, NoiseTuning, PlayerTuning } from "@/game/config/gameplay";
 import { Colors, Fonts, Palette } from "@/game/config/theme";
@@ -35,6 +37,7 @@ export class Level1Scene extends Phaser.Scene {
   private player!: Player;
   private sleeper!: Sleeper;
   private objects!: InteractiveObject[];
+  private levelAudio!: LevelAudio;
 
   private introDone = false;
   private introTimer: Phaser.Time.TimerEvent | null = null;
@@ -66,10 +69,19 @@ export class Level1Scene extends Phaser.Scene {
     this.sleep = new SleepSystem();
     this.objectives = new ObjectiveSystem(this.level.interactables);
     this.controls = new KeyboardControls(this);
+    const sound = new LevelAudio(getAudio(this));
+    this.levelAudio = sound;
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => sound.dispose());
 
     this.drawRoom();
     const solids = this.physics.add.staticGroup();
-    this.sleeper = new Sleeper(this, this.level.bed);
+    const bedX = this.level.bed.x + this.level.bed.width / 2;
+    this.sleeper = new Sleeper(this, this.level.bed, {
+      breath: (phase, stage, snoring, ms) => sound.breath(phase, stage, snoring, ms, bedX),
+      stirred: (stage) => sound.stirred(stage, bedX),
+      fidget: (stage) => sound.fidget(stage, bedX),
+      wakeBeat: (beat) => sound.wakeBeat(beat, bedX),
+    });
     this.addSolid(solids, this.level.bed);
     for (const piece of this.level.furniture) {
       this.drawFurniture(piece, piece.color, piece.label);
@@ -95,6 +107,7 @@ export class Level1Scene extends Phaser.Scene {
       quickStart,
     };
     this.scene.launch(SceneKeys.Hud, hudData);
+    this.levelAudio.start(!quickStart);
     this.playIntro(quickStart);
   }
 
@@ -109,17 +122,24 @@ export class Level1Scene extends Phaser.Scene {
     const { movement, stepped } = this.player.update(input, dt);
     if (movement === "walking") this.makeNoise(NoiseTuning.walkPerSecond * dt);
     if (movement === "sneaking") this.makeNoise(NoiseTuning.sneakPerSecond * dt);
-    if (stepped) this.showFootstep(movement === "sneaking");
+    if (stepped) {
+      this.showFootstep(movement === "sneaking");
+      this.levelAudio.step(movement === "sneaking", this.player.speedRatio, this.player.x);
+    }
 
     this.sleep.update(dt);
     this.noise.update(dt);
     this.updateAlarm(dt);
     if (this.ended) return;
+    this.levelAudio.update(dt, this.noise.level, this.alarmRemaining);
     this.updateFocus();
 
     if (input.interact && this.focused) {
       if (this.isAvailable(this.focused)) this.interact(this.focused);
-      else this.focused.deny();
+      else {
+        this.focused.deny();
+        this.levelAudio.deny();
+      }
     }
 
     if (this.noise.isMaxed) this.lose("noise");
@@ -208,6 +228,7 @@ export class Level1Scene extends Phaser.Scene {
     this.lastBumpAt = now;
     const amount = this.makeNoise(NoiseTuning.bump);
     this.noiseFeedback(this.player.x, this.player.y, amount, "bump ");
+    this.levelAudio.bump(this.player.x);
   }
 
   private updateAlarm(dt: number): void {
@@ -229,6 +250,7 @@ export class Level1Scene extends Phaser.Scene {
     const clock = this.alarmObject();
     if (!clock) return;
     const { x, y } = clock.shape;
+    this.levelAudio.alarmRing(x);
     for (let i = 0; i < 4; i++) {
       this.time.delayedCall(i * 160, () => noiseRing(this, x, y, 140, Palette.noiseHigh, 700));
     }
@@ -255,7 +277,10 @@ export class Level1Scene extends Phaser.Scene {
       }
     }
 
-    if (closest !== this.focused) this.focused?.setFocus("none");
+    if (closest !== this.focused) {
+      this.focused?.setFocus("none");
+      if (closest) this.levelAudio.focus(!this.isAvailable(closest));
+    }
     this.focused = closest;
 
     if (!closest) {
@@ -283,10 +308,12 @@ export class Level1Scene extends Phaser.Scene {
     const def = obj.definition;
     const amount = this.makeNoise(def.noise);
     this.noiseFeedback(obj.shape.x, obj.shape.y, amount);
+    this.levelAudio.interact(def.effect, obj.shape.x);
 
     obj.markUsed(this.player);
     this.objectives.complete(def.id);
     this.events.emit(LevelEvents.ObjectiveComplete, this.objectives.list, def.id);
+    this.levelAudio.objectiveComplete(this.objectives.completedCount);
     if (def.id === "alarm") this.alarmRemaining = null;
 
     this.focused = null;
@@ -307,6 +334,7 @@ export class Level1Scene extends Phaser.Scene {
     this.setPrompt(null);
     this.emitTick();
     this.events.emit(LevelEvents.Ended, reason);
+    this.levelAudio.lose();
 
     const cam = this.cameras.main;
     const head = this.sleeper.headPosition;
@@ -329,6 +357,7 @@ export class Level1Scene extends Phaser.Scene {
     this.player.freeze();
     this.emitTick();
     this.events.emit(LevelEvents.Ended, "win");
+    this.levelAudio.win();
 
     const sprite = this.player.sprite;
     this.time.delayedCall(350, () => {

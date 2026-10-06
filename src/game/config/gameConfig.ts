@@ -17,6 +17,8 @@ export function createGameConfig(
     height: GAME_HEIGHT,
     backgroundColor: Colors.bedroomBackground,
     banner: false,
+    // All sound goes through our AudioManager, so Phaser does not need its own.
+    audio: { noAudio: true },
     scale: {
       mode: Phaser.Scale.FIT,
       autoCenter: Phaser.Scale.CENTER_BOTH,

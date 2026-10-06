@@ -18,6 +18,7 @@ src/
   app/            Next.js App Router (layout, page, global styles)
   components/     React components; Phaser is mounted client-only here
   game/
+    audio/        AudioManager, level audio director, sound bank, placeholder synth
     config/       Phaser config, constants, theme, gameplay tuning
     levels/       Level data (layout, objects, noise values)
     scenes/       Phaser scenes
@@ -34,7 +35,11 @@ public/assets/
 ## Controls (Level 1)
 
 Move: WASD / arrow keys · Sneak: hold Shift · Interact: E / Space ·
-Restart after a win or loss: R / Enter / click
+Restart after a win or loss: R / Enter / click ·
+Sound: M mute, - / + master volume (sound starts after the first key press or click)
+
+All current sounds are generated placeholders (`src/game/audio/placeholderSounds.ts`);
+swap recipes in `soundBank.ts` for real assets.
 
 Phaser is only ever imported from `src/components/PhaserGame.tsx`, which is
 loaded through `next/dynamic` with `ssr: false` in `GameClient.tsx`.

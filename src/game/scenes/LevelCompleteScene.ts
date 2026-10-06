@@ -1,5 +1,6 @@
 import * as Phaser from "phaser";
 
+import { getAudio } from "@/game/audio";
 import { Colors, Palette } from "@/game/config/theme";
 import { SceneKeys, type Level1StartData, type LevelCompleteData } from "@/game/types";
 import { showEndScreen } from "@/game/ui/EndScreen";
@@ -12,12 +13,15 @@ export class LevelCompleteScene extends Phaser.Scene {
 
   create(data: LevelCompleteData): void {
     const restart: Level1StartData = { quickStart: true };
+    const audio = getAudio(this);
+    audio.play("jingleWin");
     const { lines } = showEndScreen(this, {
       title: "LEVEL COMPLETE",
       titleColor: Colors.success,
       tint: Palette.noiseLow,
       lines: ["He never noticed a thing.", formatStats(0, 0)],
       actionLabel: "Play again",
+      onConfirm: () => audio.play("uiConfirm"),
       onAction: () => this.scene.start(SceneKeys.Level1, restart),
     });
 

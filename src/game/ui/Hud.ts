@@ -31,6 +31,7 @@ export class Hud {
   private readonly alarm: Phaser.GameObjects.Text;
   private readonly prompt: Phaser.GameObjects.Text;
   private readonly vignette: Phaser.GameObjects.Graphics;
+  private readonly audioLabel: Phaser.GameObjects.Text;
   private promptText: string | null = null;
   private lastAlarmSecond = -1;
   private pulseTime = 0;
@@ -95,6 +96,29 @@ export class Hud {
         color: Colors.mutedText,
       })
       .setOrigin(1, 1);
+
+    this.audioLabel = scene.add
+      .text(16, GAME_HEIGHT - 16, "", { ...textStyle, fontSize: "12px", color: Colors.mutedText })
+      .setOrigin(0, 1);
+  }
+
+  /** Bottom-left sound status, e.g. "Sound 80%  ·  M mute  ·  -/+ volume". */
+  setAudioStatus(volume: number, muted: boolean, unlocked: boolean, highlight: boolean): void {
+    const level = muted ? "muted" : `${Math.round(volume * 100)}%`;
+    const hint = unlocked ? "M mute  ·  -/+ volume" : "press any key to enable sound";
+    this.audioLabel
+      .setText(`${muted ? "🔇" : "🔊"} Sound ${level}   ${hint}`)
+      .setColor(highlight ? Colors.text : Colors.mutedText);
+    if (highlight) {
+      this.scene.tweens.killTweensOf(this.audioLabel);
+      this.audioLabel.setScale(1.08);
+      this.scene.tweens.add({
+        targets: this.audioLabel,
+        scale: 1,
+        duration: 250,
+        onComplete: () => this.audioLabel.setColor(Colors.mutedText),
+      });
+    }
   }
 
   /** Hides the top bar (before the intro finishes). */
