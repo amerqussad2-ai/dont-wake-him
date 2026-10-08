@@ -2,6 +2,7 @@ import * as Phaser from "phaser";
 
 import { GAME_HEIGHT, GAME_WIDTH } from "@/game/config/constants";
 import { Colors } from "@/game/config/theme";
+import { BootScene } from "@/game/scenes/BootScene";
 import { GameOverScene } from "@/game/scenes/GameOverScene";
 import { HudScene } from "@/game/scenes/HudScene";
 import { Level1Scene } from "@/game/scenes/Level1Scene";
@@ -27,7 +28,9 @@ export function createGameConfig(
       default: "arcade",
       arcade: { debug: false },
     },
-    // Order is render order: HUD above the level, end screens above the HUD.
-    scene: [Level1Scene, HudScene, GameOverScene, LevelCompleteScene],
+    // The first scene starts automatically: Boot loads optional artwork, then
+    // starts Level 1. The rest is render order: HUD above the level, end
+    // screens above the HUD.
+    scene: [BootScene, Level1Scene, HudScene, GameOverScene, LevelCompleteScene],
   };
 }

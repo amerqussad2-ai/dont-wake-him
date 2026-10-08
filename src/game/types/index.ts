@@ -2,6 +2,7 @@ import type * as Phaser from "phaser";
 
 /** Keys used to register and start Phaser scenes. */
 export const SceneKeys = {
+  Boot: "BootScene",
   Level1: "Level1Scene",
   Hud: "HudScene",
   GameOver: "GameOverScene",
