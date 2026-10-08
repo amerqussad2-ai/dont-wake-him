@@ -1,14 +1,14 @@
 import { externalTextureKey, isGeneratedTextureKey } from "@/game/art/ArtProvider";
+import { CHARACTER_ART_DIR, CharacterAtlases } from "@/game/art/characters/atlases";
 
 /**
  * Optional external artwork, loaded by BootScene before the level starts.
  *
- * Each entry names the generated texture it can replace (`replaces`, built
- * with the V0a key helpers, e.g. `PLAYER_SHEET`). The loaded file is stored
- * under its own `ext/<key>` name, so it never collides with generated art.
+ * Each entry names the art slot it fills (`replaces`, built with the V0a key
+ * helpers, e.g. `PLAYER_SHEET`). The loaded file is stored under its own
+ * `ext/<key>` name, so it never collides with generated art, and the game
+ * falls back to the generated art when a file is missing.
  * Files live in `public/`, so URLs start with ASSET_BASE_URL.
- *
- * Empty for now: no external artwork has been approved yet.
  */
 export const ASSET_BASE_URL = "/assets/images/";
 
@@ -24,7 +24,18 @@ export type ArtAssetEntry =
   | (BaseEntry & { kind: "spritesheet"; frameWidth: number; frameHeight: number })
   | (BaseEntry & { kind: "atlas"; /** Phaser JSON atlas data under ASSET_BASE_URL. */ dataUrl: string });
 
-export const artManifest: readonly ArtAssetEntry[] = [];
+const characterAtlas = (replaces: string, name: string): ArtAssetEntry => ({
+  kind: "atlas",
+  replaces,
+  url: `${ASSET_BASE_URL}${CHARACTER_ART_DIR}/${name}.png`,
+  dataUrl: `${ASSET_BASE_URL}${CHARACTER_ART_DIR}/${name}.json`,
+});
+
+/** Owner-approved artwork. */
+export const artManifest: readonly ArtAssetEntry[] = [
+  characterAtlas(CharacterAtlases.prankster, "prankster"),
+  characterAtlas(CharacterAtlases.sleeper, "sleeper"),
+];
 
 export interface ManifestCheck {
   /** Entries that are safe to queue, in manifest order. */

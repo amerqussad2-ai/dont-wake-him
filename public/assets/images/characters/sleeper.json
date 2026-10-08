@@ -1,0 +1,214 @@
+{
+ "frames": {
+  "arm_over_head": {
+   "frame": {
+    "h": 104,
+    "w": 101,
+    "x": 2,
+    "y": 363
+   },
+   "rotated": false,
+   "sourceSize": {
+    "h": 104,
+    "w": 101
+   },
+   "spriteSourceSize": {
+    "h": 104,
+    "w": 101,
+    "x": 0,
+    "y": 0
+   },
+   "trimmed": false
+  },
+  "blanket_topdown": {
+   "frame": {
+    "h": 359,
+    "w": 339,
+    "x": 2,
+    "y": 2
+   },
+   "rotated": false,
+   "sourceSize": {
+    "h": 359,
+    "w": 339
+   },
+   "spriteSourceSize": {
+    "h": 359,
+    "w": 339,
+    "x": 0,
+    "y": 0
+   },
+   "trimmed": false
+  },
+  "head_annoyed": {
+   "frame": {
+    "h": 116,
+    "w": 119,
+    "x": 735,
+    "y": 2
+   },
+   "rotated": false,
+   "sourceSize": {
+    "h": 116,
+    "w": 119
+   },
+   "spriteSourceSize": {
+    "h": 116,
+    "w": 119,
+    "x": 0,
+    "y": 0
+   },
+   "trimmed": false
+  },
+  "head_peeking": {
+   "frame": {
+    "h": 118,
+    "w": 125,
+    "x": 472,
+    "y": 2
+   },
+   "rotated": false,
+   "sourceSize": {
+    "h": 118,
+    "w": 125
+   },
+   "spriteSourceSize": {
+    "h": 118,
+    "w": 125,
+    "x": 0,
+    "y": 0
+   },
+   "trimmed": false
+  },
+  "head_sleepy": {
+   "frame": {
+    "h": 120,
+    "w": 127,
+    "x": 343,
+    "y": 2
+   },
+   "rotated": false,
+   "sourceSize": {
+    "h": 120,
+    "w": 127
+   },
+   "spriteSourceSize": {
+    "h": 120,
+    "w": 127,
+    "x": 0,
+    "y": 0
+   },
+   "trimmed": false
+  },
+  "head_snoring": {
+   "frame": {
+    "h": 111,
+    "w": 127,
+    "x": 856,
+    "y": 2
+   },
+   "rotated": false,
+   "sourceSize": {
+    "h": 111,
+    "w": 127
+   },
+   "spriteSourceSize": {
+    "h": 111,
+    "w": 127,
+    "x": 0,
+    "y": 0
+   },
+   "trimmed": false
+  },
+  "head_startled": {
+   "frame": {
+    "h": 118,
+    "w": 134,
+    "x": 599,
+    "y": 2
+   },
+   "rotated": false,
+   "sourceSize": {
+    "h": 118,
+    "w": 134
+   },
+   "spriteSourceSize": {
+    "h": 118,
+    "w": 134,
+    "x": 0,
+    "y": 0
+   },
+   "trimmed": false
+  },
+  "snore_bubble": {
+   "frame": {
+    "h": 44,
+    "w": 66,
+    "x": 105,
+    "y": 363
+   },
+   "rotated": false,
+   "sourceSize": {
+    "h": 44,
+    "w": 66
+   },
+   "spriteSourceSize": {
+    "h": 44,
+    "w": 66,
+    "x": 0,
+    "y": 0
+   },
+   "trimmed": false
+  },
+  "z_2": {
+   "frame": {
+    "h": 19,
+    "w": 18,
+    "x": 173,
+    "y": 363
+   },
+   "rotated": false,
+   "sourceSize": {
+    "h": 19,
+    "w": 18
+   },
+   "spriteSourceSize": {
+    "h": 19,
+    "w": 18,
+    "x": 0,
+    "y": 0
+   },
+   "trimmed": false
+  },
+  "z_3": {
+   "frame": {
+    "h": 18,
+    "w": 17,
+    "x": 193,
+    "y": 363
+   },
+   "rotated": false,
+   "sourceSize": {
+    "h": 18,
+    "w": 17
+   },
+   "spriteSourceSize": {
+    "h": 18,
+    "w": 17,
+    "x": 0,
+    "y": 0
+   },
+   "trimmed": false
+  }
+ },
+ "meta": {
+  "app": "tools/art/build_character_art.py",
+  "format": "RGBA8888",
+  "image": "sleeper.png",
+  "scale": "1",
+  "size": {
+   "h": 469,
+   "w": 1024
+  }
+ }
+}

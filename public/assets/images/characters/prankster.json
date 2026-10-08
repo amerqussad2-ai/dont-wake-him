@@ -1,0 +1,334 @@
+{
+ "frames": {
+  "arm_alt_left_lower": {
+   "frame": {
+    "h": 28,
+    "w": 17,
+    "x": 427,
+    "y": 2
+   },
+   "rotated": false,
+   "sourceSize": {
+    "h": 28,
+    "w": 17
+   },
+   "spriteSourceSize": {
+    "h": 28,
+    "w": 17,
+    "x": 0,
+    "y": 0
+   },
+   "trimmed": false
+  },
+  "arm_alt_right_lower": {
+   "frame": {
+    "h": 28,
+    "w": 17,
+    "x": 446,
+    "y": 2
+   },
+   "rotated": false,
+   "sourceSize": {
+    "h": 28,
+    "w": 17
+   },
+   "spriteSourceSize": {
+    "h": 28,
+    "w": 17,
+    "x": 0,
+    "y": 0
+   },
+   "trimmed": false
+  },
+  "arm_front_left": {
+   "frame": {
+    "h": 51,
+    "w": 22,
+    "x": 131,
+    "y": 2
+   },
+   "rotated": false,
+   "sourceSize": {
+    "h": 51,
+    "w": 22
+   },
+   "spriteSourceSize": {
+    "h": 51,
+    "w": 22,
+    "x": 0,
+    "y": 0
+   },
+   "trimmed": false
+  },
+  "arm_front_right": {
+   "frame": {
+    "h": 51,
+    "w": 23,
+    "x": 155,
+    "y": 2
+   },
+   "rotated": false,
+   "sourceSize": {
+    "h": 51,
+    "w": 23
+   },
+   "spriteSourceSize": {
+    "h": 51,
+    "w": 23,
+    "x": 0,
+    "y": 0
+   },
+   "trimmed": false
+  },
+  "head_back": {
+   "frame": {
+    "h": 43,
+    "w": 34,
+    "x": 391,
+    "y": 2
+   },
+   "rotated": false,
+   "sourceSize": {
+    "h": 43,
+    "w": 34
+   },
+   "spriteSourceSize": {
+    "h": 43,
+    "w": 34,
+    "x": 0,
+    "y": 0
+   },
+   "trimmed": false
+  },
+  "head_front_mischief": {
+   "frame": {
+    "h": 43,
+    "w": 37,
+    "x": 314,
+    "y": 2
+   },
+   "rotated": false,
+   "sourceSize": {
+    "h": 43,
+    "w": 37
+   },
+   "spriteSourceSize": {
+    "h": 43,
+    "w": 37,
+    "x": 0,
+    "y": 0
+   },
+   "trimmed": false
+  },
+  "head_front_shocked": {
+   "frame": {
+    "h": 43,
+    "w": 36,
+    "x": 353,
+    "y": 2
+   },
+   "rotated": false,
+   "sourceSize": {
+    "h": 43,
+    "w": 36
+   },
+   "spriteSourceSize": {
+    "h": 43,
+    "w": 36,
+    "x": 0,
+    "y": 0
+   },
+   "trimmed": false
+  },
+  "head_front_smile": {
+   "frame": {
+    "h": 44,
+    "w": 39,
+    "x": 273,
+    "y": 2
+   },
+   "rotated": false,
+   "sourceSize": {
+    "h": 44,
+    "w": 39
+   },
+   "spriteSourceSize": {
+    "h": 44,
+    "w": 39,
+    "x": 0,
+    "y": 0
+   },
+   "trimmed": false
+  },
+  "pants_back_L": {
+   "frame": {
+    "h": 70,
+    "w": 21,
+    "x": 2,
+    "y": 2
+   },
+   "rotated": false,
+   "sourceSize": {
+    "h": 70,
+    "w": 21
+   },
+   "spriteSourceSize": {
+    "h": 70,
+    "w": 21,
+    "x": 0,
+    "y": 0
+   },
+   "trimmed": false
+  },
+  "pants_back_R": {
+   "frame": {
+    "h": 70,
+    "w": 35,
+    "x": 25,
+    "y": 2
+   },
+   "rotated": false,
+   "sourceSize": {
+    "h": 70,
+    "w": 35
+   },
+   "spriteSourceSize": {
+    "h": 70,
+    "w": 35,
+    "x": 0,
+    "y": 0
+   },
+   "trimmed": false
+  },
+  "pants_back_hip": {
+   "frame": {
+    "h": 22,
+    "w": 35,
+    "x": 465,
+    "y": 2
+   },
+   "rotated": false,
+   "sourceSize": {
+    "h": 22,
+    "w": 35
+   },
+   "spriteSourceSize": {
+    "h": 22,
+    "w": 35,
+    "x": 0,
+    "y": 0
+   },
+   "trimmed": false
+  },
+  "pants_front_L": {
+   "frame": {
+    "h": 69,
+    "w": 37,
+    "x": 62,
+    "y": 2
+   },
+   "rotated": false,
+   "sourceSize": {
+    "h": 69,
+    "w": 37
+   },
+   "spriteSourceSize": {
+    "h": 69,
+    "w": 37,
+    "x": 0,
+    "y": 0
+   },
+   "trimmed": false
+  },
+  "pants_front_R": {
+   "frame": {
+    "h": 69,
+    "w": 28,
+    "x": 101,
+    "y": 2
+   },
+   "rotated": false,
+   "sourceSize": {
+    "h": 69,
+    "w": 28
+   },
+   "spriteSourceSize": {
+    "h": 69,
+    "w": 28,
+    "x": 0,
+    "y": 0
+   },
+   "trimmed": false
+  },
+  "pants_front_hip": {
+   "frame": {
+    "h": 21,
+    "w": 38,
+    "x": 2,
+    "y": 74
+   },
+   "rotated": false,
+   "sourceSize": {
+    "h": 21,
+    "w": 38
+   },
+   "spriteSourceSize": {
+    "h": 21,
+    "w": 38,
+    "x": 0,
+    "y": 0
+   },
+   "trimmed": false
+  },
+  "torso_back": {
+   "frame": {
+    "h": 47,
+    "w": 47,
+    "x": 180,
+    "y": 2
+   },
+   "rotated": false,
+   "sourceSize": {
+    "h": 47,
+    "w": 47
+   },
+   "spriteSourceSize": {
+    "h": 47,
+    "w": 47,
+    "x": 0,
+    "y": 0
+   },
+   "trimmed": false
+  },
+  "torso_front_body": {
+   "frame": {
+    "h": 45,
+    "w": 42,
+    "x": 229,
+    "y": 2
+   },
+   "rotated": false,
+   "sourceSize": {
+    "h": 45,
+    "w": 42
+   },
+   "spriteSourceSize": {
+    "h": 45,
+    "w": 42,
+    "x": 0,
+    "y": 0
+   },
+   "trimmed": false
+  }
+ },
+ "meta": {
+  "app": "tools/art/build_character_art.py",
+  "format": "RGBA8888",
+  "image": "prankster.png",
+  "scale": "1",
+  "size": {
+   "h": 97,
+   "w": 512
+  }
+ }
+}

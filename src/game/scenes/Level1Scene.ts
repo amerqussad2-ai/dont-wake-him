@@ -82,7 +82,11 @@ export class Level1Scene extends Phaser.Scene {
     const bedX = this.level.bed.x + this.level.bed.width / 2;
     this.sleeper = new Sleeper(this, this.level.bed, {
       breath: (phase, stage, snoring, ms) => sound.breath(phase, stage, snoring, ms, bedX),
-      stirred: (stage) => sound.stirred(stage, bedX),
+      stirred: (stage) => {
+        sound.stirred(stage, bedX);
+        // Visual only: the Prankster flinches when he gets restless.
+        if (stage === "restless") this.player?.react("shocked", 800);
+      },
       fidget: (stage) => sound.fidget(stage, bedX),
       wakeBeat: (beat) => sound.wakeBeat(beat, bedX),
     });
@@ -327,6 +331,7 @@ export class Level1Scene extends Phaser.Scene {
     this.levelAudio.interact(def.effect, x);
 
     obj.markUsed(this.player);
+    this.player.react("mischief", 900);
     this.objectives.complete(def.id);
     this.events.emit(LevelEvents.ObjectiveComplete, this.objectives.list, def.id);
     this.levelAudio.objectiveComplete(this.objectives.completedCount);
@@ -346,6 +351,7 @@ export class Level1Scene extends Phaser.Scene {
     if (this.ended) return;
     this.ended = true;
     this.player.freeze();
+    this.player.react("shocked", undefined, true);
     this.focused?.setFocus("none");
     this.setPrompt(null);
     this.emitTick();
@@ -371,6 +377,7 @@ export class Level1Scene extends Phaser.Scene {
   private win(): void {
     this.ended = true;
     this.player.freeze();
+    this.player.react("smile", undefined, true);
     this.emitTick();
     this.events.emit(LevelEvents.Ended, "win");
     this.levelAudio.win();

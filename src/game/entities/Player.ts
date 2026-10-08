@@ -1,15 +1,18 @@
 import * as Phaser from "phaser";
 
-import { PLAYER_FRAME, PLAYER_SHEET, playerFrame, type PlayerFacing, type PlayerPose } from "@/game/art/characterArt";
+import { externalTextureKey } from "@/game/art/ArtProvider";
+import { CharacterAtlases } from "@/game/art/characters/atlases";
+import type { PranksterExpression, PranksterFacing } from "@/game/art/characters/prankster";
 import { FxTextures } from "@/game/art/fxArt";
 import { Depth, ySort } from "@/game/art/layers";
 import { FeelTuning, PlayerTuning } from "@/game/config/gameplay";
+import { ArtPlayerVisual, GeneratedPlayerVisual, type Movement, type PlayerVisual } from "@/game/entities/playerVisuals";
 import type { ControlState } from "@/game/systems/KeyboardControls";
 import { smoothing } from "@/game/ui/effects";
 
 type PhysicsRect = Phaser.GameObjects.Rectangle & { body: Phaser.Physics.Arcade.Body };
 
-export type Movement = "idle" | "walking" | "sneaking";
+export type { Movement };
 
 export interface PlayerUpdate {
   movement: Movement;
@@ -22,18 +25,18 @@ const FOOT_OFFSET = PlayerTuning.size / 2;
 
 /**
  * The player: an invisible physics box (collisions) with an animated
- * character sprite drawn on top, so the art never affects the rules.
+ * character drawn on top, so the art never affects the rules. The approved
+ * art is used when its atlas loaded; otherwise the generated sprite.
  */
 export class Player {
   readonly body: PhysicsRect;
-  private readonly visual: Phaser.GameObjects.Image;
+  private readonly visual: PlayerVisual;
   private readonly shadow: Phaser.GameObjects.Image;
   private readonly rim: Phaser.GameObjects.Image;
   private frozen = false;
+  private crouching = false;
   private stepProgress = 0;
-  private bobTime = 0;
-  private sneakBlend = 0;
-  private facing: PlayerFacing = "back";
+  private facing: PranksterFacing = "back";
   private flip = false;
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
@@ -45,9 +48,10 @@ export class Player {
     this.body = rect as PhysicsRect;
     this.body.body.setCollideWorldBounds(true);
 
-    this.visual = scene.add
-      .image(x, y + FOOT_OFFSET, PLAYER_SHEET, playerFrame(this.facing, "idle"))
-      .setOrigin(0.5, PLAYER_FRAME.footY / PLAYER_FRAME.height);
+    const atlas = externalTextureKey(CharacterAtlases.prankster);
+    this.visual = scene.textures.exists(atlas)
+      ? new ArtPlayerVisual(scene, atlas, x, y + FOOT_OFFSET, this.facing)
+      : new GeneratedPlayerVisual(scene, x, y + FOOT_OFFSET, this.facing);
     // A faint cool rim of light so the player reads in the dark.
     this.rim = scene.add
       .image(x, y, FxTextures.glow)
@@ -71,15 +75,21 @@ export class Player {
     return Math.min(1, this.body.body.velocity.length() / PlayerTuning.walkSpeed);
   }
 
-  /** The character sprite, for celebratory tweens. */
-  get sprite(): Phaser.GameObjects.Image {
-    return this.visual;
+  /** The drawn character, for celebratory tweens (origin at the feet, scale 1 at rest). */
+  get sprite(): Phaser.GameObjects.Image | Phaser.GameObjects.Container {
+    return this.visual.sprite;
+  }
+
+  /** Shows a facial reaction (approved art only). Purely visual. */
+  react(expression: PranksterExpression, ms?: number, faceCamera = false): void {
+    this.visual.react(expression, ms, faceCamera);
   }
 
   update(controls: ControlState, deltaSeconds: number): PlayerUpdate {
     const body = this.body.body;
     const hasInput = !this.frozen && (controls.moveX !== 0 || controls.moveY !== 0);
     const sneaking = hasInput && controls.sneak;
+    this.crouching = !this.frozen && controls.sneak;
 
     // Ease velocity toward the target instead of snapping to it.
     const speed = sneaking ? PlayerTuning.sneakSpeed : PlayerTuning.walkSpeed;
@@ -114,34 +124,23 @@ export class Player {
     this.body.body.setVelocity(0, 0);
   }
 
-  /** Picks the frame for the current motion and keeps the art on the body. */
+  /** Keeps the art on the body and tells it how the player is moving. */
   private animate(movement: Movement, deltaSeconds: number): void {
     const velocity = this.body.body.velocity;
-    this.sneakBlend += ((movement === "sneaking" ? 1 : 0) - this.sneakBlend) * smoothing(10, deltaSeconds);
-    this.bobTime += deltaSeconds * (movement === "walking" ? 16 : movement === "sneaking" ? 9 : 2.2);
-
     // Face away when moving up, towards the camera otherwise; flip for left/right.
     if (movement !== "idle") {
       if (Math.abs(velocity.y) > 20) this.facing = velocity.y < 0 ? "back" : "front";
       if (Math.abs(velocity.x) > 20) this.flip = velocity.x < 0;
     }
-    const phase = Math.sin(this.bobTime) >= 0 ? "a" : "b";
-    const pose: PlayerPose =
-      movement === "walking" ? `walk-${phase}` : movement === "sneaking" ? `sneak-${phase}` : this.sneakBlend > 0.5 ? "sneak-a" : "idle";
-    const frame = playerFrame(this.facing, pose);
-    if (this.visual.frame.name !== frame) this.visual.setFrame(frame);
-    this.visual.setFlipX(this.flip);
-
-    const bob = movement === "idle" ? 0 : Math.abs(Math.sin(this.bobTime)) * (2.5 - this.sneakBlend * 1.5);
-    const breathe = movement === "idle" ? Math.sin(this.bobTime) * 0.018 : 0;
     const feetY = this.y + FOOT_OFFSET;
+    const bob = this.visual.update(
+      { x: this.x, feetY, movement, facing: this.facing, flip: this.flip, crouch: this.crouching, speed: velocity.length() },
+      deltaSeconds,
+    );
 
-    this.visual.setPosition(this.x, feetY - bob);
-    this.visual.setScale(1 - breathe * 0.5, 1 + breathe);
-    this.visual.setDepth(ySort(feetY));
-
+    const k = this.visual.footprint;
     this.shadow.setPosition(this.x, feetY - 1).setDepth(ySort(feetY) - 0.5);
-    this.shadow.setScale(0.62 - bob * 0.02 + this.speedRatio * 0.05, 0.7);
-    this.rim.setPosition(this.x, feetY - 24);
+    this.shadow.setScale((0.62 - bob * 0.02 + this.speedRatio * 0.05) * k, 0.7 * Math.sqrt(k));
+    this.rim.setPosition(this.x, feetY - this.visual.height * 0.4);
   }
 }

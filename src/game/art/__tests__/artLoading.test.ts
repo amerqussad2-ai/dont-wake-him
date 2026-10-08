@@ -1,3 +1,6 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+
 import { describe, expect, it } from "vitest";
 
 import {
@@ -7,6 +10,7 @@ import {
   summarizeLoad,
 } from "@/game/art/ArtProvider";
 import { BedTextures, PLAYER_SHEET, sleeperFaceKey } from "@/game/art/characterArt";
+import { CharacterAtlases } from "@/game/art/characters/atlases";
 import { FxTextures, UiTextures } from "@/game/art/fxArt";
 import {
   artManifest,
@@ -28,9 +32,11 @@ const generatedKeys: string[] = [
   PLAYER_SHEET,
   ...(["calm", "stirring", "restless", "awake"] as const).map(sleeperFaceKey),
   ...(["nightstand", "armchair", "toyChest"] as const).map(furnitureKey),
+  ...Object.values(CharacterAtlases),
 ];
 
 const url = (file: string) => `${ASSET_BASE_URL}${file}`;
+const PUBLIC_DIR = join(__dirname, "../../../../public");
 
 const validImage: ArtAssetEntry = { kind: "image", replaces: ObjectTextures.key, url: url("key.png") };
 const validSheet: ArtAssetEntry = {
@@ -48,9 +54,21 @@ const validAtlas: ArtAssetEntry = {
 };
 
 describe("art manifest", () => {
-  it("is empty until artwork is approved", () => {
-    expect(artManifest).toEqual([]);
-    expect(checkManifest(artManifest)).toEqual({ entries: [], problems: [] });
+  it("lists exactly the approved character atlases, all valid", () => {
+    expect(artManifest.map((e) => [e.kind, e.replaces])).toEqual([
+      ["atlas", CharacterAtlases.prankster],
+      ["atlas", CharacterAtlases.sleeper],
+    ]);
+    expect(checkManifest(artManifest)).toEqual({ entries: [...artManifest], problems: [] });
+  });
+
+  it("points at character atlas files that exist", () => {
+    for (const entry of artManifest) {
+      if (entry.kind !== "atlas") continue;
+      for (const url of [entry.url, entry.dataUrl]) {
+        expect(existsSync(join(PUBLIC_DIR, url)), url).toBe(true);
+      }
+    }
   });
 
   it("accepts valid image, sprite sheet and atlas entries in order", () => {
