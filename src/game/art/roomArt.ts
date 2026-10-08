@@ -15,12 +15,14 @@ import {
   vGradient,
   type Ctx,
 } from "@/game/art/canvas";
+import { LevelArtNamespace, levelTextureKey } from "@/game/art/keys";
 import { GAME_HEIGHT, GAME_WIDTH } from "@/game/config/constants";
 import type { FurnitureArt, LevelDefinition } from "@/game/types";
 
+// Drawn from Level 1's layout, so these belong to the level.
 export const RoomTextures = {
-  background: "room-bg",
-  lightmap: "room-lightmap",
+  background: levelTextureKey(LevelArtNamespace.level1, "room-bg"),
+  lightmap: levelTextureKey(LevelArtNamespace.level1, "room-lightmap"),
 } as const;
 
 /** Space around footprint textures so baked shadows are not clipped. */
@@ -502,8 +504,9 @@ export function createFurnitureTextures(scene: Phaser.Scene, level: LevelDefinit
   }
 }
 
+/** Furniture is sized from the level's rectangles, so it belongs to the level. */
 export function furnitureKey(art: FurnitureArt): string {
-  return `furniture-${art}`;
+  return levelTextureKey(LevelArtNamespace.level1, `furniture-${art}`);
 }
 
 /** Shared box: shadowed silhouette, lit top face, darker front face. */

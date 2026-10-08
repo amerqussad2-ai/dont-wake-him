@@ -12,29 +12,30 @@ import {
   vGradient,
   type Ctx,
 } from "@/game/art/canvas";
+import { sharedTextureKey } from "@/game/art/keys";
 import { GAME_HEIGHT, GAME_WIDTH } from "@/game/config/constants";
 
 export const FxTextures = {
-  glow: "fx-glow",
-  dot: "fx-dot",
-  ring: "fx-ring",
-  spark: "fx-spark",
-  shadow: "fx-shadow",
-  vignette: "fx-vignette",
-  danger: "fx-danger",
+  glow: sharedTextureKey("fx", "glow"),
+  dot: sharedTextureKey("fx", "dot"),
+  ring: sharedTextureKey("fx", "ring"),
+  spark: sharedTextureKey("fx", "spark"),
+  shadow: sharedTextureKey("fx", "shadow"),
+  vignette: sharedTextureKey("fx", "vignette"),
+  danger: sharedTextureKey("fx", "danger"),
 } as const;
 
 export const UiTextures = {
-  keycap: "ui-keycap",
-  barTrack: "ui-bar-track",
-  barNoise: "ui-bar-noise",
-  barSleep: "ui-bar-sleep",
-  iconNoise: "ui-icon-noise",
-  iconMoon: "ui-icon-moon",
-  iconClock: "ui-icon-clock",
-  iconLock: "ui-icon-lock",
-  checkEmpty: "ui-check-empty",
-  checkDone: "ui-check-done",
+  keycap: sharedTextureKey("ui", "keycap"),
+  barTrack: sharedTextureKey("ui", "bar-track"),
+  barNoise: sharedTextureKey("ui", "bar-noise"),
+  barSleep: sharedTextureKey("ui", "bar-sleep"),
+  iconNoise: sharedTextureKey("ui", "icon-noise"),
+  iconMoon: sharedTextureKey("ui", "icon-moon"),
+  iconClock: sharedTextureKey("ui", "icon-clock"),
+  iconLock: sharedTextureKey("ui", "icon-lock"),
+  checkEmpty: sharedTextureKey("ui", "check-empty"),
+  checkDone: sharedTextureKey("ui", "check-done"),
 } as const;
 
 export const BAR = { width: 264, height: 10 } as const;
@@ -115,9 +116,16 @@ export function createFxTextures(scene: Phaser.Scene): void {
   createUiTextures(scene);
 }
 
+const DEFAULT_PANEL_ACCENT = "rgba(255,255,255,0.10)";
+
+/** Key for a panel of a given size and accent (one texture per combination). */
+export function panelTextureKey(width: number, height: number, accent = DEFAULT_PANEL_ACCENT): string {
+  return sharedTextureKey("ui", `panel-${width}x${height}-${accent}`);
+}
+
 /** Frosted dark panel used by the HUD and end screens. Cached per size. */
-export function panelTexture(scene: Phaser.Scene, width: number, height: number, accent = "rgba(255,255,255,0.10)"): string {
-  const key = `ui-panel-${width}x${height}-${accent}`;
+export function panelTexture(scene: Phaser.Scene, width: number, height: number, accent = DEFAULT_PANEL_ACCENT): string {
+  const key = panelTextureKey(width, height, accent);
   const pad = 16;
   makeTexture(scene, key, width + pad * 2, height + pad * 2, (ctx) => {
     ctx.save();

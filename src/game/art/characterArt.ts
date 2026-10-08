@@ -12,6 +12,7 @@ import {
   vGradient,
   type Ctx,
 } from "@/game/art/canvas";
+import { LevelArtNamespace, levelTextureKey, sharedTextureKey } from "@/game/art/keys";
 import { FOOT_PAD } from "@/game/art/roomArt";
 import type { Rect } from "@/game/types";
 
@@ -23,7 +24,7 @@ export type PlayerPose = "idle" | "walk-a" | "walk-b" | "sneak-a" | "sneak-b";
 export const PLAYER_FRAME = { width: 48, height: 66, footY: 62 } as const;
 
 /** All player frames live on one sheet; frames are named "<facing>-<pose>". */
-export const PLAYER_SHEET = "player";
+export const PLAYER_SHEET = sharedTextureKey("char", "player");
 
 export function playerFrame(facing: PlayerFacing, pose: PlayerPose): string {
   return `${facing}-${pose}`;
@@ -187,14 +188,15 @@ function drawPlayer(ctx: Ctx, facing: PlayerFacing, pose: PlayerPose): void {
 export type SleeperFace = "calm" | "stirring" | "restless" | "awake";
 
 export function sleeperFaceKey(face: SleeperFace): string {
-  return `sleeper-${face}`;
+  return sharedTextureKey("char", `sleeper-${face}`);
 }
 
 export const BedTextures = {
-  bed: "bed",
-  pillow: "bed-pillow",
-  blanket: "bed-blanket",
-  arm: "sleeper-arm",
+  // Bed, pillow and blanket are sized from Level 1's bed rectangle.
+  bed: levelTextureKey(LevelArtNamespace.level1, "bed"),
+  pillow: levelTextureKey(LevelArtNamespace.level1, "bed-pillow"),
+  blanket: levelTextureKey(LevelArtNamespace.level1, "bed-blanket"),
+  arm: sharedTextureKey("char", "sleeper-arm"),
 } as const;
 
 /** Headboard height above the bed's footprint. */

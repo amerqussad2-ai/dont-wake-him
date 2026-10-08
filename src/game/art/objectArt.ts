@@ -11,16 +11,18 @@ import {
   vGradient,
   type Ctx,
 } from "@/game/art/canvas";
+import { LevelArtNamespace, levelTextureKey, sharedTextureKey } from "@/game/art/keys";
 import { footprintTexture, FurnitureHeight } from "@/game/art/roomArt";
 import type { LevelDefinition } from "@/game/types";
 
 export const ObjectTextures = {
-  key: "obj-key",
-  clockOn: "obj-clock-on",
-  clockOff: "obj-clock-off",
-  dresser: "obj-dresser",
-  drawer: "obj-drawer",
-  wallet: "obj-wallet",
+  key: sharedTextureKey("obj", "key"),
+  clockOn: sharedTextureKey("obj", "clock-on"),
+  clockOff: sharedTextureKey("obj", "clock-off"),
+  // Sized from Level 1's drawer area, so it belongs to the level.
+  dresser: levelTextureKey(LevelArtNamespace.level1, "dresser"),
+  drawer: sharedTextureKey("obj", "drawer"),
+  wallet: sharedTextureKey("obj", "wallet"),
 } as const;
 
 /** Drawer box: interior (top) + front panel (bottom). */
