@@ -45,10 +45,12 @@ function dims(meshes){
  if(!Number.isFinite(min.x)||!Number.isFinite(max.x))return null;
  return {min,max,ext:max.subtract(min)};
 }
-function applyModel(scene,meshes,spec) {
+function applyModel(scene,meshes,spec,worldCast=null) {
  const top=meshes.filter(x=>x&&!meshes.includes(x.parent));
  const root=new TransformNode('cc0:'+spec.id,scene);
  for(const node of top)node.setParent(root);
+ if(spec.rotationX)root.rotation.x=spec.rotationX;
+ if(spec.rotationY)root.rotation.y=spec.rotationY;
  const d=dims(meshes);
  if(!d||d.ext.length()<.001){root.dispose();throw Error('empty model '+spec.id);}
  const scale=Math.min(...spec.size.map((target,i)=>target/[d.ext.x,d.ext.y,d.ext.z][i]).filter(Number.isFinite));
@@ -58,6 +60,7 @@ function applyModel(scene,meshes,spec) {
  root.position.z=spec.pos[2]-(d.min.z+d.max.z)/2*root.scaling.z;
  for(const node of meshes){
    if(node.receiveShadows!==undefined)node.receiveShadows=true;
+   if(node.getTotalVertices?.()>0)worldCast?.(node);
    // Imported glTF materials retain their authored PBR textures.
  }
  return root;
@@ -99,7 +102,7 @@ export async function addRealAssets(scene,level,world,onProgress=()=>{}){
      const base=file.slice(0,slash+1),name=file.slice(slash+1);
      const imported=await SceneLoader.ImportMeshAsync(null,base,name,scene);
      if(scene.isDisposed)break;
-     const root=applyModel(scene,imported.meshes,spec);
+     const root=applyModel(scene,imported.meshes,spec,world.addImportedCaster);
      if(spec.replace)hideProcedural(scene,spec.replace);
      if(spec.objective) {
        const marker=world.markers.get(spec.objective);
@@ -112,6 +115,27 @@ export async function addRealAssets(scene,level,world,onProgress=()=>{}){
      failed++;
      console.warn('[cc0] '+spec.id+' fallback:',e);
    }
+ }
+ // An actual reclining CC0 human mesh instead of primitive floating spheres.
+ const person=pack.models?.human_posed?.file;
+ if(person&&!scene.isDisposed){
+   try{
+     const slash=person.lastIndexOf('/');
+     const human=await SceneLoader.ImportMeshAsync(null,person.slice(0,slash+1),person.slice(slash+1),scene);
+     if(!scene.isDisposed){
+       const root=applyModel(scene,human.meshes,{
+         id:'human_posed',
+         rotationX:-Math.PI/2,
+         pos:[level.bed[0],1.10,level.bed[1]-.15],
+         size:[.74,.48,1.80],
+       },world.addImportedCaster);
+       hideProcedural(scene,['head','hair shape','nose','closed eyelid','ear','resting arm','breathing chest','shirt under covers']);
+       world.externalSleeper=root;
+       world.externalSleeperOriginY=root.position.y;
+       loaded++;
+       onProgress(loaded+' HIGH-DETAIL ASSETS LOADED');
+     }
+   }catch(e){failed++;console.warn('[cc0] sleeper figure fallback:',e);}
  }
  if(!scene.isDisposed)await applyMaterials(scene,world,pack);
  onProgress(loaded+' HIGH-DETAIL ASSETS · '+failed+' FALLBACKS');
