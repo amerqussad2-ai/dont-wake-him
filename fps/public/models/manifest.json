@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-21T06:36:51.765Z",
+  "generated": "2026-10-21T06:40:26.427Z",
   "source": "Poly Haven",
   "license": "CC0",
   "models": {
@@ -41,7 +41,7 @@
     },
     "vintage_wooden_drawer_01": {
       "file": "/models/vintage_wooden_drawer_01/vintage_wooden_drawer_01_1k.gltf",
-      "bytes": 2088635,
+      "bytes": 2087259,
       "parts": 5,
       "source": "https://polyhaven.com/a/vintage_wooden_drawer_01"
     },
@@ -51,17 +51,17 @@
       "parts": 5,
       "source": "https://polyhaven.com/a/wicker_basket_01"
     },
-    "vintage_oil_lamp": {
-      "file": "/models/vintage_oil_lamp/vintage_oil_lamp_1k.gltf",
-      "bytes": 2070002,
-      "parts": 9,
-      "source": "https://polyhaven.com/a/vintage_oil_lamp"
-    },
     "desk_lamp_arm_01": {
       "file": "/models/desk_lamp_arm_01/desk_lamp_arm_01_1k.gltf",
       "bytes": 2875984,
       "parts": 5,
       "source": "https://polyhaven.com/a/desk_lamp_arm_01"
+    },
+    "vintage_oil_lamp": {
+      "file": "/models/vintage_oil_lamp/vintage_oil_lamp_1k.gltf",
+      "bytes": 2070002,
+      "parts": 9,
+      "source": "https://polyhaven.com/a/vintage_oil_lamp"
     },
     "human_posed": {
       "file": "/models/human/human_posed.glb",
