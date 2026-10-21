@@ -4,6 +4,7 @@ on:
     branches: [feature/first-person-3d-three-levels]
     paths:
       - .github/workflows/verify-fps.yml
+      - fps/tests/smoke.mjs
   workflow_dispatch:
 permissions:
   contents: read
