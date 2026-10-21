@@ -86,6 +86,8 @@ function notify(text,type='') {
 const button=(action,label,kind='primary')=>`<button class="action ${kind}" data-action="${action}">${label}</button>`;
 function showMenu(kind) {
  playing=false; overlay.hidden=false;document.body.classList.remove('playing');
+ // Release the captured mouse before displaying any clickable end/pause menu.
+ if(document.pointerLockElement===canvas){try{document.exitPointerLock();}catch{}}
  const level=LEVELS[stage];
  let body='';
  if(kind==='welcome'){
@@ -223,7 +225,6 @@ function update(dt){
   const travel=fwd.scale(y/mag).add(right.scale(x/mag)).scale(speed*dt);
   if(!collision(camera.position.x+travel.x,camera.position.z))camera.position.x+=travel.x;
   if(!collision(camera.position.x,camera.position.z+travel.z))camera.position.z+=travel.z;
-  camera.position.y+=(sneaking?ROOM.crouch:ROOM.eye-camera.position.y)*0; // updated below with easing
   const surface=world.stepSurface(camera.position);
   const rate=sneaking?.65:surface==='rug'?2.9:6.2;
   noise=clamp(noise+dt*rate*level.wakeFactor,0,100);
