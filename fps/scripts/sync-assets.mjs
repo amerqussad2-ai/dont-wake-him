@@ -114,3 +114,11 @@ for(const [list,fn] of [[CATALOG,downloadModel],[MATERIALS,downloadMaterial]]){
 }
 await writeFile(join(out,'manifest.json'),JSON.stringify(MANIFEST,null,2));
 console.log('[art] done: '+Object.keys(MANIFEST.models).length+' 3D models, '+Object.keys(MANIFEST.materials).length+' materials, '+Object.keys(MANIFEST.failures).length+' unavailable');
+// A published “realistic edition” must ship with real 3D meshes.
+// Fail the preview build instead of silently shipping procedural-only art.
+const readyModels=Object.keys(MANIFEST.models).length;
+const readyMaterials=Object.keys(MANIFEST.materials).length;
+if(readyModels<4 || readyMaterials<1) {
+  console.error('[art] missing assets:',JSON.stringify(MANIFEST.failures));
+  throw new Error('Realistic asset quality gate failed: '+readyModels+' models, '+readyMaterials+' materials (need >=4 models and >=1 PBR material)');
+}
