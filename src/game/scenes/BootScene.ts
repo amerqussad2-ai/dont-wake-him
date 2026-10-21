@@ -23,6 +23,9 @@ export class BootScene extends Phaser.Scene {
   }
 
   preload(): void {
+    // Official Phaser SVG loader: the illustration is rasterized to a game texture.
+    // On failure the existing code-generated background remains a safe fallback.
+    this.load.svg("illustrated-bedroom-stage", "/assets/images/bedroom-stage.svg", { width: 1280, height: 720 });
     const { entries, problems } = checkManifest(artManifest);
     this.rejected = problems;
     this.queued = entries.map(manifestTextureKey);

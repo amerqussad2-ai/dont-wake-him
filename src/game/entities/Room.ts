@@ -12,7 +12,10 @@ import type { LevelDefinition } from "@/game/types";
  */
 export class Room {
   constructor(scene: Phaser.Scene, level: LevelDefinition) {
-    scene.add.image(0, 0, RoomTextures.background).setOrigin(0).setDepth(Depth.room);
+    const backgroundKey = scene.textures.exists("illustrated-bedroom-stage")
+      ? "illustrated-bedroom-stage"
+      : RoomTextures.background;
+    scene.add.image(0, 0, backgroundKey).setOrigin(0).setDepth(Depth.room);
 
     for (const piece of level.furniture) {
       addFootprintImage(scene, furnitureKey(piece.art), piece, FurnitureHeight[piece.art]);
@@ -23,6 +26,7 @@ export class Room {
       .image(0, 0, RoomTextures.lightmap)
       .setOrigin(0)
       .setDepth(Depth.light)
+      .setAlpha(0.28)
       .setBlendMode(Phaser.BlendModes.MULTIPLY);
 
     this.addGlows(scene, level);

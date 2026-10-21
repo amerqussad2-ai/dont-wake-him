@@ -66,7 +66,7 @@ export class Hud {
     this.noise = new Meter(scene, {
       x: 20,
       y: 26,
-      label: "NOISE",
+      label: "SOUND LEVEL",
       icon: UiTextures.iconNoise,
       iconTint: 0xf5c451,
       fill: UiTextures.barNoise,
@@ -74,7 +74,7 @@ export class Hud {
     this.sleep = new Meter(scene, {
       x: 20,
       y: 72,
-      label: "SLEEP DEPTH",
+      label: "SLEEP METER",
       icon: UiTextures.iconMoon,
       iconTint: 0xa6b4ff,
       fill: UiTextures.barSleep,
@@ -82,7 +82,7 @@ export class Hud {
     });
     const divider = scene.add.rectangle(20, 112, STATUS.width - 40, 1, 0xffffff, 0.08).setOrigin(0);
     this.alarmIcon = scene.add.image(28, 132, UiTextures.iconClock).setScale(0.8).setTint(0xff8a80);
-    this.alarmLabel = scene.add.text(44, 126, "ALARM RINGS IN", muted).setLetterSpacing(1.6);
+    this.alarmLabel = scene.add.text(44, 126, "ALARM IN", muted).setLetterSpacing(1.6);
     this.alarmTime = scene.add
       .text(STATUS.width - 20, 132, "", {
         fontFamily: Fonts.display,

@@ -40,7 +40,7 @@ export default function GameClient() {
             </button>
             <div className="start-side-note"><span className="note-wave" aria-hidden="true">◖◗</span> SOUND ON FOR<br /> THE BEST EXPERIENCE</div>
           </div>
-          <div className="how-label">THE SECRET TO SURVIVAL</div>
+          <div id="controls" className="how-label">THE SECRET TO SURVIVAL</div>
           <div className="controls-row" aria-label="Keyboard controls">
             <div className="control"><kbd>W A S D</kbd><span>MOVE</span></div>
             <div className="control"><kbd>SHIFT</kbd><span>SNEAK</span></div>
@@ -50,13 +50,14 @@ export default function GameClient() {
         <div className="intro-picture" aria-hidden="true">
           <div className="halo-one" /><div className="halo-two"/>
           <div className="intro-artwork" />
-          <div className="picture-label"><span className="picture-label-star">✦</span> 80 SECONDS. DON&apos;T MAKE A SOUND.</div>
+          <div className="picture-label"><span className="picture-label-star">✦</span> A LOOK INSIDE THE NEW BEDROOM</div>
         </div>
       </div>
 
+      <a className="scroll-cue" href="#controls" aria-label="Scroll down to see the keyboard controls"><span>⌄</span><small>SEE CONTROLS</small></a>
       <footer className="intro-footer">
         <span><span className="footer-diamond">◆</span> A LITTLE STEALTH. A LOT OF TROUBLE.</span>
-        <span>BEST PLAYED WITH A KEYBOARD <span className="footer-divider">/</span> V 0.2 — VISUAL EDITION</span>
+        <span>BEST PLAYED WITH A KEYBOARD <span className="footer-divider">/</span> V 0.3 — BEDROOM EDITION</span>
       </footer>
     </section>
   );
