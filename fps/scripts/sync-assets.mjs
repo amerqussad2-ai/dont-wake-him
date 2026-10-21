@@ -79,23 +79,35 @@ async function downloadModel(slug) {
  }catch(e){await rm(tmp,{recursive:true,force:true});throw e;}
 }
 function findTextureRecord(json,aliases){
- // Poly Haven serves maps in map → resolution → format order, not
- // always format → resolution → map order.
- for(const res of ['1k','2k']){
-  for(const name of aliases){
-   const candidates=[
-    json[name]?.[res]?.jpg, json[name]?.[res]?.png,
-    json[name]?.jpg?.[res], json[name]?.png?.[res],
-    json.jpg?.[res]?.[name],json.png?.[res]?.[name],
-   ];
-   for(const val of candidates)if(val?.url)return val;
+ // Poly Haven model/texture files list is a collection of package formats
+ // (blend, gltf, ...) with exact companion texture URLs under "include".
+ // Use those published URLs; don't guess CDN paths.
+ for(const fmt of ['gltf','blend']){
+  for(const res of ['1k','2k']){
+   const variants=Object.values(json?.[fmt]?.[res]||{});
+   for(const packageFile of variants){
+    const entries=Object.entries(packageFile?.include||{});
+    for(const alias of aliases){
+     const exact=entries.find(([name,info])=>
+       (name.includes('_'+alias+'_'+res+'.') || name.includes('/'+alias+'.'))
+       && /\\.(jpg|jpeg|png)$/i.test(name) && info?.url);
+     if(exact)return exact[1];
+    }
+   }
   }
  }
+ // Some assets are organized by map then resolution instead.
+ for(const res of ['1k','2k'])
+   for(const name of aliases)
+     for(const entry of [
+       json?.[name]?.[res]?.jpg,json?.[name]?.[res]?.png,
+       json?.jpg?.[res]?.[name],json?.png?.[res]?.[name]
+     ])
+       if(entry?.url)return entry;
  return null;
 }
 async function downloadMaterial(slug) {
  const json=await textJson(api+encodeURIComponent(slug));
- if(slug==='wood_floor')console.log('[art-debug] material tree (first 2500 chars): '+JSON.stringify(json).slice(0,2500));
  const material={};
  const names={diffuse:['diff','diffuse','albedo'],normal:['nor_gl'],rough:['rough'],arm:['arm']};
  const tmp=await mkdtemp(join(out,'.download-'));
