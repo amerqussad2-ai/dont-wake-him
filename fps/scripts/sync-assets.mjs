@@ -90,7 +90,7 @@ function findTextureRecord(json,aliases){
     for(const alias of aliases){
      const exact=entries.find(([name,info])=>
        (name.includes('_'+alias+'_'+res+'.') || name.includes('/'+alias+'.'))
-       && /\\.(jpg|jpeg|png)$/i.test(name) && info?.url);
+       && /\.(jpg|jpeg|png)$/i.test(name) && info?.url);
      if(exact)return exact[1];
     }
    }
