@@ -83,3 +83,11 @@ body.playing #stage{cursor:crosshair}
 @media(max-width:610px){.topstrip{padding:12px}.identity{font-size:14px;letter-spacing:0}.identity small{font-size:7px}.identity-symbol{width:30px;height:30px;font-size:21px}.stage-pill{font-size:7px;padding:9px;max-width:39%}.text-button{padding:9px}.text-button span{display:none}.hud-left{left:10px;top:61px;width:180px;gap:8px}.objective-panel,.meters{padding:9px}.panel-heading{font-size:7px;letter-spacing:0}.task{font-size:9px;gap:5px}.task-check{font-size:12px}.objective-footer{display:none}.meter-label{font-size:8px}.timer-panel{top:61px;right:10px;padding:9px}.timer-panel span,.timer-panel small{font-size:7px}.timer-panel strong{font-size:31px}.controls-tip{display:none}.menu-card{padding:30px 22px}.menu-card h1{font-size:clamp(62px,16vw,105px)}.menu-card h2{font-size:clamp(58px,12vw,85px)}.feature-row span{font-size:8px;padding:8px}.action{font-size:11px;padding:14px}.instructions{font-size:8px}.touch-ui{padding:0 8px}.touch-pad{transform:scale(.77);transform-origin:bottom left}.touch-actions{transform:scale(.80);transform-origin:bottom right}}
 @media(max-height:550px){.hud-left,.timer-panel{top:64px}.menu-card{padding-top:24px;padding-bottom:24px}.menu-card h1{font-size:min(18vh,108px);margin:10px 0}.menu-card h2{font-size:min(17vh,85px);margin:9px 0}.menu-actions{margin:13px 0}.controls-tip{bottom:7px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+
+/* Mouse-accessible alternative to E, plus visible art acquisition status. */
+.interaction{pointer-events:auto;cursor:pointer;color:#faf2e4;font:inherit;text-align:left}
+.interaction:hover{background:rgba(35,54,56,.96);border-color:#a9e1c1}
+.assets-status{position:absolute;bottom:50px;right:26px;z-index:7;pointer-events:none;max-width:275px;color:#bcd7c3;font:800 9px Manrope,Arial,sans-serif;letter-spacing:.1em;text-align:right;text-shadow:0 3px 8px #000}
+.controls-tip a{color:#d3cfad;text-decoration:underline;text-decoration-color:#809f8b;text-underline-offset:2px;pointer-events:auto}
+@media(max-width:610px){.assets-status{right:10px;top:175px;bottom:auto;max-width:150px;font-size:8px}.interaction{top:calc(48% + 32px)}}
