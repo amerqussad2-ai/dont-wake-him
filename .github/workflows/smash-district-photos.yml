@@ -1,0 +1,52 @@
+name: Bundle burger photography
+on:
+  push:
+    branches: [feature/smash-district-dubai]
+    paths:
+      - .github/workflows/smash-district-photos.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  photos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/smash-district-dubai
+      - name: Fetch photos for first-party hosting
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p smash-district/public/assets
+          fetch_image() {
+            local file="$1" id="$2" width="$3"
+            echo "Downloading $file ($id)"
+            curl --fail --location --retry 2 --connect-timeout 12 --max-time 55 --silent --show-error \
+              -H "User-Agent: SmashDistrictDemo/1.0" \
+              "https://images.unsplash.com/$id?fm=jpg&fit=crop&w=$width&q=84" \
+              -o "smash-district/public/assets/$file.jpg"
+            test "$(wc -c < "smash-district/public/assets/$file.jpg")" -gt 7000
+            file "smash-district/public/assets/$file.jpg"
+          }
+          fetch_image hero photo-1678110707493-8d05425137ac 1450
+          fetch_image district photo-1568901346375-23c9450c58cd 900
+          fetch_image truffle photo-1550547660-d9450f859349 900
+          fetch_image habibi photo-1571091718767-18b5b1457add 900
+          fetch_image chicken photo-1553979459-d2229ba7433a 900
+          fetch_image fries photo-1573080496219-bb080dd4f877 900
+          fetch_image fries2 photo-1630384060421-cb20d0e0649d 900
+          fetch_image drink photo-1437418747212-8d9709afab22 900
+          fetch_image soda photo-1513558161293-cdaf765edfd7 900
+          du -sh smash-district/public/assets
+      - name: Commit bundled art
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add smash-district/public/assets/
+          if ! git diff --cached --quiet; then
+            git commit -m "assets(smash-district): locally host licensed food photography"
+            git push origin HEAD:feature/smash-district-dubai
+          fi
