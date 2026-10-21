@@ -95,6 +95,7 @@ function findTextureRecord(json,aliases){
 }
 async function downloadMaterial(slug) {
  const json=await textJson(api+encodeURIComponent(slug));
+ if(slug==='wood_floor')console.log('[art-debug] material tree (first 2500 chars): '+JSON.stringify(json).slice(0,2500));
  const material={};
  const names={diffuse:['diff','diffuse','albedo'],normal:['nor_gl'],rough:['rough'],arm:['arm']};
  const tmp=await mkdtemp(join(out,'.download-'));
