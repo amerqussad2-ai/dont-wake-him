@@ -23,10 +23,15 @@ jobs:
           fetch_image() {
             local file="$1" id="$2" width="$3"
             echo "Downloading $file ($id)"
-            curl --fail --location --retry 2 --connect-timeout 12 --max-time 55 --silent --show-error \
+            if ! curl --fail --location --retry 2 --connect-timeout 12 --max-time 55 --silent --show-error \
               -H "User-Agent: SmashDistrictDemo/1.0" \
               "https://images.unsplash.com/$id?fm=jpg&fit=crop&w=$width&q=84" \
-              -o "smash-district/public/assets/$file.jpg"
+              -o "smash-district/public/assets/$file.jpg"; then
+              echo "Original photo unavailable: using licensed signature burger backup for $file"
+              curl --fail --location --retry 2 --connect-timeout 12 --max-time 55 --silent --show-error \
+                "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?fm=jpg&fit=crop&w=$width&q=84" \
+                -o "smash-district/public/assets/$file.jpg"
+            fi
             test "$(wc -c < "smash-district/public/assets/$file.jpg")" -gt 7000
             file "smash-district/public/assets/$file.jpg"
           }
