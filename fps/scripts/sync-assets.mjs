@@ -32,7 +32,7 @@ const fail=msg=>{throw new Error(msg)};
 const api='https://api.polyhaven.com/files/';
 async function get(url,timeout=25000){
  const u=new URL(url);
- if(u.protocol!=='https:'||!['api.polyhaven.com','dl.polyhaven.org'].includes(u.hostname))fail('Untrusted host '+u.hostname);
+ if(u.protocol!=='https:'||!['api.polyhaven.com','dl.polyhaven.org','raw.githubusercontent.com'].includes(u.hostname))fail('Untrusted host '+u.hostname);
  const resp=await fetch(u,{headers:{'User-Agent':agents[0]},signal:AbortSignal.timeout(timeout)});
  if(!resp.ok)fail('HTTP '+resp.status+' '+u.toString());
  const len=Number(resp.headers.get('content-length')||0);
@@ -129,6 +129,18 @@ async function downloadMaterial(slug) {
   console.log('[art] ok material '+slug+' ('+Math.round(bytes/1024)+' KB)');
  }catch(e){await rm(tmp,{recursive:true,force:true});throw e;}
 }
+async function downloadHuman() {
+ // CC0 low-poly human from UMRAM Bilkent / Quaternius, laid flat on the bed.
+ // Replaces the placeholder ball-shaped head with an actual human silhouette.
+ const url='https://raw.githubusercontent.com/UMRAM-Bilkent/supine-human-model/main/assets/human_posed.glb';
+ const bytes=await get(url);
+ if(bytes.subarray(0,4).toString('ascii')!=='glTF')fail('Human mesh is not a GLB');
+ const folder=join(out,'human');
+ await mkdir(folder,{recursive:true});
+ await writeFile(join(folder,'human_posed.glb'),bytes);
+ MANIFEST.models.human_posed={file:'/models/human/human_posed.glb',bytes:bytes.length,parts:1,source:'https://github.com/UMRAM-Bilkent/supine-human-model'};
+ console.log('[art] ok real human figure ('+Math.round(bytes.length/1024)+' KB)');
+}
 await mkdir(out,{recursive:true});
 for(const [list,fn] of [[CATALOG,downloadModel],[MATERIALS,downloadMaterial]]){
  // Budget: 2 downloads at a time, stop missing models individually rather than fail entire build.
@@ -138,6 +150,8 @@ for(const [list,fn] of [[CATALOG,downloadModel],[MATERIALS,downloadMaterial]]){
   }));
  }
 }
+try { await downloadHuman(); }
+catch(e){ MANIFEST.failures.human_posed=String(e.message||e);console.warn('[art] human mesh unavailable: '+MANIFEST.failures.human_posed); }
 await writeFile(join(out,'manifest.json'),JSON.stringify(MANIFEST,null,2));
 console.log('[art] done: '+Object.keys(MANIFEST.models).length+' 3D models, '+Object.keys(MANIFEST.materials).length+' materials, '+Object.keys(MANIFEST.failures).length+' unavailable');
 // A published “realistic edition” must ship with real 3D meshes.
