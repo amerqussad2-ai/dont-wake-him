@@ -1,0 +1,54 @@
+name: Verify Smash District website
+on:
+  push:
+    branches: [feature/smash-district-dubai]
+    paths:
+      - smash-district/**
+      - .github/workflows/verify-smash-site.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/smash-district-dubai
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install site dependencies
+        working-directory: smash-district
+        run: npm install --no-package-lock
+      - name: Install Playwright Chromium
+        working-directory: smash-district
+        run: |
+          npm install --no-save --no-package-lock playwright
+          npx playwright install chromium --with-deps
+      - name: Build
+        working-directory: smash-district
+        run: npm run build
+      - name: Start site
+        working-directory: smash-district
+        run: |
+          (npx vite preview --host 127.0.0.1 --port 4173 > /tmp/smash-preview.log 2>&1 &)
+          for i in $(seq 1 25); do
+            if curl -fsS http://127.0.0.1:4173 > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/smash-preview.log
+          exit 1
+      - name: Test animations and user flows
+        working-directory: smash-district
+        run: node tests/smoke.mjs
+      - name: Upload page screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smash-district-preview
+          path: |
+            smash-district/smash-desktop.png
+            smash-district/smash-mobile.png
+          if-no-files-found: ignore
