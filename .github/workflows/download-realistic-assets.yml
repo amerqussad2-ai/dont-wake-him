@@ -5,6 +5,7 @@ on:
       - feature/first-person-3d-three-levels
     paths:
       - .github/workflows/download-realistic-assets.yml
+      - fps/scripts/sync-assets.mjs
   workflow_dispatch:
 permissions:
   contents: write
