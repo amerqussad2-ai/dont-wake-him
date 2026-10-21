@@ -1,0 +1,53 @@
+name: Verify 3D game in browser
+on:
+  push:
+    branches: [feature/first-person-3d-three-levels]
+    paths:
+      - .github/workflows/verify-fps.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/first-person-3d-three-levels
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        working-directory: fps
+        run: npm install --no-package-lock
+      - name: Install headless Chromium
+        working-directory: fps
+        run: |
+          npm install --no-save --no-package-lock playwright
+          npx playwright install chromium --with-deps
+      - name: Build game and verify mission tests
+        working-directory: fps
+        run: npm run build
+      - name: Start local game server
+        working-directory: fps
+        run: |
+          (npx vite preview --host 127.0.0.1 --port 4173 > /tmp/game-preview.log 2>&1 &)
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:4173/ > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/game-preview.log
+          exit 1
+      - name: Test WebGL scene, imported models and E key
+        working-directory: fps
+        run: node tests/smoke.mjs
+      - name: Archive screenshot on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fps-browser-debug
+          path: |
+            fps/fps-smoke.png
+            /tmp/game-preview.log
+          if-no-files-found: ignore
