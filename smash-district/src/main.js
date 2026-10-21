@@ -8,15 +8,15 @@ const $$=(s,root=document)=>Array.from(root.querySelectorAll(s));
 const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const mobile=window.matchMedia('(max-width: 650px)').matches;
 const photos={
- hero:'https://images.unsplash.com/photo-1678110707493-8d05425137ac?auto=format&fit=crop&w=1200&q=87',
- beef:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=900&q=84',
- truffle:'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=900&q=84',
- habibi:'https://images.unsplash.com/photo-1571091718767-18b5b1457add?auto=format&fit=crop&w=900&q=84',
- chicken:'https://images.unsplash.com/photo-1553979459-d2229ba7433a?auto=format&fit=crop&w=900&q=84',
- fries:'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=900&q=84',
- fries2:'https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?auto=format&fit=crop&w=900&q=84',
- drink:'https://images.unsplash.com/photo-1437418747212-8d9709afab22?auto=format&fit=crop&w=900&q=84',
- soda:'https://images.unsplash.com/photo-1513558161293-cdaf765edfd7?auto=format&fit=crop&w=900&q=84'
+ hero:'/assets/hero.jpg',
+ beef:'/assets/district.jpg',
+ truffle:'/assets/truffle.jpg',
+ habibi:'/assets/habibi.jpg',
+ chicken:'/assets/chicken.jpg',
+ fries:'/assets/fries.jpg',
+ fries2:'/assets/fries2.jpg',
+ drink:'/assets/drink.jpg',
+ soda:'/assets/soda.jpg'
 };
 const products=[
  {id:'district',category:'burgers',name:'THE DISTRICT',description:'Double smash patties, American cheddar, pickles & secret district sauce.',price:38,image:photos.beef,tag:'BESTSELLER'},
