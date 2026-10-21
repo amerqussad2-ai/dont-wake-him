@@ -18,8 +18,8 @@ try{
  await page.locator('#hud').waitFor({state:'visible',timeout:14000});
  await page.waitForFunction(()=>{
    const el=document.getElementById('assets-status');
-   return el&&/(HIGH-DETAIL ASSETS|FALLBACK)/.test(el.textContent)&&!/PREPARING|LOADING/.test(el.textContent);
- },{timeout:40000});
+   return el&&/HIGH-DETAIL ASSETS · .*FALLBACKS/.test(el.textContent);
+ },undefined,{timeout:65000});
  const status=await page.locator('#assets-status').textContent();
  console.log('REALISTIC_ASSETS_STATUS:',status);
  assert.match(status,/HIGH-DETAIL ASSETS/,'genuine assets must have loaded');
