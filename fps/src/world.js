@@ -224,6 +224,7 @@ export function buildWorld(scene,level) {
  }
  // Interactive items are tangible 3D meshes, plus small pulsing ground lights.
  const markers=new Map();
+ const externalMarkers=new Map();
  const interactMaterials=new Map();
  for(const obj of level.objectives) {
   const [x,z]=obj.position,baseY=obj.kind==='clock'||obj.kind==='television'||obj.kind==='radio'?1.33:.88;
@@ -252,14 +253,15 @@ export function buildWorld(scene,level) {
  exitLamp.diffuse=C('#9bf3c2');exitLamp.intensity=5;exitLamp.range=2.6;
  const lampOriginal=lamp.intensity;
  return {
-  blockers,markers,exitPos,scene,
+  blockers,markers,externalMarkers,exitPos,scene,
+  realismMaterials:{floor:floorM,wall:wallM,cabin:wood},
   update(seconds,done,alertness){
    chest.scaling.y=1+.10*Math.sin(seconds*1.8);
    head.position.y=1.29+.01*Math.sin(seconds*1.8);
    hairCap.position.y=1.46+.01*Math.sin(seconds*1.8);
    lamp.intensity=lampOriginal*(1+.025*Math.sin(seconds*2.8));
    for(const [id,m] of markers){
-    if(done.has(id)){m.visual.setEnabled(false);m.beacon.setEnabled(false);m.light.intensity=0;continue;}
+    if(done.has(id)){m.visual.setEnabled(false);m.beacon.setEnabled(false);m.light.intensity=0;externalMarkers.get(id)?.setEnabled(false);continue;}
     m.beacon.position.y=m.pos.y+.5+Math.sin(seconds*3+id.length)*.10;
     m.light.intensity=2.4+Math.sin(seconds*3+id.length)*.6;
    }
