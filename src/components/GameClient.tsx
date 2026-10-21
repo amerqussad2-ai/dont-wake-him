@@ -25,7 +25,7 @@ export default function GameClient() {
     <section className="intro-shell" aria-labelledby="game-title">
       <div className="intro-stars" aria-hidden="true" />
       <header className="intro-header">
-        <div className="brand-mark"><span className="brand-moon" aria-hidden="true">☾</span><span>STILL AWAKE <b>STUDIOS</b></span></div>
+        <div className="brand-mark"><span className="brand-moon" aria-hidden="true">☾</span><span>DON&apos;T WAKE <b>HIM</b></span></div>
         <div className="header-tag"><span className="status-dot"/> THE BEDROOM · EPISODE 01</div>
       </header>
 
