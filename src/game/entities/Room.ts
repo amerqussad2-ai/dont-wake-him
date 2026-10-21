@@ -41,8 +41,8 @@ export class Room {
         .setDepth(Depth.glow);
 
     const { lamp, window: win, door } = RoomFeatures;
-    const lampHalo = glow(lamp.x, lamp.y + 4, 0xffa95a, 2.2, 0.35);
-    const lampCore = glow(lamp.x, lamp.y, 0xffe2b0, 0.45, 0.85);
+    const lampHalo = glow(lamp.x, lamp.y + 4, 0xffbb78, 2.6, 0.48);
+    const lampCore = glow(lamp.x, lamp.y, 0xfff2c0, 0.5, 0.96);
     // A slow, barely visible flicker keeps the lamp alive.
     scene.tweens.add({
       targets: [lampHalo, lampCore],
@@ -53,7 +53,7 @@ export class Room {
       ease: "Sine.easeInOut",
     });
 
-    glow(win.x + win.width / 2, win.y + win.height / 2, 0x7f9cff, 2.6, 0.22, 1.4);
+    glow(win.x + win.width / 2, win.y + win.height / 2, 0x9aaaff, 3.0, 0.37, 1.5);
     glow(win.x + win.width - 34, win.y + 24, 0xe6ecff, 0.45, 0.6);
     const right = level.room.x + level.room.width;
     glow(right - 4, door.y + door.height / 2, 0xffb070, 0.7, 0.4, 1.5);
@@ -70,9 +70,9 @@ export class Room {
         speedX: { min: -6, max: 6 },
         speedY: { min: 2, max: 9 },
         scale: { min: 0.12, max: 0.32 },
-        alpha: { start: 0.55, end: 0 },
+        alpha: { start: 0.7, end: 0 },
         tint: 0xd6e0ff,
-        frequency: 260,
+        frequency: 195,
         blendMode: Phaser.BlendModes.ADD,
       })
       .setDepth(Depth.glow);

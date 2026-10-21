@@ -74,8 +74,8 @@ function drawRoom(ctx: Ctx, level: LevelDefinition): void {
 function drawWallFace(ctx: Ctx, left: number, right: number): void {
   const bottom = RoomFeatures.wallBottom;
   ctx.fillStyle = vGradient(ctx, 0, bottom, [
-    [0, "#2a2340"],
-    [1, "#3b3254"],
+    [0, "#3e305c"],
+    [1, "#53406f"],
   ]);
   ctx.fillRect(left - 12, 0, right - left + 24, bottom);
 
@@ -100,8 +100,8 @@ function drawWallFace(ctx: Ctx, left: number, right: number): void {
   ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
   ctx.fillRect(left - 12, 0, right - left + 24, 4);
   ctx.fillStyle = vGradient(ctx, bottom, bottom + 12, [
-    [0, "#4a3f5e"],
-    [1, "#2e2740"],
+    [0, "#765b84"],
+    [1, "#423357"],
   ]);
   ctx.fillRect(left - 12, bottom, right - left + 24, 12);
   line(ctx, left - 12, bottom + 0.5, right + 12, bottom + 0.5, "rgba(255,255,255,0.12)");
@@ -110,7 +110,7 @@ function drawWallFace(ctx: Ctx, left: number, right: number): void {
 function drawFloor(ctx: Ctx, x: number, y: number, w: number, h: number): void {
   const rand = seeded(7);
   const plankH = 26;
-  const tones = ["#6e4b35", "#684530", "#74513a", "#62412e", "#6b4833"];
+  const tones = ["#986f83", "#8b697f", "#9a7589", "#815f76", "#937186"];
   ctx.save();
   ctx.beginPath();
   ctx.rect(x, y, w, h);
@@ -146,23 +146,23 @@ function drawFloor(ctx: Ctx, x: number, y: number, w: number, h: number): void {
   // Ambient occlusion along the walls.
   const ao = 34;
   ctx.fillStyle = vGradient(ctx, y, y + ao, [
-    [0, "rgba(10, 6, 20, 0.6)"],
+    [0, "rgba(10, 6, 20, 0.34)"],
     [1, "rgba(10, 6, 20, 0)"],
   ]);
   ctx.fillRect(x, y, w, ao);
   ctx.fillStyle = vGradient(ctx, y + h - ao, y + h, [
     [0, "rgba(10, 6, 20, 0)"],
-    [1, "rgba(10, 6, 20, 0.5)"],
+    [1, "rgba(10, 6, 20, 0.3)"],
   ]);
   ctx.fillRect(x, y + h - ao, w, ao);
   ctx.fillStyle = hGradient(ctx, x, x + ao, [
-    [0, "rgba(10, 6, 20, 0.5)"],
+    [0, "rgba(10, 6, 20, 0.3)"],
     [1, "rgba(10, 6, 20, 0)"],
   ]);
   ctx.fillRect(x, y, ao, h);
   ctx.fillStyle = hGradient(ctx, x + w - ao, x + w, [
     [0, "rgba(10, 6, 20, 0)"],
-    [1, "rgba(10, 6, 20, 0.5)"],
+    [1, "rgba(10, 6, 20, 0.3)"],
   ]);
   ctx.fillRect(x + w - ao, y, ao, h);
   ctx.restore();
@@ -270,12 +270,12 @@ function drawCurtain(ctx: Ctx, x: number, y: number, w: number, h: number, mirro
   }
   ctx.closePath();
   const folds = hGradient(ctx, x, x + w, [
-    [0, "#5a2340"],
-    [0.2, "#7b3356"],
-    [0.4, "#5f2644"],
-    [0.6, "#82395c"],
-    [0.8, "#5a2340"],
-    [1, "#6e2d4e"],
+    [0, "#9d4b77"],
+    [0.2, "#c06b99"],
+    [0.4, "#a5547f"],
+    [0.6, "#c174a0"],
+    [0.8, "#9d4b77"],
+    [1, "#ab5b85"],
   ]);
   ctx.fillStyle = folds;
   ctx.fill();
@@ -354,7 +354,7 @@ function drawRug(ctx: Ctx, cx: number, cy: number, w: number, h: number): void {
   const y = cy - h / 2;
   ctx.save();
   softShadow(ctx, 10, 4, 0.35);
-  fillRR(ctx, x, y, w, h, 22, "#2c3e63");
+  fillRR(ctx, x, y, w, h, 22, "#4d467d");
   ctx.restore();
   // Border bands.
   rr(ctx, x + 10, y + 10, w - 20, h - 20, 16);
@@ -370,7 +370,7 @@ function drawRug(ctx: Ctx, cx: number, cy: number, w: number, h: number): void {
   // Central medallion.
   ctx.save();
   ctx.translate(cx, cy);
-  ellipse(ctx, 0, 0, 62, 40, "#3d5482");
+  ellipse(ctx, 0, 0, 62, 40, "#6e61a4");
   ctx.strokeStyle = "#c9a45e";
   ctx.lineWidth = 2;
   for (let i = 0; i < 8; i++) {
@@ -423,7 +423,7 @@ function drawFloorProps(ctx: Ctx): void {
  */
 function drawLightmap(ctx: Ctx, level: LevelDefinition): void {
   const right = level.room.x + level.room.width;
-  ctx.fillStyle = "rgb(92, 98, 150)";
+  ctx.fillStyle = "rgb(163, 160, 191)";
   ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
   ctx.globalCompositeOperation = "lighter";
   ctx.filter = "blur(14px)";

@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 990 850" role="img" aria-label="A mischievous cartoon kid tiptoes across a moonlit bedroom while a man sleeps">
+<defs>
+ <linearGradient id="room" x1="0" y1="0" x2="0.9" y2="1"><stop stop-color="#40325d"/><stop offset=".65" stop-color="#302644"/><stop offset="1" stop-color="#1c1b32"/></linearGradient>
+ <linearGradient id="planks" x1="0" y1="0" x2="0.8" y2="1"><stop stop-color="#937188"/><stop offset="1" stop-color="#51435b"/></linearGradient>
+ <linearGradient id="sweater" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#77eac4"/><stop offset=".55" stop-color="#36bd9f"/><stop offset="1" stop-color="#0e787a"/></linearGradient>
+ <linearGradient id="skin" x1=".2" y1="0" x2=".9" y2="1"><stop stop-color="#ffd8ae"/><stop offset="1" stop-color="#ec916b"/></linearGradient>
+ <linearGradient id="covers" x1="0" y1="0" x2=".85" y2="1"><stop stop-color="#b9a8ff"/><stop offset=".55" stop-color="#7067ba"/><stop offset="1" stop-color="#51498e"/></linearGradient>
+ <linearGradient id="moon" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff6ca"/><stop offset="1" stop-color="#dce3ff"/></linearGradient>
+ <linearGradient id="night" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#141d47"/><stop offset="1" stop-color="#445b8d"/></linearGradient>
+ <radialGradient id="halo"><stop stop-color="#b6c3ff" stop-opacity=".5"/><stop offset="1" stop-color="#a9b8ff" stop-opacity="0"/></radialGradient>
+ <radialGradient id="lamp"><stop stop-color="#ffd89d" stop-opacity=".64"/><stop offset="1" stop-color="#ffb76c" stop-opacity="0"/></radialGradient>
+ <filter id="shadow" x="-40%" y="-40%" width="180%" height="200%"><feDropShadow dx="0" dy="13" stdDeviation="12" flood-color="#141126" flood-opacity=".56"/></filter>
+ <filter id="soft" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="22"/></filter>
+ <pattern id="floorlines" width="140" height="44" patternUnits="userSpaceOnUse"><path d="M0 0H140M35 44H140" fill="none" stroke="#302a41" stroke-width="2" opacity=".44"/><path d="M15 15h44m28 18h70" stroke="#e4cad7" stroke-width="2" opacity=".10"/></pattern>
+ <pattern id="wallDots" width="34" height="34" patternUnits="userSpaceOnUse"><circle cx="17" cy="17" r="1.8" fill="#efdcf7" opacity=".1"/></pattern>
+</defs>
+<g transform="translate(14 8)">
+<!-- Back panel and room; deliberately illustrative, not a gameplay screenshot -->
+<rect x="52" y="35" width="878" height="744" rx="66" fill="#171626" stroke="#66607e" stroke-width="5" />
+<rect x="72" y="55" width="838" height="704" rx="46" fill="url(#room)"/>
+<path d="M72 345Q470 320 910 345V713Q910 759 866 759H116Q72 759 72 713Z" fill="url(#planks)"/>
+<path d="M72 345Q470 320 910 345V713Q910 759 866 759H116Q72 759 72 713Z" fill="url(#floorlines)" opacity=".65"/>
+<path d="M72 55h838v280H72Z" fill="url(#wallDots)"/>
+<path d="M77 339H904" stroke="#b79eb8" stroke-width="12" opacity=".55"/>
+<!-- Moon window and beam -->
+<circle cx="652" cy="213" r="182" fill="url(#halo)"/>
+<g filter="url(#shadow)">
+<rect x="554" y="108" width="210" height="170" rx="21" fill="#d4c6e8" stroke="#201d34" stroke-width="10"/>
+<rect x="569" y="122" width="180" height="140" rx="10" fill="url(#night)"/>
+<circle cx="678" cy="169" r="36" fill="url(#moon)"/>
+<circle cx="694" cy="154" r="34" fill="#233360"/>
+<g fill="#fffbdc"><circle cx="603" cy="157" r="3"/><circle cx="623" cy="214" r="2"/><circle cx="714" cy="229" r="3"/><circle cx="739" cy="146" r="2.5"/><circle cx="589" cy="236" r="2"/></g>
+<path d="M660 124V259M569 192H749" stroke="#c5bce5" stroke-width="9"/>
+<path d="M535 95q-21 72-4 187l50-3q-29-105 1-180Z" fill="#d8739c" stroke="#603852" stroke-width="7"/>
+<path d="M784 95q24 72 5 187l-50-3q27-105-2-180Z" fill="#d8739c" stroke="#603852" stroke-width="7"/>
+<path d="M529 104h258" stroke="#e7bd85" stroke-width="9" stroke-linecap="round"/>
+</g>
+<path d="M592 286L824 683 536 706 602 286Z" fill="#b8c3ff" opacity=".08"/>
+<!-- framed artwork -->
+<g filter="url(#shadow)"><rect x="146" y="120" width="126" height="132" rx="15" fill="#f5d899" stroke="#53425a" stroke-width="10"/><rect x="161" y="136" width="96" height="100" rx="5" fill="#6563a2"/><circle cx="216" cy="172" r="19" fill="#fff3bc"/><path d="M163 222l27-30 28 21 20-29 17 31v20h-92Z" fill="#363e78"/></g>
+<!-- Rug -->
+<ellipse cx="554" cy="661" rx="302" ry="107" fill="#29243f" opacity=".5" filter="url(#soft)"/>
+<ellipse cx="553" cy="645" rx="308" ry="108" fill="#44335e" stroke="#d1a6ae" stroke-width="9"/>
+<ellipse cx="553" cy="643" rx="281" ry="87" fill="none" stroke="#8d79a6" stroke-width="4" stroke-dasharray="10 12"/>
+<!-- Bed -->
+<g filter="url(#shadow)" stroke="#332c45" stroke-width="9" stroke-linejoin="round">
+ <path d="M151 354Q151 324 185 324H472Q503 324 503 354V621Q503 653 472 653H185Q151 653 151 621Z" fill="#8c6277"/>
+ <rect x="154" y="336" width="346" height="294" rx="37" fill="#f3ddcd"/>
+ <path d="M164 394h329v233H164Z" fill="#f7e6d8" stroke="none"/>
+ <rect x="190" y="346" width="270" height="105" rx="36" fill="#fff9e9" stroke="#d4b9b8" stroke-width="5"/>
+</g>
+<!-- Sleeping man body and blanket -->
+<ellipse cx="341" cy="558" rx="140" ry="73" fill="#282441" opacity=".38" filter="url(#soft)"/>
+<g stroke="#302740" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+<path d="M193 500Q231 442 326 452Q429 452 477 517L468 625Q352 658 207 623Z" fill="url(#covers)"/>
+<path d="M214 509Q316 542 450 506" fill="none" stroke="#c9c0ff" stroke-width="8" opacity=".7"/>
+<path d="M207 576Q310 598 468 561" fill="none" stroke="#a49be2" stroke-width="7" opacity=".45"/>
+<!-- Hands on top of cover -->
+<path d="M228 481q-26 0-24 22t31 14l22-18Z" fill="url(#skin)"/>
+<path d="M444 484q29 1 24 21t-28 14l-17-19Z" fill="url(#skin)"/>
+<!-- face -->
+<ellipse cx="335" cy="405" rx="84" ry="89" fill="url(#skin)"/>
+<path d="M253 399Q251 320 326 310Q413 300 419 398Q406 357 382 352Q355 376 303 354Q280 369 253 399Z" fill="#33283a"/>
+<path d="M281 397q25 18 49 0m26 1q23 17 45-1" fill="none"/>
+<path d="M326 435q11 9 24 0" fill="none" stroke="#985f65" stroke-width="6"/>
+<ellipse cx="267" cy="416" rx="12" ry="20" fill="#f9ba95"/>
+<ellipse cx="408" cy="416" rx="12" ry="20" fill="#f9ba95"/>
+<circle cx="284" cy="432" r="12" fill="#ffac97" opacity=".55"/>
+<circle cx="387" cy="432" r="12" fill="#ffac97" opacity=".55"/>
+</g>
+<!-- comic floating sleep Z -->
+<g fill="#dbe7ff" stroke="#222843" stroke-width="6" paint-order="stroke" font-family="Arial Rounded MT Bold,Arial,sans-serif" font-weight="900">
+<text x="451" y="330" font-size="42" transform="rotate(-13 451 330)">Z</text>
+<text x="491" y="288" font-size="31" transform="rotate(13 491 288)">z</text>
+<text x="513" y="249" font-size="19" transform="rotate(-8 513 249)">z</text>
+</g>
+<!-- glow near clock -->
+<ellipse cx="718" cy="583" rx="112" ry="90" fill="url(#lamp)"/>
+<!-- cartoon alarm clock -->
+<g filter="url(#shadow)" stroke="#332a41" stroke-width="8" stroke-linejoin="round" stroke-linecap="round">
+<path d="M678 578l-11 34m79-34 11 34" fill="none"/>
+<path d="M680 532q-29-42 4-39q28 0 19 45m29-6q4-40 26-36q22 8-1 40" fill="#f7b75b"/>
+<circle cx="716" cy="565" r="52" fill="#fb8a80"/>
+<circle cx="716" cy="565" r="36" fill="#fff9e6"/>
+<path d="M716 542v26l17 14" fill="none" stroke="#51455c"/>
+<circle cx="716" cy="565" r="5" fill="#51455c" stroke="none"/>
+</g>
+<!-- The prankster -->
+<ellipse cx="772" cy="718" rx="111" ry="23" fill="#1a2034" opacity=".48" filter="url(#soft)"/>
+<g filter="url(#shadow)" stroke="#273045" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+<!-- sneaking legs -->
+<path d="M759 611q-16 49-55 80l38 18q51-32 66-61Z" fill="#55558c"/>
+<path d="M818 613q27 42 36 75l-38 16q-36-37-56-64Z" fill="#55558c"/>
+<path d="M693 693q-21 11-11 22 26 14 61-1l-2-17Z" fill="#ffe27d"/>
+<path d="M812 693q-10 23 8 25h61q14-7-8-19l-29-10Z" fill="#ffe27d"/>
+<!-- hoodie -->
+<path d="M730 498Q765 479 799 492Q851 491 866 534L846 643Q799 664 747 636L723 566Z" fill="url(#sweater)"/>
+<path d="M752 600q42 19 79 2" fill="none" stroke="#b2ffe7" stroke-width="5" opacity=".55"/>
+<!-- arm in shush pose -->
+<path d="M837 526q42 16 33 48l-60-7" fill="none" stroke="#25a88e" stroke-width="27"/>
+<circle cx="813" cy="565" r="18" fill="url(#skin)"/>
+<path d="M812 564v-68" fill="none" stroke="#ffc69d" stroke-width="20"/>
+<!-- other arm reaching -->
+<path d="M739 530q-29 18-26 50l-29 19" fill="none" stroke="#46c9ac" stroke-width="27"/>
+<circle cx="682" cy="600" r="15" fill="url(#skin)"/>
+<!-- face -->
+<ellipse cx="788" cy="425" rx="91" ry="94" fill="url(#skin)"/>
+<ellipse cx="706" cy="435" rx="15" ry="23" fill="url(#skin)"/>
+<ellipse cx="873" cy="435" rx="15" ry="23" fill="url(#skin)"/>
+<path d="M699 404q-20-95 70-115q86-19 115 92q-40-10-52-46q-38 44-96 34q-6 21-37 35Z" fill="#282538"/>
+<path d="M725 408q24-25 48-3m40-2q23-18 43 0" fill="none" stroke="#282538" stroke-width="8"/>
+<ellipse cx="749" cy="440" rx="7" ry="12" fill="#2e2638" stroke="none"/>
+<ellipse cx="830" cy="436" rx="7" ry="12" fill="#2e2638" stroke="none"/>
+<circle cx="753" cy="435" r="2.5" fill="#fff" stroke="none"/>
+<circle cx="834" cy="431" r="2.5" fill="#fff" stroke="none"/>
+<path d="M779 463q12 12 24-2" fill="none" stroke="#9b5260" stroke-width="5"/>
+<ellipse cx="715" cy="464" rx="14" ry="8" fill="#f89a95" stroke="none" opacity=".67"/>
+<ellipse cx="854" cy="461" rx="14" ry="8" fill="#f89a95" stroke="none" opacity=".67"/>
+</g>
+<!-- dialogue bubble -->
+<g transform="translate(720 137) rotate(8)" filter="url(#shadow)"><path d="M-19-14h173q26 0 26 24v48q0 23-25 23H62L28 112l1-31h-48q-25 0-25-23V10q0-24 25-24Z" fill="#f5ffb3" stroke="#2c2a43" stroke-width="8"/><text x="68" y="47" font-family="Arial Rounded MT Bold,Arial,sans-serif" font-size="29" font-weight="900" text-anchor="middle" fill="#252a3a">SHHH!</text></g>
+<!-- details -->
+<g fill="#ffe8a0"><path d="M127 470l8 14 16 2-12 12 2 16-14-8-14 8 2-16-12-12 16-2Z"/><path d="M865 270l4 10 10 4-10 4-4 10-4-10-10-4 10-4Z"/><circle cx="531" cy="540" r="5"/></g>
+<g fill="none" stroke="#ffeeac" stroke-width="9" stroke-linecap="round"><path d="M615 585q-24 12-32 37"/><path d="M631 609q-12 15-13 32"/></g>
+</g>
+</svg>

@@ -96,7 +96,7 @@ export function createFxTextures(scene: Phaser.Scene): void {
     ctx.scale(1, GAME_HEIGHT / GAME_WIDTH);
     ctx.fillStyle = radial(ctx, GAME_WIDTH / 2, GAME_WIDTH / 2, GAME_WIDTH * 0.62, [
       [0.45, "rgba(6, 4, 14, 0)"],
-      [1, "rgba(6, 4, 14, 0.85)"],
+      [1, "rgba(6, 4, 14, 0.57)"],
     ]);
     ctx.fillRect(0, 0, GAME_WIDTH, GAME_WIDTH);
     ctx.restore();
@@ -116,7 +116,7 @@ export function createFxTextures(scene: Phaser.Scene): void {
   createUiTextures(scene);
 }
 
-const DEFAULT_PANEL_ACCENT = "rgba(255,255,255,0.10)";
+const DEFAULT_PANEL_ACCENT = "rgba(200,199,255,0.34)";
 
 /** Key for a panel of a given size and accent (one texture per combination). */
 export function panelTextureKey(width: number, height: number, accent = DEFAULT_PANEL_ACCENT): string {
@@ -131,8 +131,8 @@ export function panelTexture(scene: Phaser.Scene, width: number, height: number,
     ctx.save();
     softShadow(ctx, 18, 8, 0.5);
     fillRR(ctx, pad, pad, width, height, 16, vGradient(ctx, pad, pad + height, [
-      [0, "rgba(34, 28, 56, 0.86)"],
-      [1, "rgba(16, 13, 30, 0.9)"],
+      [0, "rgba(51, 42, 89, 0.93)"],
+      [1, "rgba(20, 21, 49, 0.95)"],
     ]));
     ctx.restore();
     rr(ctx, pad + 0.5, pad + 0.5, width - 1, height - 1, 16);
@@ -142,7 +142,7 @@ export function panelTexture(scene: Phaser.Scene, width: number, height: number,
     // Soft top sheen.
     rr(ctx, pad + 1, pad + 1, width - 2, Math.min(28, height / 2), 15);
     ctx.fillStyle = vGradient(ctx, pad, pad + 28, [
-      [0, "rgba(255,255,255,0.07)"],
+      [0, "rgba(255,255,255,0.16)"],
       [1, "rgba(255,255,255,0)"],
     ]);
     ctx.fill();
@@ -167,14 +167,14 @@ function createUiTextures(scene: Phaser.Scene): void {
       ctx.fill();
     });
   bar(UiTextures.barNoise, [
-    [0, "#4fe0a0"],
+    [0, "#77f5c6"],
     [0.5, "#f5c451"],
     [0.8, "#ff7a45"],
     [1, "#ff3d5a"],
   ]);
   bar(UiTextures.barSleep, [
     [0, "#4b4fb8"],
-    [1, "#a6b4ff"],
+    [1, "#b0bdff"],
   ]);
 
   makeTexture(scene, UiTextures.keycap, 30, 32, (ctx) => {
@@ -245,7 +245,7 @@ function createUiTextures(scene: Phaser.Scene): void {
     ctx.stroke();
   });
   icon(scene, UiTextures.checkDone, (ctx) => {
-    circle(ctx, 12, 12, 8.5, "#4fe0a0");
+    circle(ctx, 12, 12, 8.5, "#dffe95");
     ctx.strokeStyle = "#0f2a1e";
     ctx.lineWidth = 2.4;
     ctx.lineCap = "round";

@@ -1,12 +1,12 @@
 /** Shared visual constants for the game canvas. */
 export const Colors = {
-  bedroomBackground: "#14121f",
-  title: "#c9c3e6",
-  text: "#e6e3f2",
-  mutedText: "#8f8aa8",
+  bedroomBackground: "#242039",
+  title: "#e6dafa",
+  text: "#fff7ed",
+  mutedText: "#bab4d2",
   danger: "#ff6b6b",
-  warning: "#f2c94c",
-  success: "#7ee2a8",
+  warning: "#ffce75",
+  success: "#dfff99",
 } as const;
 
 /** Numeric colours for shapes. */
@@ -25,11 +25,11 @@ export const Palette = {
   playerSneak: 0x4fa3bf,
   highlight: 0xfff3a3,
   meterBg: 0x1d1a2b,
-  meterFrame: 0x4b4566,
-  noiseLow: 0x6fd08c,
+  meterFrame: 0x776c9b,
+  noiseLow: 0x7bf0bf,
   noiseMid: 0xf2c94c,
   noiseHigh: 0xeb5757,
-  sleep: 0x7b8cff,
+  sleep: 0xa6aeff,
   overlay: 0x05040a,
 } as const;
 
