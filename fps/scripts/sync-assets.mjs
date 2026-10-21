@@ -6,10 +6,44 @@
  *
  * Uses Poly Haven's public file-list API with a visible project credit.
  */
-import { mkdir, mkdtemp, writeFile, rename, readdir, rm } from 'node:fs/promises';
+import { mkdir, mkdtemp, writeFile, rename, readdir, readFile, stat, rm } from 'node:fs/promises';
 import { join, basename, dirname, resolve, sep } from 'node:path';
 
 const out=resolve('public/models');
+// The committed models are the source of truth during normal Vercel builds.
+// This removes all external network calls from published production builds.
+async function vendoredAssetsComplete(){
+ try{
+  const manifest=JSON.parse(await readFile(join(out,'manifest.json'),'utf8'));
+  if(Object.keys(manifest.models||{}).length<11||Object.keys(manifest.materials||{}).length<3)return false;
+  for(const asset of Object.values(manifest.models)){
+   const main=resolve('public',String(asset.file).replace(/^\\//,''));
+   const entry=await stat(main);
+   if(entry.size<128)return false;
+   if(main.endsWith('.gltf')){
+    const gltf=JSON.parse(await readFile(main,'utf8'));
+    const required=[
+     ...(gltf.buffers||[]).map(x=>x.uri),
+     ...(gltf.images||[]).map(x=>x.uri),
+    ].filter(x=>x&&!x.startsWith('data:'));
+    for(const rel of required){
+     if(rel.includes('..')||rel.startsWith('/'))return false;
+     const file=await stat(resolve(dirname(main),rel));
+     if(file.size<64)return false;
+    }
+   }
+  }
+  for(const mat of Object.values(manifest.materials))
+   for(const filePath of Object.values(mat)){
+    const file=await stat(resolve('public',String(filePath).replace(/^\\//,'')));
+    if(file.size<64)return false;
+   }
+  console.log('[art] verified '+Object.keys(manifest.models).length+' bundled CC0 models and '+Object.keys(manifest.materials).length+' PBR materials; no re-download needed');
+  return true;
+ }catch(e){console.log('[art] vendored asset check incomplete:',e.message);return false;}
+}
+if(process.env.DWH_FORCE_RESYNC!=='1'&&await vendoredAssetsComplete())process.exit(0);
+
 const CATALOG=[
   'vintage_day_bed',
   'painted_wooden_nightstand',
