@@ -17,7 +17,7 @@ async function vendoredAssetsComplete(){
   const manifest=JSON.parse(await readFile(join(out,'manifest.json'),'utf8'));
   if(Object.keys(manifest.models||{}).length<11||Object.keys(manifest.materials||{}).length<3)return false;
   for(const asset of Object.values(manifest.models)){
-   const main=resolve('public',String(asset.file).replace(/^\\//,''));
+   const main=resolve('public',String(asset.file).replace(/^\//,''));
    const entry=await stat(main);
    if(entry.size<128)return false;
    if(main.endsWith('.gltf')){
@@ -35,7 +35,7 @@ async function vendoredAssetsComplete(){
   }
   for(const mat of Object.values(manifest.materials))
    for(const filePath of Object.values(mat)){
-    const file=await stat(resolve('public',String(filePath).replace(/^\\//,'')));
+    const file=await stat(resolve('public',String(filePath).replace(/^\//,'')));
     if(file.size<64)return false;
    }
   console.log('[art] verified '+Object.keys(manifest.models).length+' bundled CC0 models and '+Object.keys(manifest.materials).length+' PBR materials; no re-download needed');
