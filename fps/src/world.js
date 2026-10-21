@@ -254,10 +254,13 @@ export function buildWorld(scene,level) {
  const lampOriginal=lamp.intensity;
  return {
   blockers,markers,externalMarkers,exitPos,scene,
+  externalSleeper:null,externalSleeperOriginY:0,
+  addImportedCaster:(mesh)=>shadows.addShadowCaster(mesh),
   realismMaterials:{floor:floorM,wall:wallM,cabin:wood},
   update(seconds,done,alertness){
    chest.scaling.y=1+.10*Math.sin(seconds*1.8);
    head.position.y=1.29+.01*Math.sin(seconds*1.8);
+   if(this.externalSleeper)this.externalSleeper.position.y=this.externalSleeperOriginY+.009*Math.sin(seconds*1.8);
    hairCap.position.y=1.46+.01*Math.sin(seconds*1.8);
    lamp.intensity=lampOriginal*(1+.025*Math.sin(seconds*2.8));
    for(const [id,m] of markers){
