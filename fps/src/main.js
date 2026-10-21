@@ -3,6 +3,8 @@ import {
 } from '@babylonjs/core';
 import { LEVELS, ROOM, isReady, objectivesCompleted } from './levels.js';
 import { buildWorld } from './world.js';
+import { addRealAssets } from './realism.js';
+import { chooseInteraction } from './interaction.js';
 import './style.css';
 
 const root=document.querySelector('#app');
@@ -28,10 +30,11 @@ root.innerHTML=`
     </div>
     <div class="timer-panel"><span>TIME BEFORE THE ALARM</span><strong id="time-value">02:00</strong><small>BE QUIET. MOVE SMART.</small></div>
     <div class="reticle" id="reticle"><span></span></div>
-    <div class="interaction" id="interaction" hidden><kbd>E</kbd><div><strong id="interaction-title">INTERACT</strong><small id="interaction-hint">BE QUIET</small></div></div>
-    <div class="controls-tip">W A S D — MOVE <i>·</i> MOUSE — LOOK <i>·</i> SHIFT — SNEAK <i>·</i> E — INTERACT</div>
+    <button type="button" class="interaction" id="interaction" hidden aria-label="Interact using E or click"><kbd>E</kbd><div><strong id="interaction-title">INTERACT</strong><small id="interaction-hint">OR CLICK TO USE</small></div></button>
+    <div class="controls-tip">WASD — MOVE <i>·</i> MOUSE — LOOK <i>·</i> SHIFT — SNEAK <i>·</i> E OR CLICK — INTERACT <i>·</i> <a href="https://polyhaven.com" target="_blank" rel="noopener noreferrer">Powered by Poly Haven</a></div>
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="assets-status" id="assets-status" aria-live="polite">PREPARING HIGH-DETAIL SCENE</div>
   <div id="flash" class="danger-flash"></div>
   <div class="touch-ui" id="touch-ui" hidden>
     <div class="touch-pad" aria-label="Move">
@@ -130,6 +133,14 @@ function buildLevel(index) {
  camera.setTarget(new Vector3(-3.8,1.22,-3));
  scene.activeCamera=camera;
  world=buildWorld(scene,level);
+ const assetScene=scene;
+ el('assets-status').textContent='LOADING REAL-WORLD MATERIALS…';
+ void addRealAssets(assetScene,level,world,progress=>{
+   if(scene===assetScene)el('assets-status').textContent=progress;
+ }).catch(error=>{
+   console.warn('[cc0] Asset fallback:',error);
+   if(scene===assetScene)el('assets-status').textContent='BASIC ART FALLBACK';
+ });
  timeLeft=level.timer;elapsed=0;noise=0;alertness=0;steps=0;stepClock=0;peakNoise=0;
  completed=new Set();clockStopped=false;focused=null;lostReason='';finished=false;uiClock=0;
  el('level-num').textContent='LEVEL '+level.number;
@@ -179,27 +190,18 @@ function collision(x,z){
  return world.blockers.some(b=>Math.abs(x-b.x)<b.wx+.19&&Math.abs(z-b.z)<b.wz+.19);
 }
 function bestFocus(){
- const p=camera.position;
- const ray=camera.getForwardRay(1).direction.clone();ray.y=0;ray.normalize();
- let best=null,score=Infinity;
- for(const def of LEVELS[stage].objectives){
-  if(completed.has(def.id))continue;
-  const obj=world.markers.get(def.id);if(!obj)continue;
-  const to=obj.pos.subtract(p);to.y=0;
-  const d=to.length();if(d>2.25)continue;
-  const dot=Vector3.Dot(ray,to.normalize());
-  if(dot<.18&&d>1.03)continue;
-  if(d<score){best={def,d};score=d;}
- }
- if(objectivesCompleted(LEVELS[stage],completed)){
-  const to=world.exitPos.subtract(p);to.y=0;const d=to.length();
-  if(d<2.1&&Vector3.Dot(ray,to.normalize())>.05)return {exit:true,d};
- }
- return best;
+ const forward=camera.getForwardRay(1).direction;
+ return chooseInteraction({
+   objectives:LEVELS[stage].objectives,
+   completed,markers:world.markers,
+   player:camera.position,forward,
+   exit:world.exitPos,
+   done:objectivesCompleted(LEVELS[stage],completed),
+ });
 }
 function interact() {
  if(!playing||!scene)return;
- const nearest=bestFocus();if(!nearest){notify('Move closer and look at an object to interact.');return;}
+ const nearest=bestFocus();if(!nearest){notify('Nothing in range. Get closer to the glowing item, then press E or click USE.','warn');return;}
  if(nearest.exit){win();return;}
  const def=nearest.def;
  if(!isReady(def,completed)){notify('Locked. Find the required item first.','warn');tone('alarm');return;}
@@ -265,7 +267,7 @@ function updateHud(){
  const obj=focused.def;
  const ready=isReady(obj,completed);
  el('interaction-title').textContent=ready?obj.action.toUpperCase():'LOCKED — NEED '+obj.requires.toUpperCase();
- el('interaction-hint').textContent=ready?'PRESS E TO INTERACT':'FIND THE KEY ITEM FIRST';
+ el('interaction-hint').textContent=ready?'PRESS E OR CLICK TO USE':'FIND THE KEY ITEM FIRST';
 }
 function pause(){
  if(!started||!playing)return;
@@ -283,13 +285,14 @@ overlay.addEventListener('click',(e)=>{
  else if(action==='welcome')showMenu('welcome');
  else if(action.startsWith('choose-')){const i=Number(action.split('-')[1]);if(i<unlocked)startLevel(i);}
 });
+el('interaction').addEventListener('click',e=>{e.preventDefault();interact();});
 window.addEventListener('keydown',(e)=>{
  const key=e.key.toLowerCase();
  if(['arrowup','arrowdown','arrowleft','arrowright',' ','shift'].includes(key))e.preventDefault();
  pressed.add(key);
  if(e.repeat)return;
  if(key==='escape')pause();
- if(key==='e'&&playing)interact();
+ if((key==='e'||key==='enter')&&playing){e.preventDefault();interact();}
  if(key==='m'&&started&&playing)pause();
 });
 window.addEventListener('keyup',e=>pressed.delete(e.key.toLowerCase()));
@@ -304,7 +307,11 @@ document.addEventListener('mousemove',e=>{
  camera.rotation.y+=e.movementX*.0021;
  camera.rotation.x=clamp(camera.rotation.x+e.movementY*.0018,-1.12,1.12);
 });
-canvas.addEventListener('click',()=>{if(playing&&!isTouch&&document.pointerLockElement!==canvas){try{canvas.requestPointerLock();}catch{}}});
+canvas.addEventListener('click',()=>{
+ if(!playing||isTouch)return;
+ if(document.pointerLockElement!==canvas){try{canvas.requestPointerLock();}catch{}}
+ else if(bestFocus())interact();
+});
 if(isTouch){
  const controlArea=el('touch-ui');
  controlArea.querySelectorAll('[data-key]').forEach(button=>{
