@@ -1,0 +1,86 @@
+{
+  "generated": "2026-10-21T06:27:38.680Z",
+  "source": "Poly Haven",
+  "license": "CC0",
+  "models": {
+    "painted_wooden_nightstand": {
+      "file": "/models/painted_wooden_nightstand/painted_wooden_nightstand_1k.gltf",
+      "bytes": 2151507,
+      "parts": 5,
+      "source": "https://polyhaven.com/a/painted_wooden_nightstand"
+    },
+    "vintage_day_bed": {
+      "file": "/models/vintage_day_bed/vintage_day_bed_1k.gltf",
+      "bytes": 2425779,
+      "parts": 5,
+      "source": "https://polyhaven.com/a/vintage_day_bed"
+    },
+    "alarm_clock_01": {
+      "file": "/models/alarm_clock_01/alarm_clock_01_1k.gltf",
+      "bytes": 1657651,
+      "parts": 5,
+      "source": "https://polyhaven.com/a/alarm_clock_01"
+    },
+    "drawer_cabinet": {
+      "file": "/models/drawer_cabinet/drawer_cabinet_1k.gltf",
+      "bytes": 1143429,
+      "parts": 5,
+      "source": "https://polyhaven.com/a/drawer_cabinet"
+    },
+    "television_02": {
+      "file": "/models/television_02/television_02_1k.gltf",
+      "bytes": 1239955,
+      "parts": 5,
+      "source": "https://polyhaven.com/a/television_02"
+    },
+    "ClassicNightstand_01": {
+      "file": "/models/ClassicNightstand_01/ClassicNightstand_01_1k.gltf",
+      "bytes": 444940,
+      "parts": 5,
+      "source": "https://polyhaven.com/a/ClassicNightstand_01"
+    },
+    "vintage_wooden_drawer_01": {
+      "file": "/models/vintage_wooden_drawer_01/vintage_wooden_drawer_01_1k.gltf",
+      "bytes": 2088635,
+      "parts": 5,
+      "source": "https://polyhaven.com/a/vintage_wooden_drawer_01"
+    },
+    "wicker_basket_01": {
+      "file": "/models/wicker_basket_01/wicker_basket_01_1k.gltf",
+      "bytes": 2730151,
+      "parts": 5,
+      "source": "https://polyhaven.com/a/wicker_basket_01"
+    },
+    "desk_lamp_arm_01": {
+      "file": "/models/desk_lamp_arm_01/desk_lamp_arm_01_1k.gltf",
+      "bytes": 2875984,
+      "parts": 5,
+      "source": "https://polyhaven.com/a/desk_lamp_arm_01"
+    },
+    "vintage_oil_lamp": {
+      "file": "/models/vintage_oil_lamp/vintage_oil_lamp_1k.gltf",
+      "bytes": 2070002,
+      "parts": 9,
+      "source": "https://polyhaven.com/a/vintage_oil_lamp"
+    }
+  },
+  "materials": {
+    "wood_floor": {
+      "diffuse": "/models/wood_floor/diffuse.jpg",
+      "normal": "/models/wood_floor/normal.jpg",
+      "arm": "/models/wood_floor/arm.jpg"
+    },
+    "white_plaster_02": {
+      "diffuse": "/models/white_plaster_02/diffuse.jpg",
+      "normal": "/models/white_plaster_02/normal.jpg",
+      "rough": "/models/white_plaster_02/rough.jpg",
+      "arm": "/models/white_plaster_02/arm.jpg"
+    },
+    "wood_planks": {
+      "diffuse": "/models/wood_planks/diffuse.jpg",
+      "normal": "/models/wood_planks/normal.jpg",
+      "arm": "/models/wood_planks/arm.jpg"
+    }
+  },
+  "failures": {}
+}
