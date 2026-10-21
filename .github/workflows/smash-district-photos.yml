@@ -39,11 +39,11 @@ jobs:
           fetch_image district photo-1568901346375-23c9450c58cd 900
           fetch_image truffle photo-1550547660-d9450f859349 900
           fetch_image habibi photo-1571091718767-18b5b1457add 900
-          fetch_image chicken photo-1553979459-d2229ba7433a 900
+          fetch_image chicken photo-1644940733241-d2512327ed2b 900
           fetch_image fries photo-1573080496219-bb080dd4f877 900
           fetch_image fries2 photo-1630384060421-cb20d0e0649d 900
           fetch_image drink photo-1437418747212-8d9709afab22 900
-          fetch_image soda photo-1513558161293-cdaf765edfd7 900
+          fetch_image soda photo-1437418747212-8d9709afab22 900
           du -sh smash-district/public/assets
       - name: Commit bundled art
         shell: bash
