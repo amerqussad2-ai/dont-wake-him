@@ -24,6 +24,8 @@ jobs:
       - name: Download CC0 1K models and material maps
         working-directory: fps
         run: node scripts/sync-assets.mjs
+        env:
+          DWH_FORCE_RESYNC: '1'
       - name: Validate downloaded assets on disk
         shell: bash
         run: |
