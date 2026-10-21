@@ -1,7 +1,7 @@
 import {
   Vector3, Color3, Color4, MeshBuilder, PBRMaterial, StandardMaterial,
   HemisphericLight, PointLight, DirectionalLight, ShadowGenerator, DynamicTexture,
-  GlowLayer, TransformNode, Texture
+  GlowLayer, TransformNode, Texture, Scene
 } from '@babylonjs/core';
 
 // Every asset is built locally with Babylon primitives and hand-generated
@@ -48,7 +48,7 @@ function emissive(scene,name,color,power=1) {
 export function buildWorld(scene,level) {
  const p=level.palette;
  scene.clearColor = new Color4(.025,.03,.048,1);
- scene.fogMode=scene.FOGMODE_EXP2; scene.fogDensity=.007;
+ scene.fogMode=Scene.FOGMODE_EXP2; scene.fogDensity=.007;
  scene.fogColor=C(level.atmosphere==='storm'?'#394754':'#34354b');
  scene.imageProcessingConfiguration.exposure=1.15;
  scene.imageProcessingConfiguration.contrast=1.23;
