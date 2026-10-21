@@ -78,17 +78,30 @@ async function downloadModel(slug) {
   console.log('[art] ok model '+slug+' ('+files.length+' files; '+Math.round(count/1024)+' KB)');
  }catch(e){await rm(tmp,{recursive:true,force:true});throw e;}
 }
+function findTextureRecord(json,aliases){
+ // Poly Haven serves maps in map → resolution → format order, not
+ // always format → resolution → map order.
+ for(const res of ['1k','2k']){
+  for(const name of aliases){
+   const candidates=[
+    json[name]?.[res]?.jpg, json[name]?.[res]?.png,
+    json[name]?.jpg?.[res], json[name]?.png?.[res],
+    json.jpg?.[res]?.[name],json.png?.[res]?.[name],
+   ];
+   for(const val of candidates)if(val?.url)return val;
+  }
+ }
+ return null;
+}
 async function downloadMaterial(slug) {
  const json=await textJson(api+encodeURIComponent(slug));
- const res=json.jpg?.['1k']??json.png?.['1k']??json.jpg?.['2k'];
- if(!res)fail('No jpg material at 1K/2K: '+slug);
  const material={};
- const names={diffuse:['diff','diffuse'],normal:['nor_gl'],rough:['rough'],arm:['arm']};
+ const names={diffuse:['diff','diffuse','albedo'],normal:['nor_gl'],rough:['rough'],arm:['arm']};
  const tmp=await mkdtemp(join(out,'.download-'));
  let bytes=0;
  try{
   for(const [name,aliases] of Object.entries(names)){
-   const m=aliases.map(key=>res[key]).find(x=>x?.url);
+   const m=findTextureRecord(json,aliases);
    if(!m)continue;
    const ext=new URL(m.url).pathname.split('.').pop();
    const filename=name+'.'+ext;
