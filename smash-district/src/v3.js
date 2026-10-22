@@ -66,25 +66,55 @@ function toast(message){
  clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2700);
 }
 function setupHero(){
- const el=$('#heroPhoto'),pieces=$$('.slice'),burst=$('#heroBurst');
- function play(){
-  clearTimeout(assemblyTimer);
-  el.classList.remove('is-playing','is-assembled');burst.classList.remove('pulse');
-  el.dataset.state='reset';
-  if(reduced){el.classList.add('is-assembled');el.dataset.state='complete';return;}
-  pieces.forEach((piece,i)=>{piece.style.setProperty('--delay',((pieces.length-1-i)*145)+'ms');piece.style.animation='none';});
-  void el.offsetWidth; // fully restart independently animated photo pieces on replay
-  pieces.forEach(piece=>piece.style.animation='');
-  el.classList.add('is-playing');el.dataset.state='playing';
-  assemblyTimer=setTimeout(()=>{
-   el.classList.add('is-assembled');el.classList.remove('is-playing');el.dataset.state='complete';
-   burst.classList.add('pulse');tone('drop');
-  },2050);
+ const shell=$('#heroPhoto'),full=$('#heroPhotoFull'),layers=$$('.food-layer'),burst=$('#heroBurst'),replay=$('#replay');
+ let current=null,flight=0;
+ shell.dataset.state='loading';
+ function finish(){
+  shell.classList.remove('is-building');
+  shell.classList.add('is-assembled');
+  shell.dataset.state='complete';
+  gsap.to(full,{opacity:1,duration:.46,ease:'power2.out'});
+  gsap.to(layers,{opacity:0,duration:.55,delay:.17,onComplete:()=>{layers.forEach(l=>l.style.visibility='hidden');}});
+  burst.classList.remove('pulse');void burst.offsetWidth;burst.classList.add('pulse');
+  tone('drop');
  }
- $('#replay').addEventListener('click',play);
- // No loader / hidden GSAP dependencies. Actual keyframe animations start on initial page load.
- requestAnimationFrame(()=>setTimeout(play,80));
+ function play(){
+  if(current)current.kill();
+  flight++;
+  const run=flight;
+  shell.classList.remove('is-assembled');shell.classList.add('is-building');
+  shell.dataset.state='playing';
+  gsap.killTweensOf([...layers,full]);
+  gsap.set(full,{opacity:0});
+  gsap.set(layers,{visibility:'visible',opacity:0,x:0,y:0,rotation:0,scale:1});
+  const tl=gsap.timeline({onComplete:()=>{if(run===flight)finish();}});
+  // Start with bottom bun, then smashed patties, cheese, pickles and top bun.
+  // Every image is a real transparent photographed layer, not a strip of empty backdrop.
+  [...layers].reverse().forEach((layer,i)=>{
+   tl.fromTo(layer,
+    {y:-380-i*53,x:(i%2===0?-115:120),opacity:0,rotation:(i%2?11:-12),scale:.80},
+    {y:0,x:0,opacity:1,rotation:0,scale:1,duration:.88,ease:'back.out(1.45)',
+     onStart:()=>{if(run===flight)tone('drop');}},
+    i*.31);
+  });
+  tl.to('.hero-orange-glow',{scale:1.24,opacity:.96,duration:.7,ease:'power1.out'},.9);
+  tl.to('.hero-orange-glow',{scale:1,opacity:.75,duration:1.3,ease:'sine.inOut'},'>');
+  current=tl;
+ }
+ replay.addEventListener('click',()=>{tone('click');play();});
+ if(reduced){
+  shell.classList.add('is-assembled');shell.dataset.state='complete';
+  gsap.set(full,{opacity:1});return;
+ }
+ // Static photo fallback is visible until the layer images are decoded; no blank hero.
+ const ready=Promise.all(layers.map(img=>img.decode().catch(()=>null)));
+ Promise.race([ready,new Promise(resolve=>setTimeout(resolve,3800))]).then(()=>{
+  const good=layers.every(img=>img.naturalWidth>0);
+  if(!good){shell.classList.add('is-assembled');shell.dataset.state='complete';return;}
+  play();
+ });
 }
+
 function createCard(p,index){
  return '<article class="product-card" style="animation-delay:'+Math.min(index*80,300)+'ms" data-product="'+p.id+'">'+
  '<div class="product-photo product-frame"><img src="'+p.image+'" loading="lazy" alt="'+safe(p.name)+' food photography"><span class="food-chip">'+safe(p.tag)+'</span></div>'+
