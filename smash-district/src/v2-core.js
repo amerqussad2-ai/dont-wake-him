@@ -229,7 +229,7 @@ const originals=[
  ['.filter[data-filter="burgers"]','BURGERS','برجر'],
  ['.filter[data-filter="sides"]','SIDES','مقبلات'],
  ['.filter[data-filter="drinks"]','DRINKS','مشروبات'],
- ['.statement .eyebrow','WE DON\\\'T DO ORDINARY','مو مثل أي برجر'],
+ ['.statement .eyebrow','WE DON&#39;T DO ORDINARY','مو مثل أي برجر'],
  ['.statement-head','BITE<br/><span>BACK.</span>','لقمة<br/><span>أقوى.</span>'],
  ['.statement-cut','<span>✳</span> BRING YOUR APPETITE. LEAVE YOUR EXPECTATIONS. <span>✳</span>','<span>✳</span> جهّز شهيتك. وانسى كل توقعاتك. <span>✳</span>'],
  ['.statement .btn-black','GET YOUR FIX <span>↗</span>','اختار وجبتك <span>↗</span>'],
@@ -240,7 +240,7 @@ const originals=[
  ['.location-details>div:nth-child(1)>strong','CITY WALK, DUBAI','سيتي ووك، دبي'],
  ['.location-details>div:nth-child(1)>small','Concept location — not an operating restaurant','موقع افتراضي، المطعم غير موجود فعليًا'],
  ['.location-details>div:nth-child(2)>small','Illustrative hours · demonstration only','أوقات توضيحية للعرض فقط'],
- ['.footer-main>div>p','CRAVINGS DON\\\'T WAIT.<br/>NEITHER DO WE.','الجوع ما بينتظر.<br/>ولا إحنا.'],
+ ['.footer-main>div>p','CRAVINGS DON&#39;T WAIT.<br/>NEITHER DO WE.','الجوع ما بينتظر.<br/>ولا إحنا.'],
  ['.footer-back','BACK TO THE TOP ↑','ارجع لفوق ↑'],
  ['.cart-head .eyebrow','YOUR CRAVINGS','طلباتك'],
  ['.cart-head h2','THE BAG<span class="orange-dot">.</span>','السلة<span class="orange-dot">.</span>'],
@@ -248,7 +248,7 @@ const originals=[
  ['.cart-disclaimer','Demo only. No payment, delivery or real restaurant orders.','تجربة فقط. لا يوجد دفع أو توصيل أو طلبات حقيقية.'],
  ['#checkout','PLACE DEMO ORDER <span>↗</span>','تأكيد طلب تجريبي <span>↗</span>'],
  ['.modal-inner .eyebrow','THE DISTRICT / DUBAI','الديستريكت / دبي'],
- ['.modal-inner h2','THIS ISN\\\'T<br/>JUST A <em>BURGER.</em><br/>IT\\\'S A <i>STATEMENT.</i>','هذا مش<br/>مجرد <em>برجر.</em><br/>هذه <i>تجربة.</i>'],
+ ['.modal-inner h2','THIS ISN&#39;T<br/>JUST A <em>BURGER.</em><br/>IT&#39;S A <i>STATEMENT.</i>','هذا مش<br/>مجرد <em>برجر.</em><br/>هذه <i>تجربة.</i>'],
  ['.modal-inner>p:not(.eyebrow)','A fictional Dubai burger brand imagined with unapologetically bold food, cinematic visuals, and a love of everything smashed.','براند برجر وهمي في دبي. نكهات قوية، صور سينمائية وشغف بالبرجر المقرمش.'],
  ['#modalMenu','TASTE THE MENU <span>↗</span>','شوف المنيو <span>↗</span>'],
 ];
@@ -308,7 +308,7 @@ function applyLanguage(){
  $('#languageToggle').textContent=arabic?'EN':'العربية';
  $('#languageToggle').setAttribute('aria-label',arabic?'Switch to English':'التبديل إلى العربية');
  for(const [selector,en,ar] of originals){
-  const node=$(selector);if(node)node.innerHTML=arabic?ar:en.replaceAll("\\\\'","'");
+  const node=$(selector);if(node)node.innerHTML=arabic?ar:en;
  }
  $$('[data-i18n]').forEach(el=>{
   const key=el.dataset.i18n;
