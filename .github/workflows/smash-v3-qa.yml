@@ -30,7 +30,12 @@ jobs:
         working-directory: smash-district
         run: |
           npm install --no-save --no-package-lock playwright
-          npx playwright install chromium --with-deps
+          if command -v google-chrome >/dev/null 2>&1; then
+            echo "CHROME_EXECUTABLE=$(command -v google-chrome)" >> "$GITHUB_ENV"
+            google-chrome --version
+          else
+            npx playwright install chromium --with-deps
+          fi
       - name: Start Vite preview
         working-directory: smash-district
         run: |
