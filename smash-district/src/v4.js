@@ -1,5 +1,6 @@
 
-import './v3.js';
+window.__SMASH_V4__=true;
+await import('./v3.js');
 import './v4.css';
 import gsap from 'gsap';
 
@@ -40,23 +41,37 @@ function modelFromButtons(){
  };
 }
 function layersFor(m){
- const double=m.extras.includes('double'), lift=double?7:0;
+ const twice=m.extras.includes('double');
  const bun=m.bun==='potato'?'potato':'brioche';
- const layers=[
-  {key:'bottom-bun',asset:files[bun+'-bottom'],top:72,level:1,width:85},
-  {key:'lower-sauce',asset:files[m.sauce],top:68,level:2,width:83},
-  {key:'first-patty',asset:files[m.protein],top:59,level:3,width:88},
- ];
- if(m.cheese!=='none')layers.push({key:'cheese',asset:files[m.cheese],top:54,level:4,width:87});
- if(double){
-  layers.push({key:'second-patty',asset:files[m.protein],top:47,level:5,width:88});
-  if(m.cheese!=='none')layers.push({key:'upper-cheese',asset:files[m.cheese],top:43,level:6,width:86});
+ const layers=[];
+ const add=(key,asset,top,height,level,width=84)=>{
+  layers.push({key,asset,top,height,level,width});
+ };
+ // All independent transparent assets use one registered 840:780 canvas.
+ // Heights are calibrated per ingredient; no photographic slices from any finished burger.
+ if(twice){
+  add('bottom-bun',files[bun+'-bottom'],70,16,1,67);
+  add('lower-sauce',files[m.sauce],69,7,2,78);
+  add('second-patty',files[m.protein],64,14,3,84);
+  if(m.cheese!=='none')add('upper-cheese',files[m.cheese],61,9,4,78);
+  add('first-patty',files[m.protein],54,14,5,84);
+  if(m.cheese!=='none')add('cheese',files[m.cheese],51,11,6,78);
+  if(m.extras.includes('pickles'))add('pickles',files.pickles,49,8,7,77);
+  if(m.extras.includes('jalapeno'))add('jalapenos',files.jalapeno,48,8,8,77);
+  add('lettuce',files.lettuce,46,8,9,81);
+  add('upper-sauce',files[m.sauce],45,5,10,78);
+  add('top-bun',files[bun+'-top'],20,29,11,85);
+ }else{
+  add('bottom-bun',files[bun+'-bottom'],63,16,1,67);
+  add('lower-sauce',files[m.sauce],61,7,2,78);
+  add('first-patty',files[m.protein],55,16,3,84);
+  if(m.cheese!=='none')add('cheese',files[m.cheese],52,11,4,78);
+  if(m.extras.includes('pickles'))add('pickles',files.pickles,49,8,5,77);
+  if(m.extras.includes('jalapeno'))add('jalapenos',files.jalapeno,48,8,6,77);
+  add('lettuce',files.lettuce,47,8,7,81);
+  add('upper-sauce',files[m.sauce],45,5,8,78);
+  add('top-bun',files[bun+'-top'],20,29,9,85);
  }
- if(m.extras.includes('pickles'))layers.push({key:'pickles',asset:files.pickles,top:42-lift,level:7,width:84});
- if(m.extras.includes('jalapeno'))layers.push({key:'jalapenos',asset:files.jalapeno,top:39-lift,level:8,width:81});
- layers.push({key:'lettuce',asset:files.lettuce,top:38-lift,level:9,width:83});
- layers.push({key:'upper-sauce',asset:files[m.sauce],top:34-lift,level:10,width:82});
- layers.push({key:'top-bun',asset:files[bun+'-top'],top:16-lift,level:11,width:88});
  return layers;
 }
 function populateStage(stage,parts,{animate=false}={}){
@@ -73,6 +88,7 @@ function populateStage(stage,parts,{animate=false}={}){
   img.dataset.asset=p.asset;
   img.style.setProperty('--layer-top',p.top+'%');
   img.style.setProperty('--layer-width',p.width+'%');
+  img.style.setProperty('--layer-height',p.height+'%');
   img.style.zIndex=String(p.level);
   stage.appendChild(img);
   els.push(img);
@@ -112,6 +128,7 @@ async function updateBuilder(){
   node.style.zIndex=String(layer.level);
   node.style.setProperty('--layer-top',layer.top+'%');
   node.style.setProperty('--layer-width',layer.width+'%');
+  node.style.setProperty('--layer-height',layer.height+'%');
   if(!exists&&!reduced)gsap.fromTo(node,{y:-140,opacity:0,rotation:-3},{y:0,opacity:1,rotation:0,duration:.72,ease:'back.out(1.3)',overwrite:true});
   else if(exists&&!reduced)gsap.to(node,{duration:.44,ease:'power2.out',overwrite:true});
   stage.appendChild(node);
