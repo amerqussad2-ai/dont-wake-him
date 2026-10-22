@@ -2,50 +2,54 @@
 /* SMASH DISTRICT V4 — real isolated ingredient photography, no CSS burger illustrations */
 .builder-photo-box:has(.burger-v4-stage:not([hidden])){filter:drop-shadow(0 25px 18px rgba(0,0,0,.4))}
 .builder-photo-box::after{z-index:0}
-.builder-v4-stage,.hero-v4-stage{position:absolute;inset:0;overflow:visible;isolation:isolate}
+.builder-v4-stage,.hero-v4-stage{
+  position:absolute;
+  left:50%;
+  top:47%;
+  translate:-50% -50%;
+  width:min(100%,680px);
+  aspect-ratio:840/780;
+  height:auto;
+  overflow:visible;
+  isolation:isolate;
+  pointer-events:none;
+}
 .builder-v4-stage{z-index:2}
 .builder-visual .builder-photo-box img.burger-ingredient,
 .hero-v4-stage img.burger-ingredient{
- position:absolute;
- display:block;
- box-sizing:border-box;
- width:var(--layer-width,85%);
- height:auto;
- top:var(--layer-top,30%);
- left:50%;
- translate:-50% 0;
- transform-origin:center center;
- opacity:1;
- mask-image:none;
- border:0;
- object-fit:contain;
- pointer-events:none;
- will-change:transform,opacity;
- backface-visibility:hidden;
- filter:drop-shadow(0 7px 5px rgba(0,0,0,.27));
- transition:none;
-}
-.builder-photo-box img.burger-ingredient{
- max-height:39%;
+  position:absolute;
+  display:block;
+  box-sizing:border-box;
+  width:var(--layer-width,84%);
+  height:var(--layer-height,10%);
+  top:var(--layer-top,30%);
+  left:50%;
+  translate:-50% 0;
+  transform-origin:center center;
+  object-fit:fill;
+  opacity:1;
+  mask-image:none;
+  max-height:none;
+  border:0;
+  pointer-events:none;
+  will-change:transform,opacity;
+  backface-visibility:hidden;
+  filter:drop-shadow(0 4px 5px rgba(0,0,0,.20));
+  transition:none;
 }
 .burger-v4-stage[hidden]{display:none!important}
 .builder-photo-box:has(.burger-v4-stage:not([hidden]))>img#builderImage{display:none!important}
 .hero-photo.hero-v4-active .hero-pieces,
 .hero-photo.hero-v4-active .hero-photo-full{display:none!important}
-.hero-v4-stage{z-index:5;pointer-events:none}
-.hero-v4-stage img.burger-ingredient{
- max-height:36%;
- filter:drop-shadow(0 7px 6px rgba(0,0,0,.27));
-}
+.hero-v4-stage{z-index:5;top:50%}
 .builder-caption small{max-width:96%;text-align:center}
 @media(max-width:920px){
- .builder-v4-stage{inset:3% 7% 2%}
- .builder-photo-box img.burger-ingredient{max-height:39%}
+ .builder-v4-stage{width:112%}
+ .hero-v4-stage{width:104%}
 }
 @media(max-width:640px){
- .builder-v4-stage{inset:4% -5% 1%}
- .builder-photo-box img.burger-ingredient{max-height:35%}
- .hero-v4-stage img.burger-ingredient{max-height:36%}
+ .builder-v4-stage{width:115%;top:45%}
+ .hero-v4-stage{width:113%;top:50%}
  .builder-caption{bottom:4%}
 }
 @media(prefers-reduced-motion:reduce){
