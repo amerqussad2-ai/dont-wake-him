@@ -284,7 +284,7 @@ function initScroll(){
  if(!reduced&&'IntersectionObserver' in window){
   document.body.classList.add('motion-ready');
   const observer=new IntersectionObserver(entries=>{
-   entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('in-view');observer.unobserve(entry.target);}}
+   entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('in-view');observer.unobserve(entry.target);}});
   },{threshold:.09,rootMargin:'0px 0px -5% 0px'});
   els.forEach(el=>observer.observe(el));
  }
