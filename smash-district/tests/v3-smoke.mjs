@@ -1,0 +1,80 @@
+import {chromium} from 'playwright';
+import assert from 'node:assert/strict';
+const browser=await chromium.launch({headless:true});
+const errors=[];
+const base='http://127.0.0.1:4173/';
+try{
+ const page=await browser.newPage({viewport:{width:1440,height:900},deviceScaleFactor:1});
+ page.on('pageerror',e=>errors.push(e.message));
+ await page.goto(base,{waitUntil:'networkidle',timeout:45000});
+ assert.match(await page.title(),/SMASH DISTRICT/);
+ assert.equal(await page.locator('#languageToggle').count(),0);
+ assert.equal(await page.locator('#soundToggle').count(),0);
+ assert.equal(await page.locator('.category-tab').count(),5);
+ const categories=['burgers','sides','drinks','desserts','combos'];
+ const counts=[4,4,4,3,2];const images=new Set();
+ for(let i=0;i<categories.length;i++){
+   const cat=categories[i];
+   await page.locator('[data-cat="'+cat+'"]').click();
+   assert.equal(await page.locator('.product-card').count(),counts[i],cat+' only');
+   const urls=await page.locator('#menuPanel .product-photo img').evaluateAll(nodes=>nodes.map(img=>img.getAttribute('src')));
+   for(const url of urls){assert(!images.has(url),'duplicate photo: '+url);images.add(url);}
+   for(let k=0;k<urls.length;k++){
+     const img=page.locator('#menuPanel .product-photo img').nth(k);
+     await img.scrollIntoViewIfNeeded();
+     await img.evaluate(node=>node.decode());
+     assert.equal(await img.evaluate(node=>node.naturalWidth>0),true,cat+' image '+k+' missing');
+   }
+ }
+ assert.equal(images.size,17);
+ console.log('PASS 5 independent categories / 17 unique loaded menu photos');
+ await page.locator('[data-cat="burgers"]').click();
+ await page.waitForFunction(()=>document.querySelector('#heroPhoto')?.dataset.state==='complete',undefined,{timeout:8000});
+ assert.equal(await page.locator('.slice').count(),8);
+ await page.locator('#replay').click();
+ await page.waitForFunction(()=>document.querySelector('#heroPhoto')?.dataset.state==='playing',undefined,{timeout:3000});
+ assert(await page.locator('.slice').first().evaluate(el=>el.getAnimations().length)>0,'photo pieces must actually animate');
+ await page.waitForFunction(()=>document.querySelector('#heroPhoto')?.dataset.state==='complete',undefined,{timeout:8000});
+ console.log('PASS auto-assembly and replay with live CSS animations');
+ await page.locator('.section-heading').first().scrollIntoViewIfNeeded();
+ await page.waitForFunction(()=>parseFloat(getComputedStyle(document.querySelector('.section-heading')).opacity)>.9,undefined,{timeout:4500});
+ await page.locator('#menuPanel [data-add="district"]').click();
+ assert.equal(await page.locator('#bagCount').textContent(),'1');
+ assert.equal(await page.locator('#upsell').isVisible(),true);
+ await page.locator('#upsellAccept').click();
+ await page.locator('#navCart').click();
+ assert.match(await page.locator('#subtotal').textContent(),/67/);
+ await page.locator('#cartItems [data-qty="1"]').first().click();
+ assert.match(await page.locator('#subtotal').textContent(),/105/);
+ await page.locator('#cartClose').click();
+ console.log('PASS motion reveal, cart, quantities and combo suggestion');
+ assert(await page.locator('#builderImage').evaluate(el=>el.complete&&el.naturalWidth>0));
+ await page.locator('#proteinOptions [data-value="chicken"]').click();
+ await page.waitForFunction(()=>document.querySelector('#builderImage')?.getAttribute('src')==='/assets/chicken.jpg',undefined,{timeout:7500});
+ assert.equal(await page.locator('#buildTotal').textContent(),'AED 38');
+ await page.locator('#cheeseOptions [data-value="swiss"]').click();
+ await page.locator('#extraOptions [data-value="double"]').click();
+ assert.equal(await page.locator('#buildTotal').textContent(),'AED 51');
+ await page.locator('#addCustom').click();
+ await page.locator('#navCart').click();
+ assert.match(await page.locator('#subtotal').textContent(),/156/);
+ await page.locator('#checkout').click();
+ assert.equal(await page.locator('#bagCount').textContent(),'0');
+ console.log('PASS photographic builder, live pricing, cart and demo checkout');
+ await page.screenshot({path:'v3-desktop.png',fullPage:true,timeout:30000});
+ const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1,isMobile:true,hasTouch:true});
+ mobile.on('pageerror',e=>errors.push('mobile: '+e.message));
+ await mobile.goto(base,{waitUntil:'networkidle',timeout:45000});
+ await mobile.locator('#navToggle').click();
+ assert.equal(await mobile.locator('#mobileNav').isVisible(),true);
+ await mobile.locator('#mobileNav a[href="#menu"]').click();
+ assert.equal(await mobile.locator('#mobileNav').isVisible(),false);
+ await mobile.locator('[data-cat="desserts"]').click();
+ assert.equal(await mobile.locator('#menuPanel .product-card').count(),3);
+ await mobile.locator('#menuPanel [data-add="brownie"]').click();
+ assert.equal(await mobile.locator('#bagCount').textContent(),'1');
+ await mobile.screenshot({path:'v3-mobile.png',fullPage:false,timeout:30000});
+ assert.equal(errors.length,0,errors.join(' | '));
+ console.log('PASS mobile menu, order and zero JavaScript errors');
+ await mobile.close();await page.close();
+}finally{await browser.close();}
