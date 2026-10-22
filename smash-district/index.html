@@ -1,84 +1,131 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
- <meta charset="UTF-8"/>
- <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
- <meta name="theme-color" content="#0b0b0a"/>
- <meta name="description" content="SMASH DISTRICT DUBAI — a cinematic, fictional premium burger brand concept. Explore smash burgers, signature flavors, and an interactive demo menu."/>
- <title>SMASH DISTRICT® — Dubai | Built To Crave</title>
- <link rel="preconnect" href="https://fonts.googleapis.com"/>
- <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
- <link href="https://fonts.googleapis.com/css2?family=Anton&family=Cairo:wght@400;500;600;700;800;900&family=DM+Sans:wght@400;500;600;700;800&family=Permanent+Marker&display=swap" rel="stylesheet"/>
- <link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="theme-color" content="#10100e"/>
+<meta name="description" content="SMASH DISTRICT — a fictional Dubai smash burger restaurant concept. Discover our crafted menu, build your burger, and try a demo order."/>
+<title>SMASH DISTRICT® | Built To Crave — Dubai</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 </head>
 <body>
- <div class="loading" id="loading" aria-hidden="true"><div class="loading-logo">SMASH<span>DISTRICT</span></div><div class="loading-line"><i></i></div><span class="loading-note">DUBAI · MADE TO CRAVE</span></div>
- <div class="scroll-progress" id="scrollProgress"></div>
- <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
- <header class="site-header" id="siteHeader">
-   <a class="brand" href="#home" aria-label="Smash District home"><span class="brand-star">✳</span><span>SMASH<small>DISTRICT <b>DUBAI</b></small></span></a>
-   <nav class="desktop-nav" aria-label="Main navigation"><a href="#home" class="nav-link active">HOME</a><a href="#favorites" class="nav-link">THE HITS</a><a href="#story" class="nav-link">OUR STORY</a><a href="#menu" class="nav-link">MENU</a><a href="#location" class="nav-link">DUBAI</a></nav>
-   <div class="header-actions"><button class="cart-trigger" id="cartTrigger" aria-label="Open your order"><span class="bag-symbol">◫</span><span>YOUR BAG</span><i id="cartCount">0</i></button><a class="btn btn-ghost header-order" href="#menu">ORDER NOW <span>↗</span></a><button class="menu-toggle" id="menuToggle" aria-label="Open navigation" aria-expanded="false"><span></span><span></span></button></div>
- </header>
- <div class="mobile-menu" id="mobileMenu" inert><a href="#home">HOME</a><a href="#favorites">THE HITS</a><a href="#story">OUR STORY</a><a href="#menu">FULL MENU</a><a href="#location">FIND US</a><span>BUILT FOR THE HUNGRY.</span></div>
+<div class="scroll-line" id="scrollLine" aria-hidden="true"></div>
+<header class="header" id="header">
+ <a href="#home" class="logo" aria-label="Smash District home"><span class="logo-mark">✳</span><span class="logo-type">SMASH <strong>DISTRICT</strong><small>DUBAI — U.A.E.</small></span></a>
+ <nav class="nav-links" aria-label="Main menu"><a href="#home">HOME</a><a href="#favorites">BEST SELLERS</a><a href="#menu">MENU</a><a href="#builder">BUILD YOURS</a></nav>
+ <div class="header-right"><button type="button" id="navCart" class="header-cart" aria-label="Open demo order bag">BAG <span class="bag-count" id="bagCount">0</span></button><a class="primary-btn header-cta" href="#menu">ORDER NOW <span>↗</span></a><button type="button" id="navToggle" class="nav-toggle" aria-label="Open navigation" aria-expanded="false"><span></span><span></span></button></div>
+</header>
+<div id="mobileNav" class="mobile-nav" hidden><a href="#home">HOME</a><a href="#favorites">BEST SELLERS</a><a href="#menu">MENU</a><a href="#builder">BUILD YOURS</a><div class="mobile-nav-tag">SMASH HARD. EAT HAPPY.</div></div>
 
- <main>
-  <section class="hero" id="home" aria-labelledby="heroTitle">
-   <div class="hero-noise"></div><div class="hero-halo" aria-hidden="true"></div><div class="hero-ghost" aria-hidden="true">SMASH</div>
-   <div class="hero-inner">
-    <div class="hero-copy">
-      <p class="eyebrow hero-eyebrow"><span class="eyebrow-line"></span> DUBAI-BORN ENERGY. NO HALF MEASURES.</p>
-      <h1 id="heroTitle" class="hero-title"><span class="title-reveal"><span>NOT YOUR</span></span><span class="title-reveal"><span>AVERAGE</span></span><span class="title-reveal hero-title-accent"><span>BURGER<span class="title-period">.</span></span></span></h1>
-      <p class="hero-description">Crispy edges. Melting cheese. Zero apologies. A burger experience made to turn up the heat in Dubai.</p>
-      <div class="hero-buttons"><a class="btn btn-fire magnetic" href="#menu"><span>EXPLORE THE MENU</span><span class="btn-arrow">↗</span></a><button class="watch-btn magnetic" id="storyTrigger"><span class="watch-icon">▶</span><span>THE DISTRICT STORY</span></button></div>
-      <div class="hero-side-note"><span class="down-arrow">↓</span><span>SCROLL TO FEEL THE HEAT</span></div>
-    </div>
-    <div class="hero-media" aria-label="Cinematic photograph of a cheeseburger">
-      <div class="hero-image-wrap" id="heroImageWrap"><img class="hero-burger" id="heroBurger" src="/assets/hero.jpg" alt="Juicy double smashed cheeseburger with pickles and melted cheddar" fetchpriority="high"/>
-      <div class="hero-image-fade"></div></div>
-      <div class="hero-orbit orbit-outer"></div><div class="hero-orbit orbit-inner"></div>
-      <div class="orbit-badge"><span class="badge-top">SMASHED</span><b>100%</b><span class="badge-bottom">WITH ATTITUDE</span></div>
-      <div class="hero-note">HOT, MESSY<br/><em>LEGENDARY.</em></div>
-      <span class="hero-spark spark-one">✳</span><span class="hero-spark spark-two">✦</span><span class="hero-spark spark-three">✳</span>
-    </div>
+<main>
+<section class="hero" id="home">
+ <div class="hero-grid"></div><div class="hero-orange-glow" aria-hidden="true"></div>
+ <div class="hero-content">
+  <p class="eyebrow hero-label"><i></i> MADE FOR THE CITY THAT DOESN'T SETTLE</p>
+  <h1 class="hero-headline"><span class="title-row">BUILT TO</span><span class="title-row outline-word">CRAVE.</span><span class="title-row orange-word">SMASHED.</span></h1>
+  <p class="hero-subline">THE HEAT. THE CRUNCH. THE MESS.</p>
+  <p class="hero-copy">Double smashed. Fully loaded. Unapologetically delicious. Welcome to Dubai's imaginary burger district.</p>
+  <div class="hero-actions"><a href="#menu" class="primary-btn hero-cta">DISCOVER THE MENU <span>↗</span></a><a href="#builder" class="text-btn">BUILD YOUR OWN <span>↗</span></a></div>
+  <div class="hero-bottom-caption"><span class="arrow-down">↓</span> SCROLL FOR THE GOOD STUFF</div>
+ </div>
+ <div class="hero-art" id="heroArt">
+  <div class="hero-art-ring ring-a"></div><div class="hero-art-ring ring-b"></div>
+  <div class="hero-photo" id="heroPhoto" role="img" aria-label="Realistic double cheeseburger assembled in cinematic falling layers">
+   <div id="heroPieces" class="hero-pieces" aria-hidden="true">
+    <div class="slice" style="--top:0%;--bottom:87.5%;--i:0"></div>
+    <div class="slice" style="--top:12.5%;--bottom:75%;--i:1"></div>
+    <div class="slice" style="--top:25%;--bottom:62.5%;--i:2"></div>
+    <div class="slice" style="--top:37.5%;--bottom:50%;--i:3"></div>
+    <div class="slice" style="--top:50%;--bottom:37.5%;--i:4"></div>
+    <div class="slice" style="--top:62.5%;--bottom:25%;--i:5"></div>
+    <div class="slice" style="--top:75%;--bottom:12.5%;--i:6"></div>
+    <div class="slice" style="--top:87.5%;--bottom:0%;--i:7"></div>
    </div>
-   <div class="hero-bottom"><span>01 / 05 — WELCOME TO THE DISTRICT</span><span>DUBAI, UAE <span class="hero-cross">✳</span> ALL FLAVOR. NO FILTER.</span></div>
-  </section>
+   <div class="hero-photo-full" id="heroPhotoFull"></div>
+  </div>
+  <div class="hero-star star-1">✳</div><div class="hero-star star-2">✦</div>
+  <div class="hero-burst" id="heroBurst"></div>
+  <div class="hero-badge"><span>HOT & FRESH</span><strong>100%</strong><span>SMASH ENERGY</span></div>
+  <button id="replay" class="replay" type="button" aria-label="Replay burger building animation"><span>↻</span> REPLAY THE SMASH</button>
+ </div>
+ <div class="hero-bottomline"><span>EST. IN OUR IMAGINATION — DUBAI</span><span>GOOD FOOD. LOUD FLAVOR. NO REGRETS.</span></div>
+</section>
 
-  <div class="marquee-band" aria-hidden="true"><div class="marquee-track"><span>GOOD FOOD. LOUD FLAVOR. <b>✳</b> ZERO REGRETS. <b>✳</b> SMASH DISTRICT DUBAI. <b>✳</b></span><span>GOOD FOOD. LOUD FLAVOR. <b>✳</b> ZERO REGRETS. <b>✳</b> SMASH DISTRICT DUBAI. <b>✳</b></span></div></div>
+<div class="ticker" aria-label="Good burgers, brighter nights"><div class="ticker-flow"><span>SMASH IT. LOVE IT. REPEAT. <b>✳</b> ALWAYS FRESH ENERGY. <b>✳</b> </span><span>SMASH IT. LOVE IT. REPEAT. <b>✳</b> ALWAYS FRESH ENERGY. <b>✳</b> </span></div></div>
 
-  <section class="section favorites" id="favorites">
-    <div class="section-head reveal"><div><p class="eyebrow orange"><span class="eyebrow-line"></span> NOT JUST BURGERS. OBSESSIONS.</p><h2 class="section-title">THE <em>HEAVY</em><br/>HITTERS<span class="orange-dot">.</span></h2></div><div class="section-side"><span>HANDPICKED FOR MAXIMUM CRAVING.</span><p>Three legends. One impossible choice. Every bite goes hard.</p></div></div>
-    <div class="feature-grid">
-      <article class="feature-card reveal" data-product="district"><div class="card-photo"><img src="/assets/district.jpg" alt="Double beef and cheddar smash burger" loading="lazy"/><div class="feature-index">01 / SIGNATURE</div><div class="feature-sticker">BEST<br/>SELLER</div></div><div class="feature-details"><div><h3>THE DISTRICT</h3><p>Double smash · American cheddar · house sauce</p></div><button class="feature-add" data-add="district" aria-label="Add The District to bag">↗</button></div><strong class="feature-price">AED 38</strong></article>
-      <article class="feature-card reveal" data-product="truffle"><div class="card-photo"><img src="/assets/truffle.jpg" alt="Stacked gourmet cheeseburger" loading="lazy"/><div class="feature-index">02 / PREMIUM</div></div><div class="feature-details"><div><h3>TRUFFLE BOSS</h3><p>Smashed beef · truffle mayo · aged cheddar</p></div><button class="feature-add" data-add="truffle" aria-label="Add Truffle Boss to bag">↗</button></div><strong class="feature-price">AED 42</strong></article>
-      <article class="feature-card reveal" data-product="habibi"><div class="card-photo"><img src="/assets/habibi.jpg" alt="Spicy gourmet burger" loading="lazy"/><div class="feature-index">03 / SPICY</div><div class="spicy-tag">HOT ONE 🔥</div></div><div class="feature-details"><div><h3>SPICY HABIBI</h3><p>Smash patty · fiery sauce · jalapeño crunch</p></div><button class="feature-add" data-add="habibi" aria-label="Add Spicy Habibi to bag">↗</button></div><strong class="feature-price">AED 36</strong></article>
-    </div>
-    <a class="text-link reveal" href="#menu">SEE THE ENTIRE MENU <span>↗</span></a>
-  </section>
+<section id="favorites" class="section favorites">
+ <div class="section-heading reveal"><div><p class="eyebrow orange"><i></i> FAN FAVORITES, NO FILLER</p><h2>THE <em>HEAVY</em><br>HITTERS<span class="stop">.</span></h2></div><p class="section-intro">Three reasons to forget about ordinary burgers. Every one of them hits different.</p></div>
+ <div class="featured-grid">
+  <article class="featured-card reveal">
+   <div class="featured-photo product-frame"><img src="/assets/district.jpg" alt="The District double smashed cheeseburger" loading="lazy"><span class="food-chip">01 / BEST SELLER</span></div>
+   <div class="featured-info"><div><h3>THE DISTRICT</h3><p>Double smash · Cheddar · House sauce</p><strong>AED 38</strong></div><button type="button" class="round-add" data-add="district" aria-label="Add The District to your bag">+</button></div>
+  </article>
+  <article class="featured-card reveal">
+   <div class="featured-photo product-frame"><img src="/assets/truffle.jpg" alt="Truffle Boss cheeseburger" loading="lazy"><span class="food-chip">02 / GOURMET</span></div>
+   <div class="featured-info"><div><h3>TRUFFLE BOSS</h3><p>Truffle mayo · Swiss · Mushroom</p><strong>AED 44</strong></div><button type="button" class="round-add" data-add="truffle" aria-label="Add Truffle Boss to your bag">+</button></div>
+  </article>
+  <article class="featured-card reveal">
+   <div class="featured-photo product-frame"><img src="/assets/habibi.jpg" alt="Spicy Habibi beef burger" loading="lazy"><span class="food-chip">03 / FIERY</span></div>
+   <div class="featured-info"><div><h3>SPICY HABIBI</h3><p>Jalapeño · Pepper sauce · Crunch</p><strong>AED 37</strong></div><button type="button" class="round-add" data-add="habibi" aria-label="Add Spicy Habibi to your bag">+</button></div>
+  </article>
+ </div>
+</section>
 
-  <section class="story" id="story">
-    <div class="story-visual"><div class="story-image-layer"></div><div class="story-visual-counter">EST. IN THE IMAGINATION · DUBAI</div><div class="story-circle">NEVER<br/>SETTLE <span>✳</span></div></div>
-    <div class="story-copy"><p class="eyebrow orange"><span class="eyebrow-line"></span> THE DISTRICT DNA</p><h2 class="story-heading">SMASHED<br/>WITH <i>SOUL.</i><br/>SERVED<br/>WITH <i>HEAT.</i></h2><p class="story-body">We believe a burger should be more than something you eat. It should be the thing you remember. Bold ingredients, unapologetic flavor, and a whole lot of Dubai attitude.</p><div class="story-numbers"><div><strong>100<span>%</span></strong><small>BIG ENERGY</small></div><div><strong>0<span>%</span></strong><small>BORING BITES</small></div></div><button class="btn btn-outline" id="storyTriggerTwo">MEET THE DISTRICT <span>↗</span></button></div>
-  </section>
+<section class="menu-section section" id="menu">
+ <div class="menu-heading reveal"><div><p class="eyebrow orange"><i></i> 17 DISTINCT CRAVINGS. 5 CLEAR CATEGORIES.</p><h2>THE <em>MENU</em><span class="stop">.</span></h2></div><p>All the good stuff, minus the chaos.<br>Pick a category to see exactly what you want.</p></div>
+ <div class="category-bar" role="tablist" aria-label="Food categories" id="categoryBar">
+  <button class="category-tab active" type="button" role="tab" id="tab-burgers" data-cat="burgers" aria-selected="true" aria-controls="menuPanel"><span>01</span> BURGERS <b>04</b></button>
+  <button class="category-tab" type="button" role="tab" id="tab-sides" data-cat="sides" aria-selected="false" aria-controls="menuPanel"><span>02</span> SIDES <b>04</b></button>
+  <button class="category-tab" type="button" role="tab" id="tab-drinks" data-cat="drinks" aria-selected="false" aria-controls="menuPanel"><span>03</span> DRINKS <b>04</b></button>
+  <button class="category-tab" type="button" role="tab" id="tab-desserts" data-cat="desserts" aria-selected="false" aria-controls="menuPanel"><span>04</span> DESSERTS <b>03</b></button>
+  <button class="category-tab" type="button" role="tab" id="tab-combos" data-cat="combos" aria-selected="false" aria-controls="menuPanel"><span>05</span> COMBOS <b>02</b></button>
+ </div>
+ <div class="menu-group-head reveal"><div><span class="menu-current-no" id="categoryNumber">01 / CATEGORY</span><h3 id="categoryTitle">BURGERS</h3></div><p id="categoryDescription">Pressed hot. Stacked high. Served loud.</p></div>
+ <div id="menuPanel" class="product-grid" role="tabpanel" aria-labelledby="tab-burgers" aria-live="polite"></div>
+ <p class="demo-notice">* Concept menu and illustrative AED prices. This is a fictional restaurant; no real orders or payments.</p>
+</section>
 
-  <section class="menu-section section" id="menu">
-    <div class="menu-top"><div><p class="eyebrow orange"><span class="eyebrow-line"></span> PICK YOUR OBSESSION</p><h2 class="section-title">THE FULL <em>MENU</em><span class="orange-dot">.</span></h2></div><p>Built for every craving. Prices in AED. <b>Demo ordering only.</b></p></div>
-    <div class="menu-filters" role="group" aria-label="Filter menu"><button class="filter active" data-filter="all" aria-pressed="true">ALL THE GOOD STUFF <span>↗</span></button><button class="filter" data-filter="burgers" aria-pressed="false">BURGERS</button><button class="filter" data-filter="sides" aria-pressed="false">SIDES</button><button class="filter" data-filter="drinks" aria-pressed="false">DRINKS</button></div>
-    <div class="menu-grid" id="menuGrid" aria-live="polite"></div>
-  </section>
+<section class="builder-section" id="builder">
+ <div class="builder-editor">
+  <p class="eyebrow orange"><i></i> THE DISTRICT CUSTOM SHOP</p>
+  <h2>MAKE IT<br><em>YOUR OWN.</em></h2>
+  <p class="builder-lead">Your burger. Your rules. Choose the ingredients, see a real-food photographic preview, and watch the price update.</p>
+  <div class="build-field"><span>01 / CHOOSE YOUR BUN</span><div class="build-chips" id="bunOptions"></div></div>
+  <div class="build-field"><span>02 / CHOOSE YOUR PROTEIN</span><div class="build-chips" id="proteinOptions"></div></div>
+  <div class="build-field"><span>03 / CHOOSE YOUR CHEESE</span><div class="build-chips" id="cheeseOptions"></div></div>
+  <div class="build-field"><span>04 / PICK YOUR SAUCE</span><div class="build-chips" id="sauceOptions"></div></div>
+  <div class="build-field"><span>05 / EXTRA GOODNESS</span><div class="build-chips" id="extraOptions"></div></div>
+  <div class="build-checkout"><div><small>YOUR CREATION</small><strong id="buildTotal">AED 34</strong></div><button id="addCustom" type="button" class="primary-btn">ADD TO BAG <span>↗</span></button></div>
+ </div>
+ <div class="builder-visual">
+  <div class="visual-grid"></div><div class="builder-stamp">DISTRICT<br><strong>LAB</strong><br>No. 001</div>
+  <div class="builder-photo-box"><img id="builderImage" src="/assets/district.jpg" alt="Photographic preview of your burger" loading="lazy"></div>
+  <div class="builder-caption"><span id="buildLabel">DOUBLE BEEF · CHEDDAR · HOUSE SAUCE</span><small id="buildSubLabel">PHOTOGRAPHIC STYLE PREVIEW</small></div>
+  <span class="builder-asterisk">✳</span>
+ </div>
+</section>
 
-  <section class="statement" id="statement"><div class="statement-grid"></div><p class="eyebrow">WE DON'T DO ORDINARY</p><div class="statement-head">BITE<br/><span>BACK.</span></div><div class="statement-cut"><span>✳</span> BRING YOUR APPETITE. LEAVE YOUR EXPECTATIONS. <span>✳</span></div><a href="#menu" class="btn btn-black magnetic">GET YOUR FIX <span>↗</span></a><div class="statement-deco">DUBAI<br/>DISTRICT<br/>NO. 01</div></section>
+<section class="closing" id="lastCall"><div class="closing-grid"></div><p class="eyebrow">BUILT FOR THE HUNGRY</p><h2>GOOD<br><em>FOOD.</em><br>LOUD<br><em>FLAVOR.</em></h2><a href="#menu" class="primary-btn">FIND YOUR NEXT FAVORITE <span>↗</span></a><p class="closing-note">SMASH DISTRICT · DUBAI · CONCEPT ONLY</p></section>
+</main>
 
-  <section class="location section" id="location"><div class="location-copy"><p class="eyebrow orange"><span class="eyebrow-line"></span> MADE FOR THE CITY THAT NEVER SETTLES</p><h2 class="section-title">DUBAI<br/>AFTER <em>DARK.</em></h2><p>Late-night cravings, city lights, and burgers worth going out for. Imagined for the heart of Dubai.</p><div class="location-details"><div><span>THE DISTRICT</span><strong>CITY WALK, DUBAI</strong><small>Concept location — not an operating restaurant</small></div><div><span>VIBE CHECK</span><strong>DAY TO LATE NIGHT</strong><small>Illustrative hours · demonstration only</small></div></div><a href="#menu" class="btn btn-fire">EXPLORE THE MENU <span>↗</span></a></div><div class="location-art"><div class="map-grid"></div><div class="map-ring map-ring-a"></div><div class="map-ring map-ring-b"></div><div class="map-pin">✳</div><div class="map-label">THE HEART OF<br/><b>DUBAI</b></div><div class="map-coordinates">25°12' N / 55°16' E<br/>CONCEPT ONLY</div><div class="map-strip">SMASH DISTRICT · DUBAI · SMASH DISTRICT · DUBAI</div></div></section>
- </main>
+<footer class="footer">
+ <a href="#home" class="footer-logo">✳ SMASH <span>DISTRICT</span></a>
+ <p>Big flavor. Bold attitude. Imagined in Dubai.</p>
+ <a href="#home" class="back-to-top">BACK TO TOP ↑</a>
+ <div class="footer-bottom"><span>© 2026 SMASH DISTRICT — FICTIONAL BRAND CONCEPT</span><span>DEMO MENU. NO ACTUAL LOCATION OR ORDER FULFILMENT.</span></div>
+</footer>
 
- <footer class="site-footer"><div class="footer-main"><div><a class="brand footer-brand" href="#home"><span class="brand-star">✳</span><span>SMASH<small>DISTRICT <b>DUBAI</b></small></span></a><p>CRAVINGS DON'T WAIT.<br/>NEITHER DO WE.</p></div><a href="#home" class="footer-back">BACK TO THE TOP ↑</a></div><div class="footer-bottom"><span>© 2026 SMASH DISTRICT — FICTIONAL RESTAURANT CONCEPT</span><span>BUILT TO CRAVE. MADE IN DUBAI (IN SPIRIT).</span><span>FOOD PHOTOGRAPHY: UNSPLASH CONTRIBUTORS</span></div></footer>
-
- <div class="scrim" id="cartScrim" hidden></div><aside class="cart-drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-label="Demo order bag" aria-hidden="true"><div class="cart-head"><div><p class="eyebrow orange">YOUR CRAVINGS</p><h2>THE BAG<span class="orange-dot">.</span></h2></div><button id="cartClose" class="icon-close" aria-label="Close bag">✕</button></div><div class="cart-items" id="cartItems"></div><div class="cart-bottom"><div class="total-row"><span>SUBTOTAL</span><strong id="cartTotal">AED 0</strong></div><p class="cart-disclaimer">Demo only. No payment, delivery or real restaurant orders.</p><button id="checkout" class="btn btn-fire full-width">PLACE DEMO ORDER <span>↗</span></button></div></aside>
- <div class="story-modal" id="storyModal" hidden role="dialog" aria-modal="true" aria-label="Our story"><div class="modal-glow"></div><button class="icon-close modal-close" id="storyClose" aria-label="Close story">✕</button><div class="modal-inner"><p class="eyebrow orange">THE DISTRICT / DUBAI</p><h2>THIS ISN'T<br/>JUST A <em>BURGER.</em><br/>IT'S A <i>STATEMENT.</i></h2><p>A fictional Dubai burger brand imagined with unapologetically bold food, cinematic visuals, and a love of everything smashed.</p><button class="btn btn-fire" id="modalMenu">TASTE THE MENU <span>↗</span></button></div></div>
- <div class="toast" id="toast" role="status" aria-live="polite"></div>
- <script type="module" src="/src/main.js"></script>
- <script type="module" src="/src/v2-core.js"></script>
+<div class="overlay" id="overlay" hidden></div>
+<aside class="cart-drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Demo order bag">
+ <div class="cart-top"><div><p class="eyebrow orange">YOUR SELECTION</p><h2>THE BAG<span class="stop">.</span></h2></div><button type="button" id="cartClose" class="close-button" aria-label="Close bag">✕</button></div>
+ <div id="cartItems" class="cart-items"></div>
+ <div class="cart-footer"><div class="cart-total"><span>SUBTOTAL</span><strong id="subtotal">AED 0</strong></div><p>Demo checkout only. No payments or actual delivery.</p><button type="button" id="checkout" class="primary-btn full">COMPLETE DEMO ORDER <span>↗</span></button></div>
+</aside>
+<div id="upsell" class="upsell" hidden role="dialog" aria-label="Add a combo to your burger"><button type="button" class="upsell-x" id="upsellClose" aria-label="Dismiss offer">✕</button><p class="eyebrow orange">MAKE IT A MEAL</p><h3>GO FULL COMBO?</h3><p>Add golden fries and an ice-cold cola to your order.</p><div><button type="button" id="upsellAccept" class="primary-btn">ADD SIDES + AED 29 ↗</button><button type="button" id="upsellDecline" class="text-small">NO THANKS</button></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script type="module" src="/src/v3.js"></script>
 </body>
 </html>
