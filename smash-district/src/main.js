@@ -37,7 +37,7 @@ const products=[
  {id:'pickles',category:'sides',name:'PICKLE POPPERS',description:'Crispy battered pickle bites with house ranch.',price:18,image:'/assets/fries2.jpg',tag:'TO SHARE'},
  {id:'shake',category:'drinks',name:'CHOCOLATE RIOT',description:'Thick Belgian-style chocolate milkshake and whipped cream.',price:26,image:'/assets/shake.jpg',tag:'THICK SHAKE'},
  {id:'strawberry',category:'drinks',name:'PINK DISTRICT',description:'Strawberry cream shake with a sweet berry swirl.',price:26,image:'/assets/strawberry.jpg',tag:'MILKSHAKE'},
- {id:'citrus',category:'drinks',name:'CITRUS SPLASH',description:'Bright citrus cooler served ice cold.',price:16,image:'/assets/drink.jpg',tag:'REFRESH'},
+ {id:'citrus',category:'drinks',name:'CITRUS SPLASH',description:'Bright citrus cooler served ice cold.',price:16,image:'/assets/soda.jpg',tag:'REFRESH'},
  {id:'sundae',category:'desserts',name:'SUNDAE CLUB',description:'Vanilla soft serve with chocolate drizzle and crunchy bits.',price:23,image:'/assets/sundae.jpg',tag:'SWEET TOOTH'},
  {id:'brownie',category:'desserts',name:'BROWNIE BLAST',description:'Fudgy brownie with vanilla cream and chocolate sauce.',price:28,image:'/assets/brownie.jpg',tag:'FUDGY'},
  {id:'icecream',category:'desserts',name:'CLOUD NINE',description:'A dreamy classic ice cream scoop with caramel.',price:18,image:'/assets/icecream.jpg',tag:'CHILL'},
