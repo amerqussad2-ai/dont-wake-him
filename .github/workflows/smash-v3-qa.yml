@@ -7,7 +7,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: smash-v3-qa-${{ github.ref }}
+  group: smash-v3-fast-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   smoke:
