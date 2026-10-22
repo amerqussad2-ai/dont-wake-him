@@ -10,7 +10,7 @@ try{
  assert.equal(await layers.count(),6);
  assert(await layers.evaluateAll(nodes=>nodes.every(x=>x.complete&&x.naturalWidth>0)),'all 6 real-photo ingredient layers must load');
  await page.waitForFunction(()=>document.querySelector('#heroPhoto')?.dataset.state==='complete',undefined,{timeout:13000});
- assert(await page.locator('#heroPhotoFull').evaluate(el=>Number(getComputedStyle(el).opacity)>.98));
+ await page.waitForFunction(()=>Number(getComputedStyle(document.querySelector('#heroPhotoFull')).opacity)>.98,undefined,{timeout:4500});
  console.log('PASS: six real cutout food layers load and assemble into photo');
  await page.locator('#replay').click();
  await page.waitForFunction(()=>document.querySelector('#heroPhoto')?.dataset.state==='playing',undefined,{timeout:4000});
