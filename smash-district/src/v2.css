@@ -97,6 +97,9 @@ html[lang=ar]{scroll-padding-top:84px}
 .upgrade-popup>p:not(.eyebrow){color:#bdb2a4;font-size:13px;line-height:1.6;margin:0 0 18px}
 .upgrade-close{position:absolute;right:10px;top:10px;border:0;background:transparent;color:#ad9882;font-size:16px}
 .upgrade-actions{display:flex;align-items:center;gap:11px;flex-wrap:wrap}.upgrade-actions .btn{padding:14px;gap:10px}.upgrade-no{border:0;background:none;color:#b5a18c;font-size:11px;font-weight:900}
+.lang-ar{font-family:"Cairo",Tahoma,Arial,sans-serif}
+.lang-ar .brand,.lang-ar .brand small,.lang-ar .feature-price,.lang-ar .menu-item-price,.lang-ar .burger-part{font-family:var(--display)}
+.lang-ar .eyebrow,.lang-ar .nav-link,.lang-ar .btn,.lang-ar .feature-details p,.lang-ar .menu-desc,.lang-ar .build-choice,.lang-ar .extra-choice{letter-spacing:0}
 .lang-ar .site-header .brand,.lang-ar .footer-brand{direction:ltr}
 .lang-ar .hero-title,.lang-ar .section-title,.lang-ar .story-heading,.lang-ar .editor-head,.lang-ar .drop-copy h2,.lang-ar .last-cta h2{letter-spacing:-.015em}
 .lang-ar .hero-title{font-family:var(--font);font-weight:900;font-size:clamp(75px,8.4vw,135px);line-height:1.08}
