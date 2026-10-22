@@ -1,6 +1,5 @@
 
-window.__SMASH_V4__=true;
-await import('./v3.js');
+import './v3.js';
 import './v4.css';
 import gsap from 'gsap';
 
