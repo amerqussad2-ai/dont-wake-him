@@ -363,6 +363,6 @@ function initCinematicMotion(){
  window.addEventListener('load',()=>ScrollTrigger.refresh(),{once:true});
 }
 function init(){
- setupHero();initMenu();initCart();builderSetup();initNav();initScroll();initCinematicMotion();
+ if(!window.__SMASH_V4__)setupHero();initMenu();initCart();builderSetup();initNav();initScroll();initCinematicMotion();
 }
 init();
