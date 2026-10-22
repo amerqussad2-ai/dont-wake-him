@@ -7,7 +7,15 @@ gsap.registerPlugin(ScrollTrigger);
 const $=(selector,base=document)=>base.querySelector(selector);
 const $$=(selector,base=document)=>Array.from(base.querySelectorAll(selector));
 const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const photo=(name)=>'/assets/'+name+'.jpg';
+const menuPhotos={
+ district:'district',truffle:'truffle',habibi:'habibi',chicken:'chicken',
+ fries:'fries',fries2:'trufflefries',rings:'rings',loadedfries:'loaded',
+ drink:'cola',strawberry:'berry',shake:'choco',soda:'citrus',
+ brownie:'brownie',icecream:'icecream',sundae:'sundae',burger2:'duo',burger3:'night',
+ burger4:'district'
+};
+const photo=(name)=>'/assets/menu-v4/'+(menuPhotos[name]||name)+'.webp';
+const asset=(name)=>'/assets/builder-v4/'+name+'.webp';
 const products=[
  {id:'district',category:'burgers',name:'THE DISTRICT',price:38,tag:'BEST SELLER',image:photo('district'),desc:'Double smashed beef, melted cheddar, pickles & signature house sauce.'},
  {id:'truffle',category:'burgers',name:'TRUFFLE BOSS',price:44,tag:'SIGNATURE',image:photo('truffle'),desc:'Smashed beef, truffle mayo, Swiss cheese & buttery mushrooms.'},
@@ -248,6 +256,59 @@ function buildPhoto(){
 function builderLabel(){
  return builderPick('protein').label+' · '+builderPick('cheese').label+' · '+builderPick('sauce').label+' SAUCE';
 }
+// The photo builder is a true image-layer composition, never slices of a finished burger.
+const visualVariants={
+ bun:{brioche:['brioche-bottom','brioche-top'],potato:['potato-bottom','potato-top']},
+ protein:{beef:'beef',chicken:'crispy-chicken'},
+ cheese:{cheddar:'cheddar',swiss:'swiss'},
+ sauce:{house:'house-sauce',truffle:'truffle-sauce',fire:'fire-sauce'}
+};
+const builderLayerIds=['base','sauce-low','protein','cheese','double','topping','sauce-high','lid'];
+function activeLayers(){
+ const bun=visualVariants.bun[builder.bun];
+ const stack=[
+  {key:'base',asset:bun[0],level:0,width:87},
+  {key:'sauce-low',asset:visualVariants.sauce[builder.sauce],level:1,width:83},
+  {key:'protein',asset:visualVariants.protein[builder.protein],level:2,width:89}
+ ];
+ if(builder.cheese!=='none')stack.push({key:'cheese',asset:visualVariants.cheese[builder.cheese],level:3,width:83});
+ if(builder.extra.includes('double'))stack.push({key:'double',asset:visualVariants.protein[builder.protein],level:4,width:88});
+ if(builder.extra.includes('pickles'))stack.push({key:'pickles',asset:'pickles',level:5,width:78});
+ if(builder.extra.includes('jalapeno'))stack.push({key:'jalapeno',asset:'jalapenos',level:6,width:79});
+ stack.push({key:'sauce-high',asset:visualVariants.sauce[builder.sauce],level:7,width:78});
+ stack.push({key:'lid',asset:bun[1],level:8,width:91});
+ return stack;
+}
+let builderGeneration=0;
+function renderBurgerStack(){
+ const holder=$('#burgerStack');if(!holder)return;
+ const layers=activeLayers(),token=++builderGeneration;
+ const desired=new Set(layers.map(x=>x.key));
+ $$('img[data-part]',holder).forEach(img=>{
+  if(!desired.has(img.dataset.part)){img.classList.add('exiting');setTimeout(()=>img.remove(),350);}
+ });
+ const vertical={0:79,1:72,2:63,3:57,4:48,5:42,6:39,7:34,8:16};
+ for(const layer of layers){
+  let img=$('img[data-part="'+layer.key+'"]',holder);
+  const url=asset(layer.asset);
+  if(!img){
+   img=document.createElement('img');img.dataset.part=layer.key;img.alt='';
+   img.className='burger-ingredient entering';img.decoding='async';
+   holder.appendChild(img);
+   requestAnimationFrame(()=>img.classList.remove('entering'));
+  }
+  img.style.setProperty('--ingredient-y',vertical[layer.level]+'%');
+  img.style.setProperty('--ingredient-width',layer.width+'%');
+  img.style.zIndex=String(layer.level+1);
+  img.classList.remove('exiting');
+  if(img.getAttribute('src')!==url){
+   const source=new Image();
+   source.onload=()=>{if(token===builderGeneration&&img.isConnected){img.src=url;img.classList.remove('missing');}};
+   source.onerror=()=>{if(token===builderGeneration&&img.isConnected)img.classList.add('missing');};
+   source.src=url;
+  }
+ }
+}
 function updateBuilder(){
  ['bun','protein','cheese','sauce','extra'].forEach(group=>{
   $$('[data-group="'+group+'"]').forEach(button=>{
@@ -257,16 +318,9 @@ function updateBuilder(){
  });
  $('#buildTotal').textContent=money(buildPrice());
  $('#buildLabel').textContent=builderLabel();
- const img=$('#builderImage');
- const next=buildPhoto();
- if(img.getAttribute('src')!==next){
-  img.classList.add('updating');
-  const preload=new Image();
-  preload.onload=()=>{img.src=next;requestAnimationFrame(()=>img.classList.remove('updating'));};
-  preload.onerror=()=>img.classList.remove('updating');
-  preload.src=next;
- }
+ renderBurgerStack();
 }
+
 function builderSetup(){
  for(const [group,opts] of Object.entries(builderOptions)){
   const holder=$('#'+group+'Options');
