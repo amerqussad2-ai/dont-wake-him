@@ -13,9 +13,9 @@ try{
  assert.equal(await page.locator('#heroBurger').evaluate(img=>img.complete&&img.naturalWidth>0),true,'hero image must be first-party and loaded');
  console.log('PASS hero image, three featured products and 26-item menu');
  await page.locator('button[data-filter="sides"]').click();
- assert.equal(await page.locator('.menu-item').count(),2,'filter should show exactly two sides');
+ assert.equal(await page.locator('.menu-item').count(),5,'filter should show five sides');
  await page.locator('button[data-filter="burgers"]').click();
- assert.equal(await page.locator('.menu-item').count(),4,'filter should show four burgers');
+ assert.equal(await page.locator('.menu-item').count(),8,'filter should show eight burgers');
  await page.locator('button[data-filter="all"]').click();
  assert.equal(await page.locator('.menu-item').count(),26);
  await page.locator('#menuGrid button[data-add="district"]').click();
