@@ -26,7 +26,27 @@ const products=[
  {id:'fries',category:'sides',name:'DIRTY FRIES',description:'Crispy skin-on fries loaded with melted cheese & house seasoning.',price:22,image:photos.fries,tag:'FAN FAVORITE'},
  {id:'fries2',category:'sides',name:'TRUFFLE FRIES',description:'Hand-cut fries, truffle drizzle, parmesan & sea salt.',price:25,image:photos.fries2,tag:'EXTRA'},
  {id:'cola',category:'drinks',name:'DISTRICT COLA',description:'Ice-cold fizzy cola. The perfect partner in crime.',price:12,image:photos.drink,tag:'ICE COLD'},
- {id:'lemonade',category:'drinks',name:'SUNSET FIZZ',description:'Sparkling lemon and citrus with a bright Dubai sunset twist.',price:17,image:photos.soda,tag:'REFRESHING'}
+ {id:'lemonade',category:'drinks',name:'SUNSET FIZZ',description:'Sparkling lemon and citrus with a bright Dubai sunset twist.',price:17,image:photos.soda,tag:'REFRESHING'},
+ // V2: signature range, sides, crafted drinks, treats and late-night specials.
+ {id:'smokehouse',category:'burgers',name:'SMOKE SIGNAL',description:'Double smash, smoky BBQ glaze, onion crunch and cheddar.',price:44,image:'/assets/burger2.jpg',tag:'SMOKY'},
+ {id:'double',category:'burgers',name:'DOUBLE TROUBLE',description:'Triple smashed beef, triple American cheese and house pickles.',price:49,image:'/assets/burger3.jpg',tag:'BIG APPETITE'},
+ {id:'classic',category:'burgers',name:'OLD SCHOOL',description:'Pure smash nostalgia: beef, cheese, onion, pickles and mustard.',price:32,image:'/assets/burger4.jpg',tag:'THE CLASSIC'},
+ {id:'honey',category:'burgers',name:'HOT HONEY CRUNCH',description:'Crispy chicken, hot honey, slaw and cool ranch.',price:39,image:'/assets/burger5.jpg',tag:'SWEET HEAT'},
+ {id:'rings',category:'sides',name:'GOLDEN RINGS',description:'Golden onion rings with smoky dipping sauce.',price:19,image:'/assets/rings.jpg',tag:'CRUNCHY'},
+ {id:'cheesefries',category:'sides',name:'CHEESE AVALANCHE',description:'Loaded fries drowned in warm cheddar and chipotle drizzle.',price:27,image:'/assets/loadedfries.jpg',tag:'LOADED'},
+ {id:'pickles',category:'sides',name:'PICKLE POPPERS',description:'Crispy battered pickle bites with house ranch.',price:18,image:'/assets/fries2.jpg',tag:'TO SHARE'},
+ {id:'shake',category:'drinks',name:'CHOCOLATE RIOT',description:'Thick Belgian-style chocolate milkshake and whipped cream.',price:26,image:'/assets/shake.jpg',tag:'THICK SHAKE'},
+ {id:'strawberry',category:'drinks',name:'PINK DISTRICT',description:'Strawberry cream shake with a sweet berry swirl.',price:26,image:'/assets/strawberry.jpg',tag:'MILKSHAKE'},
+ {id:'citrus',category:'drinks',name:'CITRUS SPLASH',description:'Bright citrus cooler served ice cold.',price:16,image:'/assets/drink.jpg',tag:'REFRESH'},
+ {id:'sundae',category:'desserts',name:'SUNDAE CLUB',description:'Vanilla soft serve with chocolate drizzle and crunchy bits.',price:23,image:'/assets/sundae.jpg',tag:'SWEET TOOTH'},
+ {id:'brownie',category:'desserts',name:'BROWNIE BLAST',description:'Fudgy brownie with vanilla cream and chocolate sauce.',price:28,image:'/assets/brownie.jpg',tag:'FUDGY'},
+ {id:'icecream',category:'desserts',name:'CLOUD NINE',description:'A dreamy classic ice cream scoop with caramel.',price:18,image:'/assets/icecream.jpg',tag:'CHILL'},
+ {id:'combo1',category:'combos',name:'DISTRICT DEAL',description:'The District + classic fries + cold cola.',price:59,image:'/assets/district.jpg',tag:'COMBO'},
+ {id:'combo2',category:'combos',name:'THE BIG NIGHT',description:'Truffle Boss + truffle fries + chocolate shake.',price:83,image:'/assets/truffle.jpg',tag:'BIG COMBO'},
+ {id:'combo3',category:'combos',name:'TWO OF A KIND',description:'Two Old School smash burgers + dirty fries.',price:79,image:'/assets/burger4.jpg',tag:'FOR TWO'},
+ {id:'midnight',category:'limited',name:'MIDNIGHT MELT',description:'Bold double smash, black pepper glaze, double cheese and secret sauce.',price:47,image:'/assets/burger2.jpg',tag:'CONCEPT DROP'},
+ {id:'firestarter',category:'limited',name:'FIRESTARTER',description:'Jalapeño smash, hot honey, pepper relish and fire sauce.',price:45,image:'/assets/burger3.jpg',tag:'CONCEPT DROP'},
+ {id:'upsize',category:'upgrades',name:'FRIES + COLA UPGRADE',description:'A side of classic fries and ice-cold cola, bundled with your burger.',price:28,image:'/assets/fries.jpg',tag:'UPGRADE'}
 ];
 const cart=new Map();
 const cartDrawer=$('#cartDrawer'),cartScrim=$('#cartScrim'),cartCount=$('#cartCount'),cartItems=$('#cartItems');
@@ -39,6 +59,14 @@ function notice(message){
  window.clearTimeout(toastTimeout);toastTimeout=window.setTimeout(()=>toast.classList.remove('show'),3100);
 }
 function readBag(){
+ try{
+  const customs=JSON.parse(localStorage.getItem('sd-custom-products')||'[]');
+  if(Array.isArray(customs))for(const p of customs){
+   if(p && typeof p.id==='string' && p.id.startsWith('my-burger-') && typeof p.name==='string' && Number.isFinite(p.price)&& p.price>=0 && p.price<=300 && !products.some(x=>x.id===p.id)){
+    products.push({id:p.id,category:'custom',name:p.name.slice(0,90),description:String(p.description||'Custom burger').slice(0,180),price:p.price,image:'/assets/district.jpg',tag:'YOUR BUILD'});
+   }
+  }
+ }catch{}
  try{
   const data=JSON.parse(localStorage.getItem('sd-demo-bag')||'{}');
   for(const [key,value] of Object.entries(data)){
@@ -84,6 +112,7 @@ function add(id){
  cart.set(id,Math.min(99,(cart.get(id)||0)+1));updateCart();
  gsap.fromTo('#cartCount',{scale:1.65},{scale:1,duration:.35,ease:'back.out(2)'});
  notice(p.name+' ADDED TO YOUR BAG ✳');
+ window.dispatchEvent(new CustomEvent('smash:add',{detail:{id:p.id,category:p.category,name:p.name,price:p.price}}));
 }
 function renderMenu(){
  const visible=currentFilter==='all'?products:products.filter(p=>p.category===currentFilter);
@@ -211,6 +240,32 @@ function scrollFeedback(){
  },{rootMargin:'-30% 0px -60% 0px',threshold:0});
  $$('#home,#favorites,#story,#menu,#location').forEach(el=>observer.observe(el));
 }
+
+window.SmashApp={
+  products,
+  add,
+  setFilter,
+  renderMenu,
+  updateCart,
+  openCart,
+  notice,
+  addCustomBurger(configuration, price, description){
+    const parts=JSON.stringify(configuration);
+    let hash=2166136261;for(let i=0;i<parts.length;i++){hash^=parts.charCodeAt(i);hash=Math.imul(hash,16777619);}
+    const id='my-burger-'+(hash>>>0).toString(36);
+    let p=products.find(x=>x.id===id);
+    if(!p){
+      p={id,category:'custom',name:'YOUR DISTRICT BUILD',description:String(description).slice(0,180),price,image:'/assets/district.jpg',tag:'YOUR BUILD'};
+      products.push(p);
+      try{
+        const saved=JSON.parse(localStorage.getItem('sd-custom-products')||'[]');
+        const safe=Array.isArray(saved)?saved.slice(-29):[];
+        safe.push(p);localStorage.setItem('sd-custom-products',JSON.stringify(safe));
+      }catch{}
+    }
+    add(id);return id;
+  }
+};
 readBag();
 renderMenu();
 updateCart();
