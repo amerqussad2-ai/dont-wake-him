@@ -1,5 +1,8 @@
 
 import './v3.css';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+gsap.registerPlugin(ScrollTrigger);
 
 const $=(selector,base=document)=>base.querySelector(selector);
 const $$=(selector,base=document)=>Array.from(base.querySelectorAll(selector));
@@ -309,7 +312,26 @@ function initScroll(){
   art.addEventListener('mouseleave',()=>{$('#heroPhoto').style.transform='translate3d(0,15px,0)';});
  }
 }
+function initCinematicMotion(){
+ if(reduced)return;
+ // Moving on-scroll elements instead of only a subtle fade: measurable and visible.
+ gsap.utils.toArray('.featured-card').forEach((card,i)=>{
+  gsap.fromTo(card,{y:110,scale:.87,opacity:.35,rotate:-2},{y:0,scale:1,opacity:1,rotate:0,duration:1.05,ease:'power3.out',
+   scrollTrigger:{trigger:card,start:'top 90%',end:'top 45%',scrub:.8}});
+ });
+ gsap.fromTo('.menu-heading h2',{x:-160,opacity:.35,scale:.88},{x:0,opacity:1,scale:1,ease:'none',
+  scrollTrigger:{trigger:'.menu-heading',start:'top 95%',end:'top 48%',scrub:true}});
+ gsap.fromTo('.category-bar',{y:100,opacity:.2},{y:0,opacity:1,ease:'none',scrollTrigger:{trigger:'.category-bar',start:'top 98%',end:'top 55%',scrub:true}});
+ gsap.fromTo('.builder-photo-box',{y:110,scale:.75,rotate:-12},{y:-40,scale:1.12,rotate:6,ease:'none',
+  scrollTrigger:{trigger:'.builder-section',start:'top bottom',end:'bottom top',scrub:true}});
+ gsap.fromTo('.builder-editor h2',{y:130,opacity:.2},{y:0,opacity:1,ease:'none',scrollTrigger:{trigger:'.builder-section',start:'top 85%',end:'top 27%',scrub:true}});
+ gsap.fromTo('.closing h2',{scale:.5,rotate:-7,opacity:.12},{scale:1,rotate:0,opacity:1,ease:'none',
+  scrollTrigger:{trigger:'.closing',start:'top bottom',end:'center center',scrub:true}});
+ gsap.to('.hero-art-ring',{rotation:40,scale:1.18,duration:16,ease:'none',repeat:-1,yoyo:true});
+ gsap.to('.hero-star',{y:-28,rotation:40,duration:3.2,repeat:-1,yoyo:true,ease:'sine.inOut',stagger:.4});
+ window.addEventListener('load',()=>ScrollTrigger.refresh(),{once:true});
+}
 function init(){
- setupHero();initMenu();initCart();builderSetup();initNav();initScroll();
+ setupHero();initMenu();initCart();builderSetup();initNav();initScroll();initCinematicMotion();
 }
 init();
