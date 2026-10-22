@@ -1,0 +1,86 @@
+name: Import and verify SMASH V4 original photo assets
+on:
+  push:
+    branches: [feature/smash-district-v4-assets]
+    paths:
+      - smash-v4-assets-ready.zip
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/smash-district-v4-assets
+          persist-credentials: true
+      - name: Import verified generated photo assets
+        shell: bash
+        run: |
+          test -f smash-v4-assets-ready.zip || (echo "::error::Upload smash-v4-assets-ready.zip to the root of this branch before running" && exit 1)
+          python3 - <<'PY'
+          import os,zipfile,json
+          from pathlib import Path
+          source=Path('smash-v4-assets-ready.zip')
+          root=Path('smash-district/public/assets')
+          allowed=['smash-district/public/assets/menu-v4/','smash-district/public/assets/builder-v4/']
+          expected_menu=set('district truffle habibi chicken fries trufflefries rings loaded cola berry choco citrus brownie icecream sundae duo night'.split())
+          expected_builder=set('brioche-top brioche-bottom potato-top potato-bottom beef crispy-chicken cheddar swiss house-sauce truffle-sauce fire-sauce pickles jalapenos lettuce onions-and-pickles'.split())
+          images={'menu-v4':set(),'builder-v4':set()}
+          with zipfile.ZipFile(source) as archive:
+            for info in archive.infolist():
+              path=info.filename.replace('\\','/')
+              if path.endswith('/'):continue
+              if path=='assets-manifest.json':continue
+              if not any(path.startswith(x) for x in allowed) or not path.endswith('.webp') or '..' in Path(path).parts or info.file_size>3000000:
+                raise ValueError('Unexpected / unsafe ZIP file: '+path)
+              relative=Path(path).relative_to('smash-district/public/assets')
+              images[relative.parts[0]].add(relative.stem)
+              dest=root/relative
+              dest.parent.mkdir(parents=True,exist_ok=True)
+              dest.write_bytes(archive.read(info))
+          assert images['menu-v4']==expected_menu, f"Wrong menu files: {images['menu-v4'] ^ expected_menu}"
+          assert images['builder-v4']==expected_builder, f"Wrong builder layers: {images['builder-v4'] ^ expected_builder}"
+          print("PASSED 17 distinct real-photo menu cards and 15 independent transparent ingredient assets.")
+          PY
+      - name: Node and browser dependencies
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies and compile
+        working-directory: smash-district
+        run: |
+          npm install --no-package-lock
+          npm run build
+      - name: Browser QA
+        working-directory: smash-district
+        run: |
+          npm install --no-save --no-package-lock playwright
+          if command -v google-chrome >/dev/null 2>&1; then
+            echo "CHROME_EXECUTABLE=$(command -v google-chrome)" >> "$GITHUB_ENV"
+          else
+            npx playwright install chromium --with-deps
+          fi
+          (npx vite preview --host 127.0.0.1 --port 4173 >/tmp/smash-v4.log 2>&1 &)
+          for i in $(seq 1 35); do curl -fsS http://127.0.0.1:4173 >/dev/null && break; sleep 1; done
+          node tests/v4-smoke.mjs
+      - name: Record screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smash-v4-preview-screens
+          path: |
+            smash-district/v4-desktop.png
+            smash-district/v4-mobile.png
+          if-no-files-found: ignore
+      - name: Commit assets only if build and browser QA passed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add smash-district/public/assets/menu-v4 smash-district/public/assets/builder-v4
+          git rm --ignore-unmatch smash-v4-assets-ready.zip
+          git diff --cached --quiet && exit 0
+          git commit -m "assets(smash-v4): add original unified menu photography and real ingredient cutouts"
+          git push origin HEAD:feature/smash-district-v4-assets
