@@ -7,6 +7,7 @@ on:
       - 'smash-district/src/v3.js'
       - 'smash-district/src/v4.js'
       - 'smash-district/src/v4.css'
+      - 'smash-district/tests/v4-smoke.mjs'
       - '.github/workflows/smash-v4-preflight.yml'
   workflow_dispatch:
 permissions:
