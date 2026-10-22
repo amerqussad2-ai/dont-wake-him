@@ -1,0 +1,45 @@
+name: SMASH V4 code preflight (no image upload required)
+on:
+  push:
+    branches: [feature/smash-district-v4-assets]
+    paths:
+      - 'smash-district/index.html'
+      - 'smash-district/src/v3.js'
+      - 'smash-district/src/v4.js'
+      - 'smash-district/src/v4.css'
+      - '.github/workflows/smash-v4-preflight.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: smash-v4-preflight
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/smash-district-v4-assets
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: JavaScript parser
+        run: |
+          node --check smash-district/src/v3.js
+          node --check smash-district/src/v4.js
+      - name: Verify 17 distinct menu asset paths
+        run: |
+          node --input-type=module <<'JS'
+          import {readFileSync} from 'node:fs';
+          const source=readFileSync('smash-district/src/v3.js','utf8');
+          const matches=[...source.matchAll(/image:menuPhoto\('([^']+)'\)/g)].map(m=>m[1]);
+          if(matches.length!==17||new Set(matches).size!==17)throw Error('Missing or duplicated menu photo references: '+matches);
+          console.log('PASS 17 unique menu photo paths');
+          JS
+      - name: Compile production bundle
+        working-directory: smash-district
+        run: |
+          npm install --no-package-lock
+          npm run build
