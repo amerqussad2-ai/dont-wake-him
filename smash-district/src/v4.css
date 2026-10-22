@@ -23,8 +23,12 @@
   width:var(--layer-width,84%);
   height:var(--layer-height,10%);
   top:var(--layer-top,30%);
-  left:50%;
-  translate:-50% 0;
+  /* Center without translate: GSAP otherwise caches -50% of the image's
+     original width for certain assets (lettuce: 940px), shifting them left. */
+  left:0;
+  right:0;
+  margin-inline:auto;
+  translate:none;
   transform-origin:center center;
   object-fit:fill;
   opacity:1;
