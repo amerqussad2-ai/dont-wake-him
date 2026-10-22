@@ -229,3 +229,15 @@ body.motion-ready .reveal.in-view{opacity:1;transform:translateY(0);filter:blur(
 }
 @media(max-width:390px){.hero-headline{font-size:70px}.product-grid{grid-template-columns:1fr}.product-photo{aspect-ratio:1.25}.product-card h4{font-size:30px}.product-description{min-height:0}.category-tab{min-width:111px}.hero-art{right:-46%}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}body.motion-ready .reveal{opacity:1;transform:none;filter:none}.slice{opacity:0}.hero-photo-full{opacity:1!important}.hero-content .title-row{opacity:1}}
+
+/* Motion visibility repair: unmistakable continuous ambient movement and bold first-fold reveal. */
+@media(prefers-reduced-motion:no-preference){
+ .hero-orange-glow{animation:hero-glow-drift 7s ease-in-out infinite alternate}
+ .hero-art-ring{box-shadow:0 0 32px #fa9a1417}
+ .hero-headline .orange-word{animation:title-enter .85s cubic-bezier(.2,.8,.2,1) .36s both,headline-breathe 4s ease-in-out 1.8s infinite alternate}
+ .product-card .product-frame img{transition:transform .75s cubic-bezier(.2,.8,.2,1),filter .4s}
+ .primary-btn:hover{box-shadow:0 0 0 5px #ffad3334,0 17px 42px #ea77212b;transform:translateY(-5px) scale(1.045)}
+ .builder-photo-box img{will-change:transform}
+}
+@keyframes hero-glow-drift{0%{transform:translate(-13%,-10%) scale(.85);opacity:.55}100%{transform:translate(8%,9%) scale(1.2);opacity:1}}
+@keyframes headline-breathe{0%{filter:drop-shadow(0 0 0 transparent)}100%{filter:drop-shadow(0 2px 24px #f4a2287a)}}
