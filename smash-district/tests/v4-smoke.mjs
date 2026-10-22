@@ -25,6 +25,14 @@ try{
  }
  await page.locator('[data-group="extra"][data-value="double"]').click();
  assert.equal(await page.locator('#burgerStage img[data-asset="crispy-chicken"]').count(),2);
+ await page.waitForTimeout(1300);
+ const centers=await page.locator('#burgerStage .burger-ingredient').evaluateAll(imgs=>imgs.map(img=>{
+  const r=img.getBoundingClientRect(),style=getComputedStyle(img);
+  return {key:img.dataset.key,centerX:r.x+r.width/2,width:r.width,translate:style.translate,transform:style.transform,cssTop:style.top};
+ }));
+ console.log('BUILDER_LAYER_ALIGNMENT '+JSON.stringify(centers));
+ const bunCenter=centers.find(x=>x.key==='top-bun')?.centerX;
+ assert(centers.every(x=>Math.abs(x.centerX-bunCenter)<20),'Ingredient layers must stay centered, got '+JSON.stringify(centers));
  console.log('PASS live ingredient switches: bread, protein, cheese, sauces, toppings and extra patty');
  await page.waitForFunction(()=>document.querySelector('#heroV4Stage img')?.naturalWidth>0,undefined,{timeout:12000});
  assert.equal(await page.locator('#heroV4Stage .burger-ingredient').count()>=8,true);
