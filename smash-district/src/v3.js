@@ -353,7 +353,7 @@ function initCinematicMotion(){
  gsap.fromTo('.menu-heading h2',{x:-160,opacity:.35,scale:.88},{x:0,opacity:1,scale:1,ease:'none',
   scrollTrigger:{trigger:'.menu-heading',start:'top 95%',end:'top 48%',scrub:true}});
  gsap.fromTo('.category-bar',{y:100,opacity:.2},{y:0,opacity:1,ease:'none',scrollTrigger:{trigger:'.category-bar',start:'top 98%',end:'top 55%',scrub:true}});
- gsap.fromTo('.builder-photo-box',{y:110,scale:.75,rotate:-12},{y:-40,scale:1.12,rotate:6,ease:'none',
+ gsap.fromTo('.builder-photo-box',{y:22,scale:.96,rotate:0},{y:-12,scale:1.04,rotate:0,ease:'none',
   scrollTrigger:{trigger:'.builder-section',start:'top bottom',end:'bottom top',scrub:true}});
  gsap.fromTo('.builder-editor h2',{y:130,opacity:.2},{y:0,opacity:1,ease:'none',scrollTrigger:{trigger:'.builder-section',start:'top 85%',end:'top 27%',scrub:true}});
  gsap.fromTo('.closing h2',{scale:.5,rotate:-7,opacity:.12},{scale:1,rotate:0,opacity:1,ease:'none',
