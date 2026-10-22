@@ -1,0 +1,58 @@
+name: Cinematic burger visual QA
+on:
+  push:
+    branches: [feature/smash-district-motion-fix]
+    paths: ['smash-district/**', '.github/workflows/motion-visual-qa.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: motion-visual-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/smash-district-motion-fix
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build app
+        working-directory: smash-district
+        run: |
+          npm install --no-package-lock
+          npm run build
+      - name: Prepare Playwright
+        working-directory: smash-district
+        run: |
+          npm install --no-save --no-package-lock playwright
+          if command -v google-chrome >/dev/null 2>&1; then
+            echo "CHROME_EXECUTABLE=$(command -v google-chrome)" >> "$GITHUB_ENV"
+          else
+            npx playwright install chromium --with-deps
+          fi
+      - name: Start preview
+        working-directory: smash-district
+        run: |
+          (npx vite preview --host 127.0.0.1 --port 4173 > /tmp/motion.log 2>&1 &)
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:4173 >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/motion.log
+          exit 1
+      - name: Test rendered moving frames
+        working-directory: smash-district
+        run: node tests/motion-visual.mjs
+      - name: Upload visuals
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: motion-proof
+          path: |
+            smash-district/motion-desktop.png
+            smash-district/motion-mobile.png
+          if-no-files-found: ignore
