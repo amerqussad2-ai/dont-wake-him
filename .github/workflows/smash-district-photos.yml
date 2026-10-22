@@ -42,8 +42,8 @@ jobs:
           fetch_image chicken photo-1644940733241-d2512327ed2b 900
           fetch_image fries photo-1573080496219-bb080dd4f877 900
           fetch_image fries2 photo-1630384060421-cb20d0e0649d 900
-          fetch_image drink photo-1437418747212-8d9709afab22 900
-          fetch_image soda photo-1437418747212-8d9709afab22 900
+          fetch_image drink photo-1596803244618-8dbee441d70b 900
+          fetch_image soda photo-1592685864704-91b3d2b8c24a 900
           fetch_image burger2 photo-1561758033-d89a9ad46330 900
           fetch_image burger3 photo-1550317138-10000687a72b 900
           fetch_image burger4 photo-1678110707289-ab14382a1625 900
