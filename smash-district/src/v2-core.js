@@ -62,6 +62,12 @@ function createContent(){
  cssSection.innerHTML=builder+limited+social+final;
  $('#statement').before($('#builder')||cssSection);
  // Detached sections are inserted separately to respect the existing story flow.
+ const loader=$('#loading');
+ if(loader && !$('.loading-bites',loader)){
+  const bits=document.createElement('div');bits.className='loading-bites';bits.setAttribute('aria-hidden','true');
+  bits.innerHTML='<span>✳</span><span>🍔</span><span>✳</span>';
+  $('.loading-line',loader).before(bits);
+ }
  const builderEl=$('#builder'),dropEl=$('#drops'),socialEl=$('#social'),finalEl=$('#lastCta');
  if(builderEl&&dropEl&&socialEl&&finalEl){
   $('#statement').before(builderEl);
@@ -121,6 +127,7 @@ function builderEvents(){
 function overlayEvents(){
  const popup=$('#upgradePopup');
  const hide=()=>{popup.hidden=true;popup.classList.remove('visible');};
+ $('#cartTrigger').addEventListener('click',hide);
  $('#upgradeClose').addEventListener('click',hide);
  $('#upgradeNo').addEventListener('click',hide);
  $('#upgradeYes').addEventListener('click',()=>{hide();app.add('upsize');window.SmashSound?.add?.();});
@@ -296,6 +303,7 @@ function localizeCart(){
  $$('.cart-line').forEach(line=>{
   const id=line.dataset.cart;
   const t=arabicProducts[id];if(t)$('strong',line).textContent=t[0];
+  else if(id&&id.startsWith('my-burger-'))$('strong',line).textContent='برجرك الخاص';
  });
  const empty=$('.empty-bag');
  if(empty){$('b',empty).textContent='السلة فاضية';$('p',empty).textContent='لسه ما ضفت أي شي؟ اختار برجرك المفضل!';}
@@ -326,6 +334,14 @@ function applyLanguage(){
  $$('[data-extra]').forEach(b=>{
   const value=extras.find(o=>o.id===b.dataset.extra);
   $('[data-extra-name]',b).textContent='+ '+(arabic?value.ar:value.en);
+ });
+ // Featured cards are localized independently of the filterable menu.
+ $('.feature-card').forEach(card=>{
+  const p=app.products.find(x=>x.id===card.dataset.product);
+  if(!p)return;
+  const t=arabicProducts[p.id];
+  $('h3',card).textContent=arabic&&t?t[0]:p.name;
+  $('p',card).textContent=arabic&&t?t[1]:p.description;
  });
  if(arabic){localizeMenu();localizeCart();}
  else{ // Rebuild cards and cart labels in the original product language when switching back.
