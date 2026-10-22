@@ -39,39 +39,51 @@ function modelFromButtons(){
   extras:Array.from(document.querySelectorAll('[data-group="extra"][aria-pressed="true"]')).map(el=>el.dataset.value)
  };
 }
+// These photographs have different transparent margins. In particular, the beef
+// asset has ~44% empty pixels above the actual patty. Position the *visible*
+// ingredient rather than the top edge of its image box.
+const layerGeometry={
+ 'bottom-bun': {width:70,height:12,rise:0},
+ 'lower-sauce':{width:75,height:6,rise:3},
+ 'second-patty':{width:76,height:17,rise:7,alphaTop:182/410},
+ 'upper-cheese':{width:75,height:9,rise:5.5},
+ 'first-patty':{width:76,height:17,rise:7,alphaTop:182/410},
+ 'cheese':{width:75,height:9,rise:5.5},
+ 'pickles':{width:70,height:7,rise:4},
+ 'jalapenos':{width:70,height:7,rise:4},
+ 'lettuce':{width:79,height:7,rise:4},
+ 'upper-sauce':{width:75,height:6,rise:3},
+ 'top-bun':{width:82,height:25,rise:21}
+};
 function layersFor(m){
- const twice=m.extras.includes('double');
  const bun=m.bun==='potato'?'potato':'brioche';
- const layers=[];
- const add=(key,asset,top,height,level,width=84)=>{
-  layers.push({key,asset,top,height,level,width});
- };
- // All independent transparent assets use one registered 840:780 canvas.
- // Heights are calibrated per ingredient; no photographic slices from any finished burger.
- if(twice){
-  add('bottom-bun',files[bun+'-bottom'],70,16,1,67);
-  add('lower-sauce',files[m.sauce],69,7,2,78);
-  add('second-patty',files[m.protein],64,14,3,84);
-  if(m.cheese!=='none')add('upper-cheese',files[m.cheese],61,9,4,78);
-  add('first-patty',files[m.protein],54,14,5,84);
-  if(m.cheese!=='none')add('cheese',files[m.cheese],51,11,6,78);
-  if(m.extras.includes('pickles'))add('pickles',files.pickles,49,8,7,77);
-  if(m.extras.includes('jalapeno'))add('jalapenos',files.jalapeno,48,8,8,77);
-  add('lettuce',files.lettuce,46,8,9,81);
-  add('upper-sauce',files[m.sauce],45,5,10,78);
-  add('top-bun',files[bun+'-top'],20,29,11,85);
- }else{
-  add('bottom-bun',files[bun+'-bottom'],63,16,1,67);
-  add('lower-sauce',files[m.sauce],61,7,2,78);
-  add('first-patty',files[m.protein],55,16,3,84);
-  if(m.cheese!=='none')add('cheese',files[m.cheese],52,11,4,78);
-  if(m.extras.includes('pickles'))add('pickles',files.pickles,49,8,5,77);
-  if(m.extras.includes('jalapeno'))add('jalapenos',files.jalapeno,48,8,6,77);
-  add('lettuce',files.lettuce,47,8,7,81);
-  add('upper-sauce',files[m.sauce],45,5,8,78);
-  add('top-bun',files[bun+'-top'],20,29,9,85);
+ // The composition grows from the bottom upward. Optional cheese/toppings
+ // occupy no space when deselected, avoiding holes in the finished burger.
+ const ordered=[
+  ['bottom-bun',files[bun+'-bottom']],
+  ['lower-sauce',files[m.sauce]]
+ ];
+ if(m.extras.includes('double')){
+  ordered.push(['second-patty',files[m.protein]]);
+  if(m.cheese!=='none')ordered.push(['upper-cheese',files[m.cheese]]);
  }
- return layers;
+ ordered.push(['first-patty',files[m.protein]]);
+ if(m.cheese!=='none')ordered.push(['cheese',files[m.cheese]]);
+ if(m.extras.includes('pickles'))ordered.push(['pickles',files.pickles]);
+ if(m.extras.includes('jalapeno'))ordered.push(['jalapenos',files.jalapeno]);
+ ordered.push(['lettuce',files.lettuce],['upper-sauce',files[m.sauce]],['top-bun',files[bun+'-top']]);
+ const usedHeight=layerGeometry['bottom-bun'].height+
+   ordered.slice(1).reduce((total,[key])=>total+layerGeometry[key].rise,0);
+ // Center every valid combination (single/double, with/without toppings).
+ let visibleTop=50+usedHeight/2-layerGeometry['bottom-bun'].height;
+ return ordered.map(([key,filename],level)=>{
+  const g=layerGeometry[key];
+  if(level)visibleTop-=g.rise;
+  return {
+   key,asset:filename,level:level+1,width:g.width,height:g.height,
+   top:visibleTop-(g.alphaTop||0)*g.height
+  };
+ });
 }
 function populateStage(stage,parts,{animate=false}={}){
  stage.replaceChildren();
@@ -114,30 +126,42 @@ async function updateBuilder(){
  }
  const fresh=!stage.hasChildNodes();
  const oldNodes=new Map(Array.from(stage.children).map(el=>[el.dataset.key,el]));
- for(const layer of parts){
+ for(const [index,layer] of parts.entries()){
   let node=oldNodes.get(layer.key);
   const exists=node&&node.dataset.asset===layer.asset;
+  const previousTop=exists?parseFloat(node.style.getPropertyValue('--layer-top')):NaN;
   if(!exists){
    node=document.createElement('img');
    node.src=asset(layer.asset);
    node.alt='';node.className='burger-ingredient';
    node.dataset.key=layer.key;node.dataset.asset=layer.asset;
    node.decoding='async';
+  }else{
+   gsap.killTweensOf(node);
   }
   node.style.zIndex=String(layer.level);
   node.style.setProperty('--layer-top',layer.top+'%');
   node.style.setProperty('--layer-width',layer.width+'%');
   node.style.setProperty('--layer-height',layer.height+'%');
-  if(!exists&&!reduced)gsap.fromTo(node,{y:-140,opacity:0,rotation:-3},{y:0,opacity:1,rotation:0,duration:.72,ease:'back.out(1.3)',overwrite:true});
-  else if(exists&&!reduced)gsap.to(node,{duration:.44,ease:'power2.out',overwrite:true});
   stage.appendChild(node);
+  if(!reduced){
+   if(!exists){
+    gsap.fromTo(node,{y:-105,opacity:0,scale:.97},{
+     y:0,opacity:1,scale:1,duration:.62,
+     delay:fresh?index*.10:0,ease:'back.out(1.15)',overwrite:true
+    });
+   }else if(Number.isFinite(previousTop)&&Math.abs(previousTop-layer.top)>.03){
+    const oldOffset=(previousTop-layer.top)*stage.getBoundingClientRect().height/100;
+    gsap.fromTo(node,{y:oldOffset},{y:0,duration:.42,ease:'power2.out',overwrite:true});
+   }
+  }
  }
- const keys=new Set(parts.map(p=>p.key));
- oldNodes.forEach((node,key)=>{if(!keys.has(key)||node.dataset.asset!==parts.find(p=>p.key===key)?.asset)node.remove();});
- if(fresh&&!reduced){
-  const imgs=Array.from(stage.children);
-  gsap.fromTo(imgs,{y:-190,opacity:0},{y:0,opacity:1,stagger:.09,ease:'back.out(1.2)',duration:.7,overwrite:true});
- }
+ // Retain unchanged DOM elements and animate only new layers into the stack.
+ const active=new Map(parts.map(part=>[part.key,part.asset]));
+ oldNodes.forEach((node,key)=>{
+  if(active.get(key)!==node.dataset.asset)node.remove();
+ });
+ stage.setAttribute('aria-label','Photographic '+parts.length+'-layer customized burger');
  stage.hidden=false;oldImage.hidden=true;
  $('#buildSubLabel').textContent='REAL INDIVIDUAL INGREDIENTS · LIVE ASSEMBLY';
 }
@@ -176,9 +200,9 @@ async function initHero(){
   scene.dataset.state='playing';
   gsap.killTweensOf(layers);
   if(reduced){gsap.set(layers,{opacity:1,y:0});scene.dataset.state='complete';return;}
-  gsap.set(layers,{opacity:0,y:-460,rotation:5,scale:.84});
+  gsap.set(layers,{opacity:0,y:-185,rotation:0,scale:.96});
   const tl=gsap.timeline({onComplete:()=>{scene.dataset.state='complete';$('#heroBurst').classList.remove('pulse');void $('#heroBurst').offsetWidth;$('#heroBurst').classList.add('pulse');}});
-  layers.forEach((el,i)=>tl.to(el,{opacity:1,y:0,rotation:0,scale:1,duration:.88,ease:'back.out(1.43)'},i*.26));
+  layers.forEach((el,i)=>tl.to(el,{opacity:1,y:0,rotation:0,scale:1,duration:.65,ease:'back.out(1.15)'},i*.15));
  }
  newReplay.addEventListener('click',event=>{event.stopPropagation();play();});
  play();
