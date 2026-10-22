@@ -1,0 +1,64 @@
+name: Prepare cinematic burger layers
+on:
+  push:
+    branches: [feature/smash-district-motion-fix]
+    paths: ['.github/workflows/cinematic-burger-assets.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  cut:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/smash-district-motion-fix
+      - name: Install photo processor
+        run: python3 -m pip install --user --quiet pillow
+      - name: Make realistic ingredient layer photographs
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from PIL import Image,ImageDraw,ImageFilter,ImageChops,ImageOps
+          from pathlib import Path
+          folder=Path('smash-district/public/assets')
+          image=Image.open(folder/'hero.jpg').convert('RGB')
+          w,h=image.size
+          # Frame the actual burger. The old animation sliced empty image background.
+          rect=(int(w*.015),int(h*.289),int(w*.88),int(h*.79))
+          photo=image.crop(rect)
+          photo.thumbnail((1050,980),Image.Resampling.LANCZOS)
+          photo.save(folder/'hero-focused.jpg',quality=88,optimize=True)
+          w,h=photo.size
+          # Edge mask: illuminate edible foreground and fade the photographic backdrop.
+          soft=Image.new('L',(w,h),0)
+          sd=ImageDraw.Draw(soft)
+          sd.ellipse((w*.035,h*.002,w*.98,h*.996),fill=255)
+          soft=soft.filter(ImageFilter.GaussianBlur(14))
+          lum=ImageOps.grayscale(photo)
+          # Keep the dark crust while softening charcoal photo background.
+          lum=lum.point(lambda v: 0 if v<13 else 255 if v>55 else round((v-13)/42*255))
+          alpha=ImageChops.multiply(soft,lum)
+          bands=[(0,.405),(.405,.505),(.505,.622),(.622,.725),(.725,.828),(.828,1)]
+          for i,(top,bottom) in enumerate(bands):
+            stripe=Image.new('L',(w,h),0)
+            draw=ImageDraw.Draw(stripe)
+            draw.rectangle((0,int(top*h),w,int(bottom*h)),fill=255)
+            stripe=stripe.filter(ImageFilter.GaussianBlur(3))
+            cut=photo.convert('RGBA')
+            cut.putalpha(ImageChops.multiply(alpha,stripe))
+            name=f'hero-ingredient-{i+1}.png'
+            cut.save(folder/name,optimize=True)
+            print(name,cut.size,(top,bottom))
+          print('focused_photo_size',photo.size,'source',image.size,'rect',rect)
+          PY
+      - name: Commit cutouts
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add smash-district/public/assets/hero-focused.jpg smash-district/public/assets/hero-ingredient-*.png
+          if ! git diff --cached --quiet; then
+            git commit -m "assets(motion): six transparent real-food burger layers framed to hero"
+            git push origin HEAD:feature/smash-district-motion-fix
+          fi
