@@ -4,6 +4,7 @@ on:
     branches: [feature/smash-district-v4-assets]
     paths:
       - smash-v4-assets-ready.zip
+      - .github/workflows/smash-v4-assets-import.yml
   workflow_dispatch:
 permissions:
   contents: write
@@ -57,14 +58,15 @@ jobs:
       - name: Browser QA
         working-directory: smash-district
         run: |
-          npm install --no-save --no-package-lock playwright
+          npm install --no-save --no-package-lock --no-audit --no-fund playwright
           if command -v google-chrome >/dev/null 2>&1; then
-            echo "CHROME_EXECUTABLE=$(command -v google-chrome)" >> "$GITHUB_ENV"
+            export CHROME_EXECUTABLE="$(command -v google-chrome)"
           else
             npx playwright install chromium --with-deps
           fi
           (npx vite preview --host 127.0.0.1 --port 4173 >/tmp/smash-v4.log 2>&1 &)
           for i in $(seq 1 35); do curl -fsS http://127.0.0.1:4173 >/dev/null && break; sleep 1; done
+          curl -fsS http://127.0.0.1:4173 >/dev/null
           node tests/v4-smoke.mjs
       - name: Record screenshots
         if: always()
