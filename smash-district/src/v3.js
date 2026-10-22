@@ -8,24 +8,25 @@ const $=(selector,base=document)=>base.querySelector(selector);
 const $$=(selector,base=document)=>Array.from(base.querySelectorAll(selector));
 const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const photo=(name)=>'/assets/'+name+'.jpg';
+const menuPhoto=name=>'/assets/menu-v4/'+name+'.webp';
 const products=[
- {id:'district',category:'burgers',name:'THE DISTRICT',price:38,tag:'BEST SELLER',image:photo('district'),desc:'Double smashed beef, melted cheddar, pickles & signature house sauce.'},
- {id:'truffle',category:'burgers',name:'TRUFFLE BOSS',price:44,tag:'SIGNATURE',image:photo('truffle'),desc:'Smashed beef, truffle mayo, Swiss cheese & buttery mushrooms.'},
- {id:'habibi',category:'burgers',name:'SPICY HABIBI',price:37,tag:'BRING THE HEAT',image:photo('habibi'),desc:'Juicy beef, jalapeños, crunchy onions & fiery pepper sauce.'},
- {id:'chicken',category:'burgers',name:'CRISPY REBEL',price:36,tag:'CRISPY',image:photo('chicken'),desc:'Golden crispy chicken, creamy slaw & smoky ranch.'},
- {id:'fries',category:'sides',name:'GOLDEN FRIES',price:21,tag:'CLASSIC',image:photo('fries'),desc:'Golden thin-cut fries, house seasoning and a rich dipping sauce.'},
- {id:'trufflefries',category:'sides',name:'TRUFFLE FRIES',price:24,tag:'PREMIUM',image:photo('fries2'),desc:'Crisp fries finished with parmesan, sea salt & truffle sauce.'},
- {id:'rings',category:'sides',name:'CRUNCHY RINGS',price:19,tag:'CRUNCH TIME',image:photo('rings'),desc:'Thick-cut onion rings fried golden with smoky house dip.'},
- {id:'loaded',category:'sides',name:'SKINNY FRIES',price:22,tag:'SO GOOD',image:photo('loadedfries'),desc:'Extra-crispy shoestring fries with punchy house spice.'},
- {id:'cola',category:'drinks',name:'ICE COLD COLA',price:12,tag:'REFRESH',image:photo('drink'),desc:'The perfect ice-cold, fizzy sidekick to a smashed burger.'},
- {id:'berry',category:'drinks',name:'PINK DISTRICT',price:24,tag:'SHAKES',image:photo('strawberry'),desc:'Creamy strawberry milkshake finished with whipped cream.'},
- {id:'choco',category:'drinks',name:'CHOCOLATE RIOT',price:26,tag:'SHAKES',image:photo('shake'),desc:'Rich chocolate milkshake, thick and indulgent.'},
- {id:'citrus',category:'drinks',name:'CITRUS COOLER',price:16,tag:'COOL DOWN',image:photo('soda'),desc:'A bright lemon-and-herb cooler served over ice.'},
- {id:'brownie',category:'desserts',name:'BROWNIE BLAST',price:27,tag:'DARK & FUDGY',image:photo('brownie'),desc:'Thick chocolate brownies with a glossy fudge drizzle.'},
- {id:'icecream',category:'desserts',name:'CLOUD NINE',price:19,tag:'SWEET ENDING',image:photo('icecream'),desc:'Creamy, smooth ice cream served the classic way.'},
- {id:'sundae',category:'desserts',name:'SUNDAE CLUB',price:25,tag:'THE GRAND FINALE',image:photo('sundae'),desc:'Layered ice cream sundae topped with chocolate crunch.'},
- {id:'duo',category:'combos',name:'DISTRICT COMBO',price:59,tag:'BURGERS + FRIES',image:photo('burger2'),desc:'The District burger, golden fries and ice-cold cola together.'},
- {id:'night',category:'combos',name:'LATE NIGHT DUO',price:75,tag:'BIGGER IS BETTER',image:photo('burger3'),desc:'Two signature smash burgers with a side of hot fries.'}
+ {id:'district',category:'burgers',name:'THE DISTRICT',price:38,tag:'BEST SELLER',image:menuPhoto('district'),desc:'Double smashed beef, melted cheddar, pickles & signature house sauce.'},
+ {id:'truffle',category:'burgers',name:'TRUFFLE BOSS',price:44,tag:'SIGNATURE',image:menuPhoto('truffle'),desc:'Smashed beef, truffle mayo, Swiss cheese & buttery mushrooms.'},
+ {id:'habibi',category:'burgers',name:'SPICY HABIBI',price:37,tag:'BRING THE HEAT',image:menuPhoto('habibi'),desc:'Juicy beef, jalapeños, crunchy onions & fiery pepper sauce.'},
+ {id:'chicken',category:'burgers',name:'CRISPY REBEL',price:36,tag:'CRISPY',image:menuPhoto('chicken'),desc:'Golden crispy chicken, creamy slaw & smoky ranch.'},
+ {id:'fries',category:'sides',name:'GOLDEN FRIES',price:21,tag:'CLASSIC',image:menuPhoto('fries'),desc:'Golden thin-cut fries, house seasoning and a rich dipping sauce.'},
+ {id:'trufflefries',category:'sides',name:'TRUFFLE FRIES',price:24,tag:'PREMIUM',image:menuPhoto('trufflefries'),desc:'Crisp fries finished with parmesan, sea salt & truffle sauce.'},
+ {id:'rings',category:'sides',name:'CRUNCHY RINGS',price:19,tag:'CRUNCH TIME',image:menuPhoto('rings'),desc:'Thick-cut onion rings fried golden with smoky house dip.'},
+ {id:'loaded',category:'sides',name:'SKINNY FRIES',price:22,tag:'SO GOOD',image:menuPhoto('loaded'),desc:'Extra-crispy shoestring fries with punchy house spice.'},
+ {id:'cola',category:'drinks',name:'ICE COLD COLA',price:12,tag:'REFRESH',image:menuPhoto('cola'),desc:'The perfect ice-cold, fizzy sidekick to a smashed burger.'},
+ {id:'berry',category:'drinks',name:'PINK DISTRICT',price:24,tag:'SHAKES',image:menuPhoto('berry'),desc:'Creamy strawberry milkshake finished with whipped cream.'},
+ {id:'choco',category:'drinks',name:'CHOCOLATE RIOT',price:26,tag:'SHAKES',image:menuPhoto('choco'),desc:'Rich chocolate milkshake, thick and indulgent.'},
+ {id:'citrus',category:'drinks',name:'CITRUS COOLER',price:16,tag:'COOL DOWN',image:menuPhoto('citrus'),desc:'A bright lemon-and-herb cooler served over ice.'},
+ {id:'brownie',category:'desserts',name:'BROWNIE BLAST',price:27,tag:'DARK & FUDGY',image:menuPhoto('brownie'),desc:'Thick chocolate brownies with a glossy fudge drizzle.'},
+ {id:'icecream',category:'desserts',name:'CLOUD NINE',price:19,tag:'SWEET ENDING',image:menuPhoto('icecream'),desc:'Creamy, smooth ice cream served the classic way.'},
+ {id:'sundae',category:'desserts',name:'SUNDAE CLUB',price:25,tag:'THE GRAND FINALE',image:menuPhoto('sundae'),desc:'Layered ice cream sundae topped with chocolate crunch.'},
+ {id:'duo',category:'combos',name:'DISTRICT COMBO',price:59,tag:'BURGERS + FRIES',image:menuPhoto('duo'),desc:'The District burger, golden fries and ice-cold cola together.'},
+ {id:'night',category:'combos',name:'LATE NIGHT DUO',price:75,tag:'BIGGER IS BETTER',image:menuPhoto('night'),desc:'Two signature smash burgers with a side of hot fries.'}
 ];
 const categories={
  burgers:{number:'01',title:'BURGERS',desc:'Pressed hot. Stacked high. Served loud.'},
