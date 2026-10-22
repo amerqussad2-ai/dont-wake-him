@@ -88,7 +88,7 @@ function updateCart(){
   cartItems.innerHTML=[...cart.entries()].map(([id,quantity])=>{
    const p=products.find(x=>x.id===id);if(!p)return '';
    sum+=p.price*quantity;
-   return '<div class="cart-line"><img src="'+p.image+'" alt="" loading="lazy"/><div class="cart-line-main"><strong>'+p.name+'</strong><small>'+money(p.price*quantity)+'</small><div class="quantity"><button type="button" data-qty="-1" data-id="'+id+'" aria-label="Remove one '+p.name+'">−</button><span>'+quantity+'</span><button type="button" data-qty="1" data-id="'+id+'" aria-label="Add one '+p.name+'">+</button></div></div></div>';
+   return '<div class="cart-line" data-cart="'+id+'"><img src="'+p.image+'" alt="" loading="lazy"/><div class="cart-line-main"><strong>'+p.name+'</strong><small>'+money(p.price*quantity)+'</small><div class="quantity"><button type="button" data-qty="-1" data-id="'+id+'" aria-label="Remove one '+p.name+'">−</button><span>'+quantity+'</span><button type="button" data-qty="1" data-id="'+id+'" aria-label="Add one '+p.name+'">+</button></div></div></div>';
   }).join('');
  }
  $('#cartTotal').textContent=money(sum);
@@ -115,10 +115,10 @@ function add(id){
  window.dispatchEvent(new CustomEvent('smash:add',{detail:{id:p.id,category:p.category,name:p.name,price:p.price}}));
 }
 function renderMenu(){
- const visible=currentFilter==='all'?products:products.filter(p=>p.category===currentFilter);
+ const visible=currentFilter==='all'?products.filter(p=>!['upgrades','custom'].includes(p.category)):products.filter(p=>p.category===currentFilter);
  const grid=$('#menuGrid');
  grid.innerHTML=visible.map((p,i)=>
- '<article class="menu-item" style="animation-delay:'+Math.min(i*.04,.28)+'s">'+
+ '<article class="menu-item" data-id="'+p.id+'" style="animation-delay:'+Math.min(i*.04,.28)+'s">'+
  '<div class="menu-image"><img src="'+p.image+'" alt="'+p.name+'" loading="lazy" /><span class="menu-tag">'+p.tag+'</span></div>'+
  '<div class="menu-item-body"><div class="menu-item-head"><h3>'+p.name+'</h3></div>'+
  '<p class="menu-desc">'+p.description+'</p><div class="menu-item-bottom"><strong class="menu-item-price">'+money(p.price)+'</strong>'+
