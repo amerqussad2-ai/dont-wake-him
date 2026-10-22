@@ -241,3 +241,67 @@ body.motion-ready .reveal.in-view{opacity:1;transform:translateY(0);filter:blur(
 }
 @keyframes hero-glow-drift{0%{transform:translate(-13%,-10%) scale(.85);opacity:.55}100%{transform:translate(8%,9%) scale(1.2);opacity:1}}
 @keyframes headline-breathe{0%{filter:drop-shadow(0 0 0 transparent)}100%{filter:drop-shadow(0 2px 24px #f4a2287a)}}
+
+
+/* Actual food photography animation — layers are transparent isolated edible components,
+   cropped to the sandwich itself, NOT empty horizontal strips of the source image. */
+.hero-photo{
+ width:min(94%,720px);
+ aspect-ratio:1.16;
+ filter:drop-shadow(0 33px 31px #0008);
+ transform:translateY(15px);
+}
+.hero-pieces,
+.hero-photo-full{
+ inset:0;
+ position:absolute;
+ background:none;
+ border:0;
+ border-radius:0;
+ -webkit-mask-image:none;
+ mask-image:none;
+}
+.hero-photo-full{
+ background:url('/assets/hero-focused.jpg') center / 100% 100% no-repeat;
+ opacity:1; /* never render a blank first fold when animations are unavailable */
+ -webkit-mask-image:radial-gradient(ellipse 84% 84% at 50% 50%,#000 60%,transparent 100%);
+ mask-image:radial-gradient(ellipse 84% 84% at 50% 50%,#000 60%,transparent 100%);
+}
+.hero-pieces{z-index:5;pointer-events:none;overflow:visible}
+.food-layer{
+ position:absolute;
+ inset:0;
+ width:100%;
+ height:100%;
+ object-fit:fill;
+ display:block;
+ opacity:0;
+ visibility:hidden;
+ will-change:transform,opacity;
+ pointer-events:none;
+ transform:translateZ(0);
+ filter:drop-shadow(0 13px 12px #0008);
+}
+.hero-art .hero-photo::after{bottom:-4%;height:35px}
+.hero-art-ring{
+ border-width:2px;
+ border-color:rgba(255,166,40,.36);
+}
+.hero-art .hero-badge{z-index:12}
+@media(min-width:921px){
+ .hero-art{right:-1%;width:59%;top:7%}
+ .hero-photo{width:min(92%,760px)}
+}
+@media(max-width:920px){
+ .hero-photo{width:100%;aspect-ratio:1.16}
+}
+@media(max-width:640px){
+ .hero-art{top:32%;bottom:5%;right:-24%;width:112%;opacity:.93}
+ .hero-photo{width:86%;aspect-ratio:1.16}
+ .hero-badge{right:24%;top:3%}
+ .replay{right:25%;bottom:4%}
+}
+@media(prefers-reduced-motion:reduce){
+ .hero-photo-full{opacity:1!important}
+ .food-layer{opacity:0!important;visibility:hidden!important}
+}
