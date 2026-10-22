@@ -50,14 +50,16 @@ jobs:
             cut.putalpha(ImageChops.multiply(alpha,stripe))
             name=f'hero-ingredient-{i+1}.png'
             cut.save(folder/name,optimize=True)
-            print(name,cut.size,(top,bottom))
+            webp=name.replace('.png','.webp')
+            cut.save(folder/webp,'WEBP',quality=80,method=6,lossless=False)
+            print(webp,cut.size,(top,bottom))
           print('focused_photo_size',photo.size,'source',image.size,'rect',rect)
           PY
       - name: Commit cutouts
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add smash-district/public/assets/hero-focused.jpg smash-district/public/assets/hero-ingredient-*.png
+          git add smash-district/public/assets/hero-focused.jpg smash-district/public/assets/hero-ingredient-*.png smash-district/public/assets/hero-ingredient-*.webp
           if ! git diff --cached --quiet; then
             git commit -m "assets(motion): six transparent real-food burger layers framed to hero"
             git push origin HEAD:feature/smash-district-motion-fix
