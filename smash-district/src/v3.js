@@ -19,7 +19,7 @@ const products=[
  {id:'rings',category:'sides',name:'CRUNCHY RINGS',price:19,tag:'CRUNCH TIME',image:menuPhoto('rings'),desc:'Thick-cut onion rings fried golden with smoky house dip.'},
  {id:'loaded',category:'sides',name:'SKINNY FRIES',price:22,tag:'SO GOOD',image:menuPhoto('loaded'),desc:'Extra-crispy shoestring fries with punchy house spice.'},
  {id:'cola',category:'drinks',name:'ICE COLD COLA',price:12,tag:'REFRESH',image:menuPhoto('cola'),desc:'The perfect ice-cold, fizzy sidekick to a smashed burger.'},
- {id:'berry',category:'drinks',name:'PINK DISTRICT',price:24,tag:'SHAKES',image:menuPhoto('berry'),desc:'Creamy strawberry milkshake finished with whipped cream.'},
+ {id:'berry',category:'drinks',name:'PINK DISTRICT',price:24,tag:'PINK SPECIAL',image:menuPhoto('berry'),desc:'Bright pink strawberry lemonade served over ice with fresh lemon and mint.'},
  {id:'choco',category:'drinks',name:'CHOCOLATE RIOT',price:26,tag:'SHAKES',image:menuPhoto('choco'),desc:'Rich chocolate milkshake, thick and indulgent.'},
  {id:'citrus',category:'drinks',name:'CITRUS COOLER',price:16,tag:'COOL DOWN',image:menuPhoto('citrus'),desc:'A bright lemon-and-herb cooler served over ice.'},
  {id:'brownie',category:'desserts',name:'BROWNIE BLAST',price:27,tag:'DARK & FUDGY',image:menuPhoto('brownie'),desc:'Thick chocolate brownies with a glossy fudge drizzle.'},
