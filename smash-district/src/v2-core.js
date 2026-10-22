@@ -150,3 +150,214 @@ function overlayEvents(){
  const menuObserver=new MutationObserver(()=>{if(language==='ar')localizeMenu();});
  menuObserver.observe($('#menuGrid'),{childList:true,subtree:false});
 }
+
+const newEnglish={
+ replay:'REPLAY THE SMASH',builderKicker:'YOUR RULES. YOUR BURGER.',builderEyebrow:'MAKE IT YOURS',
+ builderTitle:'NO RULES.<br/><em>JUST CRAVINGS.</em>',
+ builderIntro:'Pick your favorites. Watch it stack. Your creation, your way.',
+ extrasLabel:'05 / EXTRA ATTITUDE',yourCreation:'YOUR CREATION',addBuild:'ADD MY BURGER',
+ demoDisclaimer:'Interactive concept only · No actual orders or payments',
+ dropEyebrow:'THE DISTRICT EXPERIMENTS',conceptDrop:'CONCEPT DROP / 001',
+ dropTitle:'MEET THE<br/><em>MIDNIGHT</em><br/>MELT.',
+ dropDescription:'Double smash. Dark pepper glaze. Melted cheese. A fictional limited-edition burger with after-dark Dubai energy.',
+ tryDrop:'ADD THE DROP',dropNotice:'Fictional special — no real product availability.',
+ socialEyebrow:'DISTRICT CULTURE',socialTitle:'EAT LOUD.<br/><em>LIVE LOUDER.</em>',
+ socialDescription:'A fictional feed. Real appetite. The moments, the mess, the mood.',
+ socialNotice:'Concept social gallery — not an active restaurant account.',
+ lastEyebrow:'THE LAST WORD ON CRAVINGS',lastTitle:'TAKE THE<br/><em>FIRST BITE.</em>',
+ lastButton:'FIND YOUR BURGER ↗',lastFine:'SMASH DISTRICT — A FICTIONAL DUBAI BURGER BRAND.',
+ filtercombos:'COMBOS',filterdesserts:'DESSERTS',filterlimited:'LIMITED DROPS',buildNav:'BUILD YOURS',
+ upgradeEyebrow:'LEVEL UP YOUR BITE',upgradeTitle:'MAKE IT A COMBO?',
+ upgradeText:'Add crispy fries + an ice-cold cola for AED 28.',
+ upgradeYes:'ADD + AED 28 ↗',upgradeNo:'NOT NOW'
+};
+const newArabic={
+ replay:'أعد تجميع البرجر',builderKicker:'برجرك. على كيفك.',builderEyebrow:'صممه بنفسك',
+ builderTitle:'بدون قواعد.<br/><em>بس على مزاجك.</em>',
+ builderIntro:'اختار مكوناتك المفضّلة، وشوف البرجر يتكوّن أمامك. أنت صاحب القرار.',
+ extrasLabel:'05 / إضافات مميزة',yourCreation:'سعر برجرك',addBuild:'أضف برجري للسلة',
+ demoDisclaimer:'تجربة تفاعلية وهمية · بدون طلبات أو مدفوعات حقيقية',
+ dropEyebrow:'تجارب سماش ديستريكت',conceptDrop:'إصدار خيالي / 001',
+ dropTitle:'تعرّف على<br/><em>ميدنايت</em><br/>ميلت.',
+ dropDescription:'لحم سماش مزدوج، صوص فلفل غامق وجبنة سايحة. إصدار موسمي خيالي مستوحى من ليالي دبي.',
+ tryDrop:'أضف البرجر',dropNotice:'منتج خيالي للعرض فقط، وغير متاح للطلب الحقيقي.',
+ socialEyebrow:'ثقافة الديستريكت',socialTitle:'كُل على كيفك.<br/><em>وعِش بقوة.</em>',
+ socialDescription:'صور وعروض من عالم سماش ديستريكت الخيالي، مليانة نكهات وشخصية.',
+ socialNotice:'قسم اجتماعي تجريبي، وليس حساب مطعم فعلي.',
+ lastEyebrow:'آخر كلمة للجوع',lastTitle:'جاهز<br/><em>لأول لقمة؟</em>',
+ lastButton:'اكتشف البرجر ↗',lastFine:'سماش ديستريكت — مفهوم مطعم برجر وهمي في دبي.',
+ filtercombos:'كومبوهات',filterdesserts:'حلويات',filterlimited:'إصدارات خاصة',buildNav:'صمّم برجرك',
+ upgradeEyebrow:'خلّي الوجبة أكمل',upgradeTitle:'تحوّلها لكومبو؟',
+ upgradeText:'أضف بطاطا مقرمشة وكولا باردة مقابل 28 درهم.',
+ upgradeYes:'أضف + 28 درهم ↗',upgradeNo:'مش الآن'
+};
+const originals=[
+ ['.nav-link[href="#home"]','HOME','الرئيسية'],
+ ['.nav-link[href="#favorites"]','THE HITS','المفضّلة'],
+ ['.nav-link[href="#story"]','OUR STORY','قصّتنا'],
+ ['.nav-link[href="#menu"]','MENU','المنيو'],
+ ['.nav-link[href="#location"]','DUBAI','دبي'],
+ ['.mobile-menu a[href="#home"]','HOME','الرئيسية'],
+ ['.mobile-menu a[href="#favorites"]','THE HITS','الأكثر طلبًا'],
+ ['.mobile-menu a[href="#story"]','OUR STORY','قصّتنا'],
+ ['.mobile-menu a[href="#menu"]','FULL MENU','المنيو الكامل'],
+ ['.mobile-menu a[href="#location"]','FIND US','موقعنا'],
+ ['.header-order','ORDER NOW <span>↗</span>','اطلب الآن <span>↗</span>'],
+ ['.hero-eyebrow','<span class="eyebrow-line"></span> DUBAI-BORN ENERGY. NO HALF MEASURES.','<span class="eyebrow-line"></span> من قلب دبي. نكهة بلا حدود.'],
+ ['.hero-title .title-reveal:nth-child(1)>span','NOT YOUR','مش أي'],
+ ['.hero-title .title-reveal:nth-child(2)>span','AVERAGE','برجر'],
+ ['.hero-title .title-reveal:nth-child(3)>span','BURGER<span class="title-period">.</span>','عادي<span class="title-period">.</span>'],
+ ['.hero-description','Crispy edges. Melting cheese. Zero apologies. A burger experience made to turn up the heat in Dubai.','أطراف لحم مقرمشة، جبنة سايحة ونكهات قوية. تجربة برجر جريئة من وحي دبي.'],
+ ['.hero-buttons .btn-fire>span:first-child','EXPLORE THE MENU','شوف المنيو'],
+ ['#storyTrigger>span:last-child','THE DISTRICT STORY','قصّة الديستريكت'],
+ ['.hero-side-note>span:last-child','SCROLL TO FEEL THE HEAT','انزل واكتشف النكهة'],
+ ['.hero-bottom>span:first-child','01 / 05 — WELCOME TO THE DISTRICT','01 / 05 — أهلاً بالديستريكت'],
+ ['.marquee-track','<span>GOOD FOOD. LOUD FLAVOR. <b>✳</b> ZERO REGRETS. <b>✳</b> SMASH DISTRICT DUBAI. <b>✳</b></span><span>GOOD FOOD. LOUD FLAVOR. <b>✳</b> ZERO REGRETS. <b>✳</b> SMASH DISTRICT DUBAI. <b>✳</b></span>','<span>طعم قوي. <b>✳</b> برجر استثنائي. <b>✳</b> سماش ديستريكت دبي. <b>✳</b></span><span>طعم قوي. <b>✳</b> برجر استثنائي. <b>✳</b> سماش ديستريكت دبي. <b>✳</b></span>'],
+ ['.section-head .eyebrow','<span class="eyebrow-line"></span> NOT JUST BURGERS. OBSESSIONS.','<span class="eyebrow-line"></span> أكثر من مجرد برجر.'],
+ ['.section-head .section-title','THE <em>HEAVY</em><br/>HITTERS<span class="orange-dot">.</span>','نجوم <em>المنيو</em><span class="orange-dot">.</span>'],
+ ['.section-side span','HANDPICKED FOR MAXIMUM CRAVING.','مختارة بعناية لعشاق البرجر.'],
+ ['.section-side p','Three legends. One impossible choice. Every bite goes hard.','ثلاثة برجرات مميزة، وأصعب قرار هو أي واحد تختار.'],
+ ['.text-link','SEE THE ENTIRE MENU <span>↗</span>','شوف المنيو كامل <span>↗</span>'],
+ ['.story-copy .eyebrow','<span class="eyebrow-line"></span> THE DISTRICT DNA','<span class="eyebrow-line"></span> روح الديستريكت'],
+ ['.story-heading','SMASHED<br/>WITH <i>SOUL.</i><br/>SERVED<br/>WITH <i>HEAT.</i>','برجر<br/><i>من القلب.</i><br/>نكهة<br/><i>ما بتنتسى.</i>'],
+ ['.story-body','We believe a burger should be more than something you eat. It should be the thing you remember. Bold ingredients, unapologetic flavor, and a whole lot of Dubai attitude.','البرجر بالنسبة إلنا مش مجرد وجبة. هو تجربة ما بتنتسى. مكونات قوية، نكهة جريئة وروح مستوحاة من دبي.'],
+ ['.story-copy .btn-outline','MEET THE DISTRICT <span>↗</span>','تعرّف علينا <span>↗</span>'],
+ ['.menu-top .eyebrow','<span class="eyebrow-line"></span> PICK YOUR OBSESSION','<span class="eyebrow-line"></span> اختار اللي بتحبه'],
+ ['.menu-top .section-title','THE FULL <em>MENU</em><span class="orange-dot">.</span>','المنيو <em>الكامل</em><span class="orange-dot">.</span>'],
+ ['.menu-top>p','Built for every craving. Prices in AED. <b>Demo ordering only.</b>','خيارات لكل الأذواق. الأسعار بالدرهم الإماراتي. <b>طلبات تجريبية فقط.</b>'],
+ ['.filter[data-filter="all"]','ALL THE GOOD STUFF <span>↗</span>','كل الأصناف <span>↗</span>'],
+ ['.filter[data-filter="burgers"]','BURGERS','برجر'],
+ ['.filter[data-filter="sides"]','SIDES','مقبلات'],
+ ['.filter[data-filter="drinks"]','DRINKS','مشروبات'],
+ ['.statement .eyebrow','WE DON\\\'T DO ORDINARY','مو مثل أي برجر'],
+ ['.statement-head','BITE<br/><span>BACK.</span>','لقمة<br/><span>أقوى.</span>'],
+ ['.statement-cut','<span>✳</span> BRING YOUR APPETITE. LEAVE YOUR EXPECTATIONS. <span>✳</span>','<span>✳</span> جهّز شهيتك. وانسى كل توقعاتك. <span>✳</span>'],
+ ['.statement .btn-black','GET YOUR FIX <span>↗</span>','اختار وجبتك <span>↗</span>'],
+ ['.location-copy .eyebrow','<span class="eyebrow-line"></span> MADE FOR THE CITY THAT NEVER SETTLES','<span class="eyebrow-line"></span> لمدينة ما بتعرف الهدوء'],
+ ['.location-copy .section-title','DUBAI<br/>AFTER <em>DARK.</em>','دبي<br/>بعد <em>الليل.</em>'],
+ ['.location-copy>p:not(.eyebrow)','Late-night cravings, city lights, and burgers worth going out for. Imagined for the heart of Dubai.','سهرات دبي وأضواؤها ونكهات بتستحق الطلعة. تجربة متخيّلة في قلب دبي.'],
+ ['.location-copy .btn-fire','EXPLORE THE MENU <span>↗</span>','اكتشف المنيو <span>↗</span>'],
+ ['.location-details>div:nth-child(1)>strong','CITY WALK, DUBAI','سيتي ووك، دبي'],
+ ['.location-details>div:nth-child(1)>small','Concept location — not an operating restaurant','موقع افتراضي، المطعم غير موجود فعليًا'],
+ ['.location-details>div:nth-child(2)>small','Illustrative hours · demonstration only','أوقات توضيحية للعرض فقط'],
+ ['.footer-main>div>p','CRAVINGS DON\\\'T WAIT.<br/>NEITHER DO WE.','الجوع ما بينتظر.<br/>ولا إحنا.'],
+ ['.footer-back','BACK TO THE TOP ↑','ارجع لفوق ↑'],
+ ['.cart-head .eyebrow','YOUR CRAVINGS','طلباتك'],
+ ['.cart-head h2','THE BAG<span class="orange-dot">.</span>','السلة<span class="orange-dot">.</span>'],
+ ['.total-row>span','SUBTOTAL','الإجمالي'],
+ ['.cart-disclaimer','Demo only. No payment, delivery or real restaurant orders.','تجربة فقط. لا يوجد دفع أو توصيل أو طلبات حقيقية.'],
+ ['#checkout','PLACE DEMO ORDER <span>↗</span>','تأكيد طلب تجريبي <span>↗</span>'],
+ ['.modal-inner .eyebrow','THE DISTRICT / DUBAI','الديستريكت / دبي'],
+ ['.modal-inner h2','THIS ISN\\\'T<br/>JUST A <em>BURGER.</em><br/>IT\\\'S A <i>STATEMENT.</i>','هذا مش<br/>مجرد <em>برجر.</em><br/>هذه <i>تجربة.</i>'],
+ ['.modal-inner>p:not(.eyebrow)','A fictional Dubai burger brand imagined with unapologetically bold food, cinematic visuals, and a love of everything smashed.','براند برجر وهمي في دبي. نكهات قوية، صور سينمائية وشغف بالبرجر المقرمش.'],
+ ['#modalMenu','TASTE THE MENU <span>↗</span>','شوف المنيو <span>↗</span>'],
+];
+const arabicProducts={
+ district:['ذا ديستريكت','لحم سماش مزدوج، جبنة أمريكية، مخلل وصوص الديستريكت.'],
+ truffle:['ترافل بوس','لحم طري، مايونيز ترافل، مشروم مشوي وجبنة معتقة.'],
+ habibi:['سبايسي حبيبي','لحم سماش، هالبينو، بصل مقرمش وصوص حار.'],
+ chicken:['كريسبي ريبل','دجاج مقرمش، كولسلو وصوص فلفل مدخن.'],
+ fries:['ديرتي فرايز','بطاطا مقرمشة بجبنة سايحة وبهاراتنا الخاصة.'],
+ fries2:['ترافل فرايز','بطاطا يدوية، ترافل، بارميزان وملح بحري.'],
+ cola:['ديستريكت كولا','كولا غازية باردة، مثالية جنب البرجر.'],
+ lemonade:['سنست فيز','ليمون وحمضيات غازية بلمسة مستوحاة من غروب دبي.'],
+ smokehouse:['سموك سيجنال','سماش مزدوج بصوص باربكيو مدخن وبصل مقرمش.'],
+ double:['دبل ترابل','ثلاث طبقات لحم وثلاث طبقات جبنة مع المخلل.'],
+ classic:['أولد سكول','برجر سماش كلاسيكي، جبنة وبصل ومخلل وخردل.'],
+ honey:['هوت هاني كرانش','دجاج مقرمش بعسل حار، كولسلو وصوص رانش.'],
+ rings:['جولدن رينجز','حلقات بصل ذهبية مع صوص مدخن للتغميس.'],
+ cheesefries:['تشيز أفالانش','بطاطا غارقة بالجبنة وصوص تشيبوتلي.'],
+ pickles:['بيكل بوبرز','مخلل مقرمش مع صوص رانش.'],
+ shake:['شوكليت رايوت','ميلك شيك شوكولاتة كثيف مع كريمة.'],
+ strawberry:['بينك ديستريكت','ميلك شيك فراولة مع دوامة توت.'],
+ citrus:['سيتروس سبلاش','مشروب حمضيات منعش وبارد.'],
+ sundae:['صنداي كلَب','آيس كريم فانيلا مع شوكولاتة وقطع مقرمشة.'],
+ brownie:['براوني بلاست','براوني غني مع كريمة وصوص شوكولاتة.'],
+ icecream:['كلاود ناين','آيس كريم بطعم كلاسيكي وصوص كراميل.'],
+ combo1:['وجبة الديستريكت','برجر الديستريكت مع بطاطا وكولا.'],
+ combo2:['ذا بيج نايت','ترافل بوس مع ترافل فرايز وميلك شيك شوكولاتة.'],
+ combo3:['تو أوف أ كايند','برجرين أولد سكول مع ديرتي فرايز.'],
+ midnight:['ميدنايت ميلت','سماش مزدوج بصوص الفلفل والجبنة الذائبة.'],
+ firestarter:['فاير ستارتر','لحم سماش بهالبينو وعسل حار وصوص ناري.'],
+ upsize:['إضافة بطاطا وكولا','بطاطا وكولا بسعر كومبو خاص.']
+};
+function localizeMenu(){
+ const current=$('.filter[aria-pressed="true"]')?.dataset.filter||'all';
+ const visible=current==='all'?app.products.filter(p=>!['upgrades','custom'].includes(p.category)):app.products.filter(p=>p.category===current);
+ $$('.menu-item').forEach((node,i)=>{
+  const p=visible[i];if(!p)return;
+  const t=arabicProducts[p.id];if(!t)return;
+  $('h3',node).textContent=t[0];
+  $('.menu-desc',node).textContent=t[1];
+  const b=$('button[data-add]',node);if(b)b.setAttribute('aria-label','أضف '+t[0]+' إلى السلة');
+ });
+}
+function localizeCart(){
+ $$('.cart-line').forEach(line=>{
+  const id=line.dataset.cart;
+  const t=arabicProducts[id];if(t)$('strong',line).textContent=t[0];
+ });
+ const empty=$('.empty-bag');
+ if(empty){$('b',empty).textContent='السلة فاضية';$('p',empty).textContent='لسه ما ضفت أي شي؟ اختار برجرك المفضل!';}
+}
+function applyLanguage(){
+ const arabic=language==='ar';
+ document.documentElement.lang=language;document.documentElement.dir=arabic?'rtl':'ltr';
+ document.body.classList.toggle('lang-ar',arabic);
+ document.title=arabic?'سماش ديستريكت — دبي | برجر بطعم مختلف':'SMASH DISTRICT® — Dubai | Built To Crave';
+ $('#languageToggle').textContent=arabic?'EN':'العربية';
+ $('#languageToggle').setAttribute('aria-label',arabic?'Switch to English':'التبديل إلى العربية');
+ for(const [selector,en,ar] of originals){
+  const node=$(selector);if(node)node.innerHTML=arabic?ar:en.replaceAll("\\\\'","'");
+ }
+ $$('[data-i18n]').forEach(el=>{
+  const key=el.dataset.i18n;
+  if(key in newEnglish)el.innerHTML=arabic?newArabic[key]:newEnglish[key];
+ });
+ $$('.build-group[data-group]').forEach((el,i)=>{
+  const titles=arabic?['01 / نوع الخبز','02 / نوع البروتين','03 / الجبنة','04 / الصوص']:['01 / YOUR BUN','02 / THE MAIN EVENT','03 / MELTY GOODNESS','04 / SAUCE IT UP'];
+  const title=$('.build-group-title>span',el);if(title)title.textContent=titles[i];
+ });
+ $$('[data-choice]').forEach(b=>{
+  const value=options[b.dataset.choice].find(o=>o.id===b.dataset.value);
+  $('[data-option-name]',b).textContent=arabic?value.ar:value.en;
+  $('small',b).textContent=value.cost?'+'+value.cost+' AED':(arabic?'مشمول':'INCLUDED');
+ });
+ $$('[data-extra]').forEach(b=>{
+  const value=extras.find(o=>o.id===b.dataset.extra);
+  $('[data-extra-name]',b).textContent='+ '+(arabic?value.ar:value.en);
+ });
+ if(arabic){localizeMenu();localizeCart();}
+ else{ // Rebuild cards and cart labels in the original product language when switching back.
+  app.renderMenu();app.updateCart();
+ }
+}
+function setupMotion(){
+ if(reduced)return;
+ for(const selector of ['.builder-section','.drop-copy','.drop-photo','.social-section','.last-cta']){
+  const el=$(selector);if(!el)continue;
+  gsap.fromTo(el,{opacity:0,y:65},{opacity:1,y:0,duration:1.1,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 86%',once:true}});
+ }
+ gsap.fromTo('.builder-burger',{y:-30,rotate:-8},{y:10,rotate:3,ease:'none',scrollTrigger:{trigger:'.builder-section',start:'top bottom',end:'bottom top',scrub:true}});
+ gsap.fromTo('.drop-photo img',{scale:1.17,y:-30},{scale:1,y:30,ease:'none',scrollTrigger:{trigger:'.drop-section',start:'top bottom',end:'bottom top',scrub:true}});
+ gsap.fromTo('.last-cta h2',{scale:.68,opacity:.1},{scale:1,opacity:1,ease:'none',scrollTrigger:{trigger:'.last-cta',start:'top 92%',end:'center 56%',scrub:true}});
+ $$('.social-frame').forEach(el=>{
+  gsap.fromTo(el,{opacity:0,y:60,rotate:2},{opacity:1,y:0,rotate:0,duration:.9,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 92%',once:true}});
+ });
+ if(matchMedia('(pointer:fine)').matches){
+  $$('.feature-card,.menu-item').forEach(el=>{
+   el.addEventListener('pointermove',e=>{
+    const r=el.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+    gsap.to(el,{rotateX:-y*3,rotateY:x*4,transformPerspective:900,duration:.35,ease:'power2.out'});
+   });
+   el.addEventListener('pointerleave',()=>gsap.to(el,{rotateX:0,rotateY:0,duration:.6,ease:'power3.out'}));
+  });
+ }
+ ScrollTrigger.refresh();
+}
+createContent();
+builderEvents();
+overlayEvents();
+updateBurger();
+applyLanguage();
+window.setTimeout(setupMotion,1200);
