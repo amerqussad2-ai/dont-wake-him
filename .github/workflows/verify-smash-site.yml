@@ -8,6 +8,9 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: smash-site-verify-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   e2e:
     runs-on: ubuntu-latest
@@ -22,14 +25,14 @@ jobs:
       - name: Install site dependencies
         working-directory: smash-district
         run: npm install --no-package-lock
+      - name: Build
+        working-directory: smash-district
+        run: npm run build
       - name: Install Playwright Chromium
         working-directory: smash-district
         run: |
           npm install --no-save --no-package-lock playwright
           npx playwright install chromium --with-deps
-      - name: Build
-        working-directory: smash-district
-        run: npm run build
       - name: Start site
         working-directory: smash-district
         run: |
